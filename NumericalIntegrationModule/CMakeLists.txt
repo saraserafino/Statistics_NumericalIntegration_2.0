@@ -14,7 +14,9 @@ option(USE_MODULEC "Use the Numerical Integration Module")
 
 if(USE_MODULEC)
     add_library(NumericalIntegrationModule SHARED src/IntegrationMethods.cpp)
-    
+    #not sure
+    pybind11_add_module(NumericalIntegrationModule src/IntegrationMethods_py.cpp)
+
     # Search for muparserx
     find_package(muparserx 4.0 REQUIRED)
 

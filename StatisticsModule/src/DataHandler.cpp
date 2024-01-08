@@ -51,7 +51,7 @@ const std::string CSVHandler::get_input_file_name() const {
     return input_file_name;
 };
 
-// Function for reading the input file
+// Functions for reading the input file
 int CSVHandler::read_header(const std::string &targetColumn) const {
   // Check if the input arguments are valid
   assertm(!this->input_file_name.empty() && !targetColumn.empty(), "Invalid input arguments.");
@@ -71,6 +71,53 @@ int CSVHandler::read_header(const std::string &targetColumn) const {
     return std::count(line.begin(), line.begin() + found, ',');
   }
   return -1;
+};
+
+std::vector<std::vector<csvType>> CSVHandler::readData() const {
+    // Open the CSV file in input mode
+    std::fstream file(input_path, std::ios::in);
+    std::string line, word;
+    std::vector<std::vector<csvType>> data;
+
+    getline(file, line);
+    std::stringstream header(line);
+    while(getline(header,word,',')){
+        data.push_back(std::vector<csvType>());
+    }
+
+    while (getline(file, line)) {
+        std::stringstream record(line);
+        int j = 0;
+        while (getline(record, word, ',')) {
+            // Try to convert the word to double,
+            try { // add as double if successful
+                data[j].push_back(std::stod(word));
+            } catch (const std::invalid_argument &) {
+                // otherwise add as string
+                data[j].push_back(word);
+            }
+            j++;
+        }
+    }
+    return data;
+};
+
+std::vector<std::string> CSVHandler::getHeader() const {
+  std::fstream file(this->input_path, std::ios::in);
+  std::string line, word;
+  std::vector<std::string> headerNames;
+  // Check if the file is open
+  assertm(file.is_open(), "Failed to open file.");
+    
+  if (file.is_open()) {
+    getline(file, line);
+
+    std::stringstream header(line);
+    while(getline(header,word,',')) {
+      headerNames.push_back(word);
+    }
+  }
+  return headerNames;
 };
 
 // Method for writing the results

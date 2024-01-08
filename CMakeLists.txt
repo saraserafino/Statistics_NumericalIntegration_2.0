@@ -14,6 +14,11 @@ find_package(Boost 1.83 REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIRS})
 
+# Search for Pybind
+find_package(pybind11 REQUIRED)
+
+include_directories(SYSTEM ${pybind11_INCLUDE_DIRS})
+
 # Add the executable
 add_executable(homework main/main.cpp)
 

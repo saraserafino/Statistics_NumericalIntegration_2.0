@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
 
 #if USE_MODULEA
     #include "../StatisticsModule/include/StatOp.hpp"
@@ -28,18 +29,39 @@ int main() {
     // Create shared pointer
     const std::shared_ptr<CSVHandler> CSVfile = std::make_shared<CSVHandler>(input_file_path);
 
-    std::string targetColumn;
-    std::cout << "What is the name of the column you want to analyze? ";
-    std::cin >> targetColumn;
+    StatOp analysis(CSVfile);
 
-    StatOp analysis(targetColumn);
-    std::vector<std::optional<std::variant<double, std::string>>> data = analysis.readSpecificColumn(CSVfile, targetColumn);
+    std::vector<std::string> headerNames = CSVfile->getHeader();
+
+    std::cout << "Some statistics about the players:\n";
+    std::cout << std::setw(14) << std::left << "Column name"
+            << std::setw(8) << std::left << "Mean"
+            << std::setw(8) << std::left << "Standard Deviation" << std::endl;
+    unsigned int j = 0;
+    for(auto& column : analysis) {
+        if (column[0].value().index() == 0) {
+            std::cout << std::setw(14) << std::left << headerNames[j]
+                      << std::setw(10) << std::left << std::setprecision(4) << analysis.calculateMean(column)
+                      << std::setw(8) << std::left << std::setprecision(4) << analysis.calculateStandardDeviation(column) << std::endl;
+        }
+        j++;
+    }
+    std::cout << std::endl;
+
+    std::cout << "The name of the columns of the CSV file are: ";
+    for(auto& name : headerNames)
+        std::cout << name << " | ";
+    std::cout << std::endl;
 
     // Create the output path outside the loop, otherwise it creates it for every cycle, overwriting the results
     CSVfile->create_output_path();
 
+    std::string targetColumn;
     // Perform analyses one by one
     do {
+        std::cout << "\nWhat is the name of the column you want to analyze? ";
+        std::cin >> targetColumn;
+
         std::cout << "\nChoose the analysis type:\n"
                   << "1. Mean\n"
                   << "2. Median\n"
@@ -63,33 +85,33 @@ int main() {
         switch (analysisChoice) {
             case 1:
                 try {
-                result = "Mean: " + std::to_string(analysis.calculateMean(data));
+                result = "Mean: " + std::to_string(analysis.calculateMean(analysis.getColumn(targetColumn)));
                 } catch (const std::invalid_argument &e) {
                 std::cerr << "Error calculating mean: " << e.what() << std::endl;
                 }
             break;
             case 2:
                 {
-                    std::variant<double, std::string> medianVariant = analysis.calculateMedian(data);
+                    std::variant<double, std::string> medianVariant = analysis.calculateMedian(analysis.getColumn(targetColumn));
                     result = "Median: " + (medianVariant.index() == 1 ? std::get<std::string>(medianVariant) : std::to_string(std::get<double>(medianVariant)));
                 }
                 break;
             case 3:
                 try {
-                result = "Standard Deviation: " + std::to_string(analysis.calculateStandardDeviation(data));
+                result = "Standard Deviation: " + std::to_string(analysis.calculateStandardDeviation(analysis.getColumn(targetColumn)));
                 } catch (const std::invalid_argument &e) {
                 std::cerr << "Error calculating standard deviation: " << e.what() << std::endl;
                 }
                 break;
             case 4:
                 try {
-                result = "Variance: " + std::to_string(analysis.calculateVariance(data));
+                result = "Variance: " + std::to_string(analysis.calculateVariance(analysis.getColumn(targetColumn)));
                 } catch (const std::invalid_argument &e) {
                 std::cerr << "Error calculating variance: " << e.what() << std::endl;
                 }
                 break;
             case 5:
-                result = "Frequency Count:\n" + analysis.calculateFrequency(data);
+                result = "Frequency Count:\n" + analysis.calculateFrequency(analysis.getColumn(targetColumn));
                 break;
             case 6:
             {
@@ -97,7 +119,7 @@ int main() {
                 std::cout << "Enter the name of the feature you want to classify: ";
                 std::cin >> condition;
                 try {
-                    result = "Classification: " + analysis.calculateClassification(CSVfile, targetColumn, condition);
+                    result = "Classification: " + analysis.calculateClassification(targetColumn, condition);
                 } catch (const std::invalid_argument &e) {
                     std::cerr << "Error calculating classification: " << e.what() << std::endl;
                 }
@@ -108,9 +130,8 @@ int main() {
                 std::string targetColumn2;
                 std::cout << "Enter the name of the other target column for correlation: ";
                 std::cin >> targetColumn2;
-                std::vector<std::optional<std::variant<double, std::string>>> data2 = analysis.readSpecificColumn(CSVfile, targetColumn2);
                 try {
-                    result = "Correlation: " + std::to_string(analysis.calculateCorrelation(data, data2));
+                    result = "Correlation: " + std::to_string(analysis.calculateCorrelation(analysis.getColumn(targetColumn), analysis.getColumn(targetColumn2)));
                 } catch (const std::invalid_argument &e) {
                     std::cerr << "Error calculating correlation: " << e.what() << std::endl;
                 }
@@ -143,7 +164,7 @@ int main() {
     #if USE_MODULEC
 
     do {
-        std::cout << "Select the test type:\n"
+        std::cout << "Select the analysis type:\n"
                   << "1. Convergence tests\n"
                   << "2. Polynomial tests\n"
                   << "3. Compute integrals\n"
@@ -254,7 +275,7 @@ int main() {
                 continue;
         }
 
-        std::cout << "Do you want to perform another test? (1 for Yes, 0 for No): ";
+        std::cout << "Do you want to perform another analysis? (1 for Yes, 0 for No): ";
         int continueChoice;
         std::cin >> continueChoice;
 

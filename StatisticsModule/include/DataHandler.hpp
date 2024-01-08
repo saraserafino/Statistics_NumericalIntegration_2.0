@@ -7,6 +7,8 @@
 #include <string>
 #include <sstream>
 
+typedef std::optional<std::variant<double,std::string>> csvType;
+
 class CSVHandler {
 public:
   // Declare StatOp as a friend class of CSVHandler in order to access its private members
@@ -23,8 +25,10 @@ public:
   const std::string get_input_file_path() const;
   const std::string get_input_file_name() const;
 
-  // Function for reading the input file
+  // Functions for reading the input file
   int read_header(const std::string &targetColumn) const;
+  std::vector<std::vector<csvType>> readData() const;
+  std::vector<std::string> getHeader() const;
 
   // Function to write the results
   void writeResults(const std::string &result);
