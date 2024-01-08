@@ -1,13 +1,7 @@
-# Homework2_fixed_Serafino
+# Homework3_Serafino
 
-## Code organization and individual contributions
+## Code organization
 For each module there is a folder which separates source files from header files; the main file is in its folder called main; a cmake is provided for each of them and will be explained later on.
-
-This Homework was initially done together with Franzese that made some mistakes in the Statistics Module (didn't use classes and smart pointers). He then gave up the course so the changes from the previous project are made only by Serafino.  
-
-The individual contributions were:  
-* Saverio Franzese (sav.franz10@gmail.com): Statistics Module; accuracy, efficiency and order of convergence of Module C; main.cpp.
-* Sara Serafino (serafinos1999@gmail.com): open/close files of Module A; Numerical Integration Module; CMake; Readme (except for analysis of results and Statistics module).
 
 ## Main
 The `main.cpp` was written using switch cases to allow the user to decide what to compute.
