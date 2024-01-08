@@ -41,7 +41,11 @@ Since most Boost libraries are header-only, often there is nothing to build; thi
 The hardest part was understanding how the three CMake must be written and actually doing it.
 
 ## How to compile
-A `CMake` is provided in the main directory.
+A `CMake` is provided in the main directory. A Python package of the toolbox is provided, install it via pip: Or maybe it's better to include it in the cmake, see [this](https://github.com/pybind/cmake_example) from slide 60 lect 13
+```bash
+python setup.py build_ext --inplace
+pip install .
+```
 Create and enter the folder `build`:
 ```bash
 mkdir build
