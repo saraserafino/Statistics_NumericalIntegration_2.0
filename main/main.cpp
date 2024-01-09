@@ -184,6 +184,7 @@ int main() {
                 computeConvergenceOrder<Trapezoidal>("cos(x)", 1.0);
                 computeConvergenceOrder<Simpson>("cos(x)", 1.0);
                 //computeConvergenceOrder<GaussLegendre>("cos(x)", 1.0);
+                // questo dà memory leaks
                 break;
             case 2: {
                 Midpoint midpointRule(0, 1, 2);
@@ -199,8 +200,8 @@ int main() {
                 // In two-point Gauss n = 2 so it doesn't matter what it's written when initialized
                 print_results("1", twogaussRule, 1);
 
-                //GaussLegendre GaussLegendreInt(0, 1, 11);
-                //print_results("6*x^5", GaussLegendreInt, 1);
+                GaussLegendre GaussLegendreInt(0, 1, 11);
+                print_results("6*x^5", GaussLegendreInt, 1);
                 break;
             }
             case 3: {

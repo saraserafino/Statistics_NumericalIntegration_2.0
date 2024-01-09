@@ -52,7 +52,6 @@ class Midpoint(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self) // Without this, a TypeError is raised
 
-
 class Trapezoidal(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self)
@@ -64,15 +63,32 @@ class Simpson(Quadrature):
 class twopointGauss(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self)
-        self.nBins = 2
+        self.nBins = 2 // because it's "two point"
+
+// GaussLegendre is better implemented with NumPy
+// Import the numpy.polynomial.legendre module
+py::module npLeg = py::module::import("numpy.polynomial.legendre");
+// Access the specific function for Gauss-Legendre
+py::object npGaussLeg = npLeg.attr("leggauss");
+// Note: it only computes nodes and weights in [-1,1]
 
 class GaussLegendre(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self)
+        // Call numpy.polynomial.legendre.leggauss
+        py::object nodes_weights = npGaussLeg(nBins - 1);
+        self.nodes,self.weights = nodes_weights
+
+    def get_a(self):
+        return a
+
+    def get_b(self):
+        return b
+
 
 /*
 // Wrap as Python module
-// forse questo non serve perché in moduleCfunctions importo IntegrationMethods_py.hpp
+// forse questo non serve (il prof conferma) perché in moduleCfunctions importo IntegrationMethods_py.hpp
 // e il modulo lo creo solo in moduleCfunctions, come in ex 9 lect 13
 PYBIND11_MODULE(IntegrationMethods, m) {
     py::class_<Quadrature, PyQuadrature>(m, "Quadrature")
