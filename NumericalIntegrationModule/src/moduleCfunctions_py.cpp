@@ -6,8 +6,8 @@
 
 // Wrap as Python module
 
-PYBIND11_MODULE(moduleCfunctions, m) {
-    m.doc() = "pybind11 moduleCfunctions plugin";
+PYBIND11_MODULE(moduleC, m) {
+    m.doc() = "pybind11 moduleC plugin";
 
     m.def("evaluate", &evaluate, "Evaluate muparserx expression");
     
