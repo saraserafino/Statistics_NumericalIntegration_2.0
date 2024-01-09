@@ -38,12 +38,25 @@ PYBIND11_MODULE(moduleCfunctions, m) {
     m.doc() = "pybind11 moduleCfunctions plugin";
 
     m.def("evaluate", &evaluate);
+    
+    // Explicit instantion of the template methods for each derived class
+    m.def("IntegrateMidpoint", &Integrate<Midpoint>);
+    m.def("IntegrateTrapezoidal", &Integrate<Trapezoidal>);
+    m.def("IntegrateSimpson", &Integrate<Simpson>);
+    m.def("IntegratetwopointGauss", &Integrate<twopointGauss>);
+    m.def("IntegrateGaussLegendre", &Integrate<GaussLegendre>);
 
-    m.def("Integrate", &Integrate);
-
-    m.def("computeConvergenceOrder", &computeConvergenceOrder);
+    m.def("computeConvergenceOrderMidpoint", &computeConvergenceOrder<Midpoint>);
+    m.def("computeConvergenceOrderTrapezoidal", &computeConvergenceOrder<Trapezoidal>);
+    m.def("computeConvergenceOrderSimpson", &computeConvergenceOrder<Simpson>);
+    m.def("computeConvergenceOrdertwopointGauss", &computeConvergenceOrder<twopointGauss>);
+    m.def("computeConvergenceOrderGaussLegendre", &computeConvergenceOrder<GaussLegendre>)
 
     m.def("analysis", &analysis);
 
-    m.def("print_results", &print_results);
+    m.def("print_resultsMidpoint", &print_results<Midpoint>);
+    m.def("print_resultsTrapezoidal", &print_results<Trapezoidal>);
+    m.def("print_resultsSimpson", &print_results<Simpson>);
+    m.def("print_resultstwopointGauss", &print_results<twopointGauss>);
+    m.def("print_resultsGaussLegendre", &print_results<GaussLegendre>);
 }

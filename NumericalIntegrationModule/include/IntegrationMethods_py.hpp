@@ -18,66 +18,17 @@ public:
     // Each virtual function needs a trampoline, but there isn't any
 };
 
-// C'è un modo con template per non scriverlo per ogni classe derivata? Forse così
+// Use template for defining the derived classes
 
-/*
 template <class QuadratureMethod> : public Quadrature {
 public:
-    // Inherit the constructors
+    // Inherit the constructors of the base class
     using Quadrature::Quadrature;
 };
 template <class PyQuadratureMethod> : public QuadratureMethod {
 public:
-    // Inherit the constructors
+    // Inherit the constructors of each derived class
     using QuadratureMethod::QuadratureMethod;
-};
-*/
-
-class Midpoint : public Quadrature {
-public:
-    // Inherit the constructors
-    using Quadrature::Quadrature;
-};
-class PyMidpoint : public Midpoint {
-public:
-    // Inherit the constructors
-    using Midpoint::Midpoint;
-};
-
-class Trapezoidal : public Quadrature {
-public:
-    using Quadrature::Quadrature;
-};
-class PyTrapezoidal : public Trapezoidal {
-public:
-    using Trapezoidal::Trapezoidal;
-};
-
-class Simpson : public Quadrature {
-public:
-    using Quadrature::Quadrature;
-};
-class PySimpson : public Simpson {
-public:
-    using Simpson::Simpson;
-};
-
-class twopointGauss : public Quadrature {
-public:
-    using Quadrature::Quadrature;
-};
-class PytwopointGauss : public twopointGauss {
-public:
-    using twopointGauss::twopointGauss;
-};
-
-class GaussLegendre : public Quadrature {
-public:
-    using Quadrature::Quadrature;
-};
-class PyGaussLegendre : public GaussLegendre {
-public:
-    using GaussLegendre::GaussLegendre;
 };
 
 // ----------------
@@ -97,48 +48,27 @@ class Quadrature:
 // When defining a custom constructor in a derived Python class,
 // you must explicitly call the bound C++ constructor using __init__
 
-/*with templates
-template <class QuadratureMethod(Quadrature)>:
-    def __init__(self, a, b, nBins):
-        Quadrature.__init__(self) // Without this, a TypeError is raised
-        self.a = a
-        self.b = b
-        self.nBins = nBins
-*/
 class Midpoint(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self) // Without this, a TypeError is raised
-        self.a = a
-        self.b = b
-        self.nBins = nBins
+
 
 class Trapezoidal(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self)
-        self.a = a
-        self.b = b
-        self.nBins = nBins
 
 class Simpson(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self)
-        self.a = a
-        self.b = b
-        self.nBins = nBins
 
 class twopointGauss(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self)
-        self.a = a
-        self.b = b
-        self.nBins = nBins
+        self.nBins = 2
 
 class GaussLegendre(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self)
-        self.a = a
-        self.b = b
-        self.nBins = nBins
 
 /*
 // Wrap as Python module
