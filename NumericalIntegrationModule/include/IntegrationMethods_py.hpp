@@ -1,0 +1,177 @@
+#ifndef INTEGRATION_METHODS_PY_HPP_
+#define INTEGRATION_METHODS_PY_HPP_
+
+#include "IntegrationMethods.hpp"
+
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+// ----------------------------------
+// Python interface - fake trampoline
+// ----------------------------------
+
+class PyQuadrature : public Quadrature {
+public:
+    // Inherit the constructors
+    using Quadrature::Quadrature;
+
+    // Each virtual function needs a trampoline, but there isn't any
+};
+
+// C'è un modo con template per non scriverlo per ogni classe derivata? Forse così
+
+/*
+template <class QuadratureMethod> : public Quadrature {
+public:
+    // Inherit the constructors
+    using Quadrature::Quadrature;
+};
+template <class PyQuadratureMethod> : public QuadratureMethod {
+public:
+    // Inherit the constructors
+    using QuadratureMethod::QuadratureMethod;
+};
+*/
+
+class Midpoint : public Quadrature {
+public:
+    // Inherit the constructors
+    using Quadrature::Quadrature;
+};
+class PyMidpoint : public Midpoint {
+public:
+    // Inherit the constructors
+    using Midpoint::Midpoint;
+};
+
+class Trapezoidal : public Quadrature {
+public:
+    using Quadrature::Quadrature;
+};
+class PyTrapezoidal : public Trapezoidal {
+public:
+    using Trapezoidal::Trapezoidal;
+};
+
+class Simpson : public Quadrature {
+public:
+    using Quadrature::Quadrature;
+};
+class PySimpson : public Simpson {
+public:
+    using Simpson::Simpson;
+};
+
+class twopointGauss : public Quadrature {
+public:
+    using Quadrature::Quadrature;
+};
+class PytwopointGauss : public twopointGauss {
+public:
+    using twopointGauss::twopointGauss;
+};
+
+class GaussLegendre : public Quadrature {
+public:
+    using Quadrature::Quadrature;
+};
+class PyGaussLegendre : public GaussLegendre {
+public:
+    using GaussLegendre::GaussLegendre;
+};
+
+// ----------------
+// Python interface
+// ----------------
+
+namespace py = pybind11;
+
+class Quadrature:
+    def __init__(self, a, b, nBins):
+        self.weights = [0.0] * (nBins + 1)
+        self.nodes = [0.0] * (nBins + 1)
+        self.a = a
+        self.b = b
+        self.nBins = nBins
+
+// When defining a custom constructor in a derived Python class,
+// you must explicitly call the bound C++ constructor using __init__
+
+/*with templates
+template <class QuadratureMethod(Quadrature)>:
+    def __init__(self, a, b, nBins):
+        Quadrature.__init__(self) // Without this, a TypeError is raised
+        self.a = a
+        self.b = b
+        self.nBins = nBins
+*/
+class Midpoint(Quadrature):
+    def __init__(self, a, b, nBins):
+        Quadrature.__init__(self) // Without this, a TypeError is raised
+        self.a = a
+        self.b = b
+        self.nBins = nBins
+
+class Trapezoidal(Quadrature):
+    def __init__(self, a, b, nBins):
+        Quadrature.__init__(self)
+        self.a = a
+        self.b = b
+        self.nBins = nBins
+
+class Simpson(Quadrature):
+    def __init__(self, a, b, nBins):
+        Quadrature.__init__(self)
+        self.a = a
+        self.b = b
+        self.nBins = nBins
+
+class twopointGauss(Quadrature):
+    def __init__(self, a, b, nBins):
+        Quadrature.__init__(self)
+        self.a = a
+        self.b = b
+        self.nBins = nBins
+
+class GaussLegendre(Quadrature):
+    def __init__(self, a, b, nBins):
+        Quadrature.__init__(self)
+        self.a = a
+        self.b = b
+        self.nBins = nBins
+
+/*
+// Wrap as Python module
+// forse questo non serve perché in moduleCfunctions importo IntegrationMethods_py.hpp
+// e il modulo lo creo solo in moduleCfunctions, come in ex 9 lect 13
+PYBIND11_MODULE(IntegrationMethods, m) {
+    py::class_<Quadrature, PyQuadrature>(m, "Quadrature")
+        .def(py::init<double, double, unsigned int>()
+            py::arg("a"), py::arg("b"), py::arg("nBins"));
+        .def("get_weights", &Quadrature::get_weights, "Get the weights of the function to integrate");
+        .def("get_nodes", &Quadrature::get_nodes, "Get the nodes of the function to integrate");
+
+    py::class_<Midpoint, Quadrature>(m, "Midpoint")
+        .def(py::init<double, double, unsigned int>(),
+            py::arg("a"), py::arg("b"), py::arg("nBins"));
+
+    py::class_<Trapezoidal, Quadrature>(m, "Trapezoidal")
+        .def(py::init<double, double, unsigned int>(),
+            py::arg("a"), py::arg("b"), py::arg("nBins"));
+
+    py::class_<Simpson, Quadrature>(m, "Simpson")
+        .def(py::init<double, double, unsigned int>(),
+            py::arg("a"), py::arg("b"), py::arg("nBins"));
+
+    py::class_<twopointGauss, Quadrature>(m, "twopointGauss")
+        .def(py::init<double, double, unsigned int>(),
+            py::arg("a"), py::arg("b"), py::arg("nBins"));
+
+    py::class_<GaussLegendre, Quadrature>(m, "GaussLegendre")
+        .def(py::init<double, double, unsigned int>(),
+            py::arg("a"), py::arg("b"), py::arg("nBins"));
+    // che in realtà ha più roba ma la voglio fare in python
+    // se lo fai nell'altr modulo toglilo da qui/sistema
+}*/
+
+#endif // INTEGRATION_METHODS_PY_HPP_
