@@ -62,7 +62,100 @@ Compare the integration of x^4 in [-1,1]
 The integration with SciPy gives 0.4000000000000011
 test_GaussLegendre_py executed in 4.935264587402344e-05 seconds. IDEM SOPRA
 
-Se fai confronto anche fra i metodi, ricordati di guardare nBins perché ovviamente influisce, nel caso fai nBins uguali.
+Subintervals:    2    Error: 2.146018e-01
+
+    Subintervals:    4    Error: 2.295138e-02    Order: 3.23
+
+    Subintervals:    8    Error: 4.199786e-03    Order: 2.45
+
+    Subintervals:   16    Error: 9.140193e-04    Order: 2.20
+
+    Subintervals:   32    Error: 2.139704e-04    Order: 2.09
+
+    Subintervals:   64    Error: 5.180622e-05    Order: 2.05
+
+    Subintervals:  128    Error: 1.274830e-05    Order: 2.02
+
+    Subintervals:  256    Error: 3.162121e-06    Order: 2.01
+
+    Subintervals:  512    Error: 7.874387e-07    Order: 2.01
+
+    Subintervals: 1024    Error: 1.964750e-07    Order: 2.00
+
+
+
+computeConvergenceOrderTrapezoidal_py executed in 0.004437923431396484 seconds.
+    Subintervals:    2    Error: 2.146018e-01
+
+    Subintervals:    4    Error: 6.980512e-03    Order: 4.94
+
+    Subintervals:    8    Error: 5.075015e-04    Order: 3.78
+
+    Subintervals:   16    Error: 4.964189e-05    Order: 3.35
+
+    Subintervals:   32    Error: 5.520343e-06    Order: 3.17
+
+    Subintervals:   64    Error: 6.517135e-07    Order: 3.08
+
+    Subintervals:  128    Error: 7.919483e-08    Order: 3.04
+
+    Subintervals:  256    Error: 9.761269e-09    Order: 3.02
+
+    Subintervals:  512    Error: 1.211643e-09    Order: 3.01
+
+    Subintervals: 1024    Error: 1.509267e-10    Order: 3.01
+
+
+
+computeConvergenceOrderSimpson_py executed in 0.004200935363769531 seconds.
+    Subintervals:    2    Error: 1.110223e-16
+
+    Subintervals:    4    Error: 1.110223e-16    Order: -0.00
+
+    Subintervals:    8    Error: 1.110223e-16    Order: -0.00
+
+    Subintervals:   16    Error: 1.110223e-16    Order: -0.00
+
+    Subintervals:   32    Error: 1.110223e-16    Order: -0.00
+
+    Subintervals:   64    Error: 1.110223e-16    Order: -0.00
+
+    Subintervals:  128    Error: 1.110223e-16    Order: -0.00
+
+    Subintervals:  256    Error: 1.110223e-16    Order: -0.00
+
+    Subintervals:  512    Error: 1.110223e-16    Order: -0.00
+
+    Subintervals: 1024    Error: 1.110223e-16    Order: -0.00
+
+
+
+computeConvergenceOrderTwopoints_py executed in 0.003339052200317383 seconds.
+    Subintervals:    2    Error: 6.758237e-01
+
+    Subintervals:    4    Error: 6.829417e-01    Order: -0.02
+
+    Subintervals:    8    Error: 6.829420e-01    Order: -0.00
+
+    Subintervals:   16    Error: 6.829420e-01    Order: -0.00
+
+    Subintervals:   32    Error: 6.829420e-01    Order: -0.00
+
+    Subintervals:   64    Error: 6.829420e-01    Order: -0.00
+
+    Subintervals:  128    Error: 6.829420e-01    Order: 0.00
+
+    Subintervals:  256    Error: 6.829420e-01    Order: -0.00
+
+    Subintervals:  512    Error: 6.829420e-01    Order: 0.00
+
+    Subintervals: 1024    Error: 6.829420e-01    Order: 0.00
+
+
+
+computeConvergenceOrderGaussLegendre_py executed in 0.07495403289794922 seconds.
+
+Quando avrai anche gli altri dati, scrivi quali metodi sono piu veloci (guarda la convergenza perche ha i nBins uguali)
 
 ## CMake and libraries
 Three CMake are provided: one for each of the two modules and one to actually compile. The two modules have their own namespaces (called MODULEA and MODULEC) and can be compiled both together or independently, setting the option ON from terminal when compiling. The Statistics module also uses the namespace ba for boost::accumulators inside the StatOp.cpp.  

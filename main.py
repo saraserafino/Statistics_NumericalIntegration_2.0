@@ -66,7 +66,7 @@ def test_GaussLegendre_py(function, nBins):
     result, _ = integrate.fixed_quad(function, -1, 1, n = nBins)
     print(f"The integration with SciPy gives {result}")
 
-# Method for computing the convergence order in Python
+# Methods for computing the convergence order in Python
 
 @execution_time
 def computeConvergenceOrderTrapezoidal_py(function, exactIntegral):
@@ -131,7 +131,7 @@ def computeConvergenceOrderSimpson_py(function, exactIntegral):
     print("\n")
 
 @execution_time
-def computeConvergenceOrderTwopoints_py(function, exactIntegral):
+def computeConvergenceOrderTwopoint_py(function, exactIntegral):
     # Lower and upper bounds
     a = 0.0
     b = math.pi / 2.0
@@ -189,6 +189,24 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
 
     print("\n")
 
+# Wrap the computation of the convergence order in C++ for its execution time
+    
+@execution_time
+def computeConvergenceOrderTrapezoidal_cpp(function, exactIntegral):
+    return moduleC.computeConvergenceOrderTrapezoidal("cos(x)", 1.0)
+
+@execution_time
+def computeConvergenceOrderSimpson_cpp(function, exactIntegral):
+    return moduleC.computeConvergenceOrderSimpson("cos(x)", 1.0)
+
+@execution_time
+def computeConvergenceOrderTwopointGauss_cpp(function, exactIntegral):
+    return moduleC.computeConvergenceOrderTwopointGauss("cos(x)", 1.0)
+
+@execution_time
+def computeConvergenceOrderGaussLegendre_cpp(function, exactIntegral):
+    return moduleC.computeConvergenceOrderGaussLegendre("cos(x)", 1.0)
+
 # ex2 lab12
 #try:
 #    root = solver_complex.solve()
@@ -220,16 +238,16 @@ while continueChoice == 1:
 
             cos = np.vectorize(np.cos)
 
-            moduleC.computeConvergenceOrderTrapezoidal("cos(x)", 1.0)
+            computeConvergenceOrderTrapezoidal_cpp("cos(x)", 1.0)
             computeConvergenceOrderTrapezoidal_py(cos, 1.0)
             
-            moduleC.computeConvergenceOrderSimpson("cos(x)", 1.0)
+            computeConvergenceOrderSimpson_cpp("cos(x)", 1.0)
             computeConvergenceOrderSimpson_py(cos, 1.0)
             
-            moduleC.computeConvergenceOrderTwopointGauss("cos(x)", 1.0)
-            computeConvergenceOrderTwopoints_py(cos, 1.0)
+            computeConvergenceOrderTwopointGauss_cpp("cos(x)", 1.0)
+            computeConvergenceOrderTwopoint_py(cos, 1.0)
             
-            moduleC.computeConvergenceOrderGaussLegendre("cos(x)", 1.0)
+            computeConvergenceOrderGaussLegendre_cpp("cos(x)", 1.0)
             computeConvergenceOrderGaussLegendre_py(cos, 1.0)
             break
 
