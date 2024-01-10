@@ -1,8 +1,12 @@
 import moduleC # module created with pybind11
 import numpy as np
+import math # for pi
 import scipy.integrate as integrate
 from scipy.integrate import trapezoid, simpson, quad, fixed_quad
 import time # for the wrapper execution_time
+
+# Nota per me stessa: tutte le parti in Python (def funzioni e loro esecuzione)
+# le ho già controllate con jupyter notebook e sono corrette
 
 # Decorator for computing the execution time
 def execution_time(func):
@@ -62,6 +66,129 @@ def test_GaussLegendre_py(function, nBins):
     result, _ = integrate.fixed_quad(function, -1, 1, n = nBins)
     print(f"The integration with SciPy gives {result}")
 
+# Method for computing the convergence order in Python
+
+@execution_time
+def computeConvergenceOrderTrapezoidal_py(function, exactIntegral):
+    # Initialize previous error outside the loop
+    previousError = 1.0
+    upperbound = math.pi / 2.0
+    nBins = 2
+    while nBins <= 1024:
+        nodes = np.linspace(0, upperbound, num = nBins)
+        f = function(nodes)
+        numericalIntegral = integrate.trapezoid(f, nodes)
+
+        # Compare with the exact integral
+        error = abs(numericalIntegral - exactIntegral)
+
+        log_error = math.log(error)
+        log_previousError = math.log(previousError)
+
+        p = (log_error - log_previousError) / math.log(2)
+        # Output the error and convergence order
+        print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
+
+        if nBins > 2:
+            print(f"    Order: {-p:.2f}", end='')
+        
+        print("\n")
+
+        previousError = error
+        nBins *= 2
+
+    print("\n")
+
+@execution_time
+def computeConvergenceOrderSimpson_py(function, exactIntegral):
+    # Initialize previous error outside the loop
+    previousError = 1.0
+    upperbound = math.pi / 2.0
+    nBins = 2
+    while nBins <= 1024:
+        nodes = np.linspace(0, upperbound, num = nBins)
+        f = function(nodes)
+        numericalIntegral = integrate.simpson(f, nodes)
+
+        # Compare with the exact integral
+        error = abs(numericalIntegral - exactIntegral)
+
+        log_error = math.log(error)
+        log_previousError = math.log(previousError)
+
+        p = (log_error - log_previousError) / math.log(2)
+        # Output the error and convergence order
+        print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
+
+        if nBins > 2:
+            print(f"    Order: {-p:.2f}", end='')
+        
+        print("\n")
+
+        previousError = error
+        nBins *= 2
+
+    print("\n")
+
+@execution_time
+def computeConvergenceOrderTwopoints_py(function, exactIntegral):
+    # Lower and upper bounds
+    a = 0.0
+    b = math.pi / 2.0
+    # Initialize previous error outside the loop
+    previousError = 1.0
+    nBins = 2
+    while nBins <= 1024:
+        numericalIntegral, _ = integrate.quad(function, a, b)
+
+        # Compare with the exact integral
+        error = abs(numericalIntegral - exactIntegral)
+
+        log_error = math.log(error)
+        log_previousError = math.log(previousError)
+
+        p = (log_error - log_previousError) / math.log(2)
+        # Output the error and convergence order
+        print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
+
+        if nBins > 2:
+            print(f"    Order: {-p:.2f}", end='')
+        
+        print("\n")
+
+        previousError = error
+        nBins *= 2
+
+    print("\n")
+
+@execution_time
+def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
+    # Initialize previous error outside the loop
+    previousError = 1.0
+    nBins = 2
+    while nBins <= 1024:
+        numericalIntegral, _ = integrate.fixed_quad(function, -1, 1, n = nBins)
+
+        # Compare with the exact integral
+        error = abs(numericalIntegral - exactIntegral)
+
+        log_error = math.log(error)
+        log_previousError = math.log(previousError)
+
+        p = (log_error - log_previousError) / math.log(2)
+        # Output the error and convergence order
+        print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
+
+        if nBins > 2:
+            print(f"    Order: {-p:.2f}", end='')
+        
+        print("\n")
+
+        previousError = error
+        nBins *= 2
+
+    print("\n")
+
 # ex2 lab12
 #try:
 #    root = solver_complex.solve()
@@ -88,15 +215,25 @@ while continueChoice == 1:
             break
 
         case "1":
+            # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in cpp 
             moduleC.computeConvergenceOrderMidpoint("cos(x)", 1.0)
+
+            cos = np.vectorize(np.cos)
+
             moduleC.computeConvergenceOrderTrapezoidal("cos(x)", 1.0)
+            computeConvergenceOrderTrapezoidal_py(cos, 1.0)
+            
             moduleC.computeConvergenceOrderSimpson("cos(x)", 1.0)
+            computeConvergenceOrderSimpson_py(cos, 1.0)
+            
+            moduleC.computeConvergenceOrderTwopointGauss("cos(x)", 1.0)
+            computeConvergenceOrderTwopoints_py(cos, 1.0)
+            
             moduleC.computeConvergenceOrderGaussLegendre("cos(x)", 1.0)
+            computeConvergenceOrderGaussLegendre_py(cos, 1.0)
             break
 
         case "2":
-            # Nota per me stessa: quelli con Py li ho controllati tutti con jupyter notebook e vanno bene
-
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in cpp 
             Midpoint_cpp("3*x+1", 2.5, 0, 1, 2)
 
