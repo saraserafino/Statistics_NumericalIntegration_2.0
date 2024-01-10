@@ -57,8 +57,6 @@ PYBIND11_MODULE(moduleC, m) {
         py::arg("function"), py::arg("exact integral"));
     m.def("computeConvergenceOrderSimpson", &computeConvergenceOrder<Simpson>,
         py::arg("function"), py::arg("exact integral"));
-    m.def("computeConvergenceOrderTwopointGauss", &computeConvergenceOrder<twopointGauss>,
-        py::arg("function"), py::arg("exact integral"));
     m.def("computeConvergenceOrderGaussLegendre", &computeConvergenceOrder<GaussLegendre>,
         py::arg("function"), py::arg("exact integral"))
 

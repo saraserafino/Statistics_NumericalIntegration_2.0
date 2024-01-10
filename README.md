@@ -31,7 +31,7 @@ This module is divided in `IntegrationMethods.cpp` and `moduleCfunctions.tpl.hpp
 
 #### What's new
 `IntegrationMethods_py.hpp` and `moduleCfunctions_py.cpp` provide a Python interface and binding with Pybind11, creating a module called moduleC. Everything is unchanged except for the GaussLegendre method, which is implemented with NumPy to avoid the above mentioned memory leaks. As numpy.polynomial.legendre module makes only possible to integrate over the interval [-1,1], when defining its test in the main, the interval is internally fixed.<br>
-When possible thanks to SciPy integrate functions, a comparison between the integration with them and the methods implemented in C++ is made. For Midpoint it's not possible since it doesn't exist a function. Although it's the same for the two-point Gauss, it's worth a comparison with scipy.integrate.quad since it integrates between two points.
+When possible thanks to SciPy integrate functions, a comparison between the integration with them and the methods implemented in C++ is made. For Midpoint it's not possible since it doesn't exist a function. Although it's the same for the two-point Gauss, it's worth a comparison with scipy.integrate.quad since it integrates between two points. Due to this last fact, it makes no sense to compute the convergence order of a method with two nodes, thus it won't be done.
 As explained [here](https://docs.scipy.org/doc/scipy/tutorial/integrate.html), with SciPy's Simpson method, for an odd number of samples that are equally spaced, the method is exact if the function is a polynomial of order 3 or less; if the samples are not equally spaced, then the result is exact only if the function is a polynomial of order 2 or less. This means that the Simpson method implemented with C++ should be better, because it has no such limitations. 
 
 ### Analysis and observations
@@ -81,7 +81,6 @@ Subintervals:    2    Error: 2.146018e-01
     Subintervals:  512    Error: 7.874387e-07    Order: 2.01
 
     Subintervals: 1024    Error: 1.964750e-07    Order: 2.00
-
 
 
 computeConvergenceOrderTrapezoidal_py executed in 0.004437923431396484 seconds.
@@ -156,6 +155,8 @@ computeConvergenceOrderTwopoints_py executed in 0.003339052200317383 seconds.
 computeConvergenceOrderGaussLegendre_py executed in 0.07495403289794922 seconds.
 
 Quando avrai anche gli altri dati, scrivi quali metodi sono piu veloci (guarda la convergenza perche ha i nBins uguali)
+
+
 
 ## CMake and libraries
 Three CMake are provided: one for each of the two modules and one to actually compile. The two modules have their own namespaces (called MODULEA and MODULEC) and can be compiled both together or independently, setting the option ON from terminal when compiling. The Statistics module also uses the namespace ba for boost::accumulators inside the StatOp.cpp.  
