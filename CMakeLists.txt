@@ -20,7 +20,7 @@ find_package(pybind11 REQUIRED)
 include_directories(SYSTEM ${pybind11_INCLUDE_DIRS})
 
 # Add the executable
-add_executable(homework main/main.cpp)
+add_executable(homework main/main.py)
 
 target_link_libraries(homework PUBLIC ${Boost_LIBRARIES})
 

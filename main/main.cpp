@@ -272,7 +272,7 @@ int main() {
                 break;
             }
             default:
-                std::cerr << "Invalid choice. Please choose a number between 1 and 4." << std::endl;
+                std::cerr << "Invalid choice. Please choose a number between 1 and 3." << std::endl;
                 continue;
         }
 
