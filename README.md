@@ -156,7 +156,10 @@ computeConvergenceOrderGaussLegendre_py executed in 0.07495403289794922 seconds.
 
 Quando avrai anche gli altri dati, scrivi quali metodi sono piu veloci (guarda la convergenza perche ha i nBins uguali)
 
-
+<p align="center">
+  <img src="https://github.com/saraserafino/Homework3_Serafino/blob/main/Convergence%20of%20Numerical%20Integration%20Methods.png" /><br>
+ Convergence of Numerical Integration Methods
+</p>
 
 ## CMake and libraries
 Three CMake are provided: one for each of the two modules and one to actually compile. The two modules have their own namespaces (called MODULEA and MODULEC) and can be compiled both together or independently, setting the option ON from terminal when compiling. The Statistics module also uses the namespace ba for boost::accumulators inside the StatOp.cpp.  
