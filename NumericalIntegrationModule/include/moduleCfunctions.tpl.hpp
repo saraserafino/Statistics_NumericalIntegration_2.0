@@ -71,9 +71,12 @@ double Integrate<GaussLegendre>(const std::string& function, const GaussLegendre
 }
     
 template <typename QuadratureMethod>
-void computeConvergenceOrder(const std::string& function, const double exactIntegral) {
+std::tuple<std::vector<int>, std::vector<double>> computeConvergenceOrder(const std::string& function, const double exactIntegral) {
     static_assert(std::is_base_of<Quadrature, QuadratureMethod>::value, "QuadratureMethod must be derived from Quadrature.");
-    
+    // Vectors for collecting convergence data
+    std::vector<int> subintervals;
+    std::vector<double> errors;
+
     // Create the parser instance
     mup::ParserX parser;
     // Set the expression
@@ -83,7 +86,7 @@ void computeConvergenceOrder(const std::string& function, const double exactInte
 
     std::cout << "Convergence order for " << boost::typeindex::type_id<QuadratureMethod>().pretty_name()
                 << " method:\n";
-    // Initialize previousError outside the loop
+    // Initialize outside the loop
     double previousError = 1.0;
 
     for (unsigned int nBins = 2; nBins <= 1024; nBins *= 2) {
@@ -93,10 +96,15 @@ void computeConvergenceOrder(const std::string& function, const double exactInte
         // Compare with the exact integral
         double error = std::abs(numericalIntegral - exactIntegral);
 
+        // Compute convergence order
         auto log_error = log(error);
         auto log_previous_error = log(previousError);
-
         auto p = (log_error - log_previous_error) / (log(2));
+
+        // Collect convergence data
+        errors.push_back(error);
+        subintervals.push_back(nBins);
+
         // Output the error and convergence order
         std::cout << "  Subintervals: " << std::setw(4) << nBins
                   << "  Error: " << std::scientific << std::setprecision(6) << error;
@@ -110,7 +118,8 @@ void computeConvergenceOrder(const std::string& function, const double exactInte
         previousError = error;
     }
     std::cout << "\n";
-}
+    return std::make_tuple(subintervals, errors);
+};
 
 // Analize the results
 void analysis (const double integration_value, const double true_value) {

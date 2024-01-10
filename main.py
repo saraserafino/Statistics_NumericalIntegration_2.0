@@ -74,23 +74,23 @@ def test_GaussLegendre_py(function, nBins):
     print(f"The integration with SciPy gives {result}")
 
 
-# Decorate with execution time the computation of the convergence order in C++
-    
+# Methods for computing the convergence order in C++ and in Python, decorated with execution time.
+# Notice that they return the subintervals and the errors, in this way a plot with Matplotlib can be made
+
 @execution_time
 def computeConvergenceOrderTrapezoidal_cpp(function, exactIntegral):
-    return moduleC.computeConvergenceOrderTrapezoidal("cos(x)", 1.0)
+    subintervals, errors = moduleC.computeConvergenceOrderTrapezoidal("cos(x)", 1.0)
+    return subintervals, errors
 
 @execution_time
 def computeConvergenceOrderSimpson_cpp(function, exactIntegral):
-    return moduleC.computeConvergenceOrderSimpson("cos(x)", 1.0)
+    subintervals, errors = moduleC.computeConvergenceOrderSimpson("cos(x)", 1.0)
+    return subintervals, errors
 
 @execution_time
 def computeConvergenceOrderGaussLegendre_cpp(function, exactIntegral):
-    return moduleC.computeConvergenceOrderGaussLegendre("cos(x)", 1.0)
-
-
-# Methods for computing the convergence order in Python. Notice that they return something else:
-# the subintervals and the errors. In this way a plot with Matplotlib can be made
+    subintervals, errors = moduleC.computeConvergenceOrderGaussLegendre("cos(x)", 1.0)
+    return subintervals, errors
 
 # Since the Trapezoidal and the Simpson method have in common the arguments, write just one function
 @execution_time
@@ -115,6 +115,10 @@ def computeConvergenceOrderTrapezoidal_Simpson_py(function, exactIntegral, metho
         log_error = math.log(error)
         log_previousError = math.log(previousError)
         p = (log_error - log_previousError) / math.log(2)
+
+        # Collect convergence data
+        errors.append(error)
+        subintervals.append(nBins)
 
         # Output the error and convergence order
         print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
@@ -149,6 +153,10 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
         log_error = math.log(error)
         log_previousError = math.log(previousError)
         p = (log_error - log_previousError) / math.log(2)
+
+        # Collect convergence data
+        errors.append(error)
+        subintervals.append(nBins)
 
         # Output the error and convergence order
         print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
@@ -196,28 +204,31 @@ while continueChoice == 1:
             # Define the function for the computation of the convergence order
             cos = np.vectorize(np.cos)
 
-            computeConvergenceOrderTrapezoidal_cpp("cos(x)", 1.0)
-            subintervals_trap, errors_trap = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.trapezoid)
+            subintervals_trap_cpp, errors_trap_cpp = computeConvergenceOrderTrapezoidal_cpp("cos(x)", 1.0)
+            subintervals_trap_py, errors_trap_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.trapezoid)
             
-            computeConvergenceOrderSimpson_cpp("cos(x)", 1.0)
-            subintervals_simp, errors_simp = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.simpson)
+            subintervals_simp_cpp, errors_simp_cpp = computeConvergenceOrderSimpson_cpp("cos(x)", 1.0)
+            subintervals_simp_py, errors_simp_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.simpson)
             
             # The order of convergence of two point methods is not computed: being 2 points it would be mathematically inconsistent
             
-            computeConvergenceOrderGaussLegendre_cpp("cos(x)", 1.0)
-            subintervals_gl, errors_gl = computeConvergenceOrderGaussLegendre_py(cos, 1.0)
+            subintervals_gl_cpp, errors_gl_cpp = computeConvergenceOrderGaussLegendre_cpp("cos(x)", 1.0)
+            subintervals_gl_py, errors_gl_py = computeConvergenceOrderGaussLegendre_py(cos, 1.0)
 
-            # Plot convergence for each method
-            plt.plot(subintervals_trap, errors_trap, label = 'Trapezoidal Rule')
-            plt.plot(subintervals_simp, errors_simp, label = 'Simpson\'s Rule')
-            plt.plot(subintervals_gl, errors_gl, label = 'Gauss-Legendre Quadrature')
+            # Plot convergence for each method in both C++ and Python
+            plt.plot(subintervals_trap_cpp, errors_trap_cpp, label = 'Trapezoidal Rule')
+            plt.plot(subintervals_trap_py, errors_trap_py, label = 'PyTrapezoidal Rule')
+            plt.plot(subintervals_simp_cpp, errors_simp_cpp, label = 'Simpson\'s Rule')
+            plt.plot(subintervals_simp_py, errors_simp_py, label = 'PySimpson\'s Rule')
+            plt.plot(subintervals_gl_cpp, errors_gl_cpp, label = 'Gauss-Legendre Quadrature')
+            plt.plot(subintervals_gl_py, errors_gl_py, label = 'PyGauss-Legendre Quadrature')
             # Use logarithmic scale for a better visibility
             plt.xscale('log')
             plt.yscale('log')
             # Name the axis, give a title and show the legend
             plt.xlabel('Subintervals')
             plt.ylabel('Error')
-            plt.title('Convergence of Numerical Integration Methods')
+            plt.title('Convergence of Numerical Integration Methods in C++ and Python')
             plt.legend()
             # Show a grid and the actual plot
             plt.grid(True)

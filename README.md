@@ -45,7 +45,7 @@ As explained [here](https://docs.scipy.org/doc/scipy/tutorial/integrate.html), w
 
 #### What's new
 Scrivi quali metodi sono piu veloci.
-Annotazione degli output dell'integrazione con scipy su jupyter notebook:
+Annotazione degli output vari su jupyter notebook:
 Compare the integration of x^3 in [0,1]
 The integration with SciPy gives 0.25308641975308643
 test_Trapezoidal_py executed in 0.00015401840209960938 seconds.
@@ -84,6 +84,7 @@ Subintervals:    2    Error: 2.146018e-01
 
 
 computeConvergenceOrderTrapezoidal_py executed in 0.004437923431396484 seconds.
+
     Subintervals:    2    Error: 2.146018e-01
 
     Subintervals:    4    Error: 6.980512e-03    Order: 4.94
@@ -107,29 +108,7 @@ computeConvergenceOrderTrapezoidal_py executed in 0.004437923431396484 seconds.
 
 
 computeConvergenceOrderSimpson_py executed in 0.004200935363769531 seconds.
-    Subintervals:    2    Error: 1.110223e-16
 
-    Subintervals:    4    Error: 1.110223e-16    Order: -0.00
-
-    Subintervals:    8    Error: 1.110223e-16    Order: -0.00
-
-    Subintervals:   16    Error: 1.110223e-16    Order: -0.00
-
-    Subintervals:   32    Error: 1.110223e-16    Order: -0.00
-
-    Subintervals:   64    Error: 1.110223e-16    Order: -0.00
-
-    Subintervals:  128    Error: 1.110223e-16    Order: -0.00
-
-    Subintervals:  256    Error: 1.110223e-16    Order: -0.00
-
-    Subintervals:  512    Error: 1.110223e-16    Order: -0.00
-
-    Subintervals: 1024    Error: 1.110223e-16    Order: -0.00
-
-
-
-computeConvergenceOrderTwopoints_py executed in 0.003339052200317383 seconds.
     Subintervals:    2    Error: 6.758237e-01
 
     Subintervals:    4    Error: 6.829417e-01    Order: -0.02
@@ -150,12 +129,11 @@ computeConvergenceOrderTwopoints_py executed in 0.003339052200317383 seconds.
 
     Subintervals: 1024    Error: 6.829420e-01    Order: 0.00
 
-
-
 computeConvergenceOrderGaussLegendre_py executed in 0.07495403289794922 seconds.
 
 Quando avrai anche gli altri dati, scrivi quali metodi sono piu veloci (guarda la convergenza perche ha i nBins uguali)
 
+Update immagine quando avrai plottato anche quelli di c++
 <p align="center">
   <img src="https://github.com/saraserafino/Homework3_Serafino/blob/main/Convergence%20of%20Numerical%20Integration%20Methods.png" /><br>
  Convergence of Numerical Integration Methods
