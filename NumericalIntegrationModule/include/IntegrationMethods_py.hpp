@@ -70,7 +70,7 @@ class twopointGauss(Quadrature):
 py::module npLeg = py::module::import("numpy.polynomial.legendre");
 // Access the specific function for Gauss-Legendre
 py::object npGaussLeg = npLeg.attr("leggauss");
-// Note: it only computes nodes and weights in [-1,1]
+// Note: it can only compute nodes and weights in [-1,1]
 
 class GaussLegendre(Quadrature):
     def __init__(self, a, b, nBins):

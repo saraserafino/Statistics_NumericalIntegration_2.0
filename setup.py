@@ -9,18 +9,19 @@ class get_pybind_include(object):
         return pybind11.get_include()
 ext_modules = [
     Extension(
-        'your_module_name',  # Name of the module.
-        ['your_module.cpp'],  # C++ source files.
+        'moduleC',  # Name of the module.
+        ['moduleCfunctions_py.cpp'],  # C++ source files.
         include_dirs=[
             get_pybind_include(),  # Path to pybind11 includes.
-            '/path/to/other/includes',  # Additional include paths.
+            'NumericalIntegrationModule/include',  # Additional include paths.
+            'NumericalIntegrationModule/src',  # Additional include paths.
         ],
         language='c++'
     ),
 ]
 
 setup(
-    name='your_module_name',
+    name='moduleC',
     version='0.1',
     author='Sara Serafino',
     author_email='serafinos1999@gmail.com',

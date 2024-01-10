@@ -1,48 +1,53 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(homework2 VERSION 1.0
-    DESCRIPTION "Homework2_sistemato_Serafino"
-    LANGUAGES CXX)
-
-# Use C++17 standard for compiling
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS ON)
+    DESCRIPTION "Homework3_Serafino"
+    )
 
 # Search for Boost
 find_package(Boost 1.83 REQUIRED)
-
 include_directories(${Boost_INCLUDE_DIRS})
+
+# Search for muparserx
+find_package(muparserx 4.0 REQUIRED)
+include_directories(${muparserx_INCLUDE_DIRS})
 
 # Search for Pybind
 find_package(pybind11 REQUIRED)
-
 include_directories(SYSTEM ${pybind11_INCLUDE_DIRS})
 
-# Add the executable
-add_executable(homework main/main.py)
+# Add the Python modules
+pybind11_add_module(moduleC
+    NumericalIntegrationModule/src/IntegrationMethods.cpp
+    NumericalIntegrationModule/include/IntegrationMethods_py.hpp
+    NumericalIntegrationModule/include/moduleCfunctions.tpl.hpp
+    NumericalIntegrationModule/src/moduleCfunctions_py.cpp)
 
-target_link_libraries(homework PUBLIC ${Boost_LIBRARIES})
+# Example that shows how to pass a value from Python to C++.
+target_compile_definitions(moduleC PRIVATE VERSION_INFO=${MODULEC_VERSION_INFO})
+
+#target_include_directories(moduleC
+ #   PUBLIC
+  #  ${PROJECT_BINARY_DIR}/NumericalIntegrationModule/include
+   # ${PROJECT_BINARY_DIR}/NumericalIntegrationModule/src
+    #${MUPARSERX_ROOT}/include
+    #)
+
+#target_link_directories(moduleC
+ #   PUBLIC
+  #  ${MUPARSERX_ROOT}/lib
+   # )
+
+#target_link_libraries(moduleC PUBLIC ${Boost_LIBRARIES} muparserx)
 
 # Add the subdirectories for the modules if necessary
-if(USE_MODULEA)
-    add_subdirectory(StatisticsModule)
+#if(USE_MODULEA)
+ #   add_subdirectory(StatisticsModule)
+#
+ #   target_include_directories(homework
+  #  PUBLIC
+   # ${PROJECT_BINARY_DIR}/StatisticsModule/include
+    #)
 
-    target_include_directories(homework
-    PUBLIC
-    ${PROJECT_BINARY_DIR}/StatisticsModule/include
-    )
-
-    target_link_libraries(homework PUBLIC StatisticsModule)
-endif()
-
-if(USE_MODULEC)
-    add_subdirectory(NumericalIntegrationModule)
-
-    target_include_directories(homework
-    PUBLIC
-    ${PROJECT_BINARY_DIR}/NumericalIntegrationModule/include
-    )
-
-    target_link_libraries(homework PUBLIC NumericalIntegrationModule)
-endif()
+    #target_link_libraries(homework PUBLIC StatisticsModule)
+#endif()

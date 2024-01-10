@@ -1,5 +1,7 @@
 # Homework3_Serafino
 
+This project builds on the previous Homework2, implementing it with Python bindings. For each section, the new implementations will be explicitly highlighted with a further section called "What's new".   
+
 ## Code organization
 For each module there is a folder which separates source files from header files; the main file is in its folder called main; a cmake is provided for each of them and will be explained later on.
 
@@ -8,6 +10,9 @@ The `main.cpp` was written using switch cases to allow the user to decide what t
 * For the Statistics module, it is asked which column of the CSV file to analyse and which analysis perform.
 * For the Numerical Integration module, it is asked for convergence tests, polynomial tests and if the user wants to compute the integral of a function from input.  
 Being compilable as standalone libraries, a `#if USE_MODULEX` and `#endif` delimit their includes and code in main.cpp.
+
+#### What's new
+The switch case in Python is done with the keyword match, as explained [here](https://www.freecodecamp.org/news/python-switch-statement-switch-case-example/)
 
 ## Statistics module
 This module computes mean, median, standard deviation, variance, frequency count, classification, and correlation analyses on the data taken from a CSV file on [NBA Players from 2003 to 2022](https://www.kaggle.com/datasets/dhruvsuryavanshi/nba-player-data-from-2003-to-2022/) and outputs them on a file named `player_data_03_22_analysis.txt` in a folder named results.
@@ -24,6 +29,11 @@ This module approximates integrals with the methods midpoint, trapezoidal, Simps
 For this last integration method we used the code provided [here](https://thoughts-on-coding.com/2019/04/25/numerical-methods-in-cpp-part-2-gauss-legendre-integration/) with some edits. For example we defined some constants, like `const double k = M_PI / (n + 0.5)` at line 120 of `IntegrationMethods.cpp`, in order to compute the node as `nodes[i] = cos(k * (i - 0.25))`, avoiding one calculus for each iteration of the for-cycle as in the code of the website. We tested it and unfortunately it has some memory leaks, so we also provided the implementation of twoPointGauss.   
 This module is divided in `IntegrationMethods.cpp` and `moduleCfunctions.tpl.hpp` with their headers. The first one has an abstract class `Quadrature` and one derived class for each method. These classes take the integration extremes a and b and the number of subintervals n; in the constructor they calculate relative weights and nodes and through two const methods return them. Moreover the Gauss-Legendre class returns the integration extremes which are necessary to compute the integration, since it's a bit different from the other methods (as you can see from the above linked website). For this reason, in `moduleCfunctions.tpl.hpp` we defined two templates of Integrate. They differ in the use of width and mean (where integration extremes are needed) and for the fact that the function isn't simply evaluated in the node but in $width*\{x_i\} + mean$. In order to evaluate the function, the library muparserx was used. In this file we also calculated the order of convergence (consulting [this website](https://lucia-gastaldi.unibs.it/did2015/automazione/lezioni/quadratura.pdf)), analized and print the relative results. Creating these functions, we can just recall them from the main, providing a clearer design.
 
+#### What's new
+`IntegrationMethods_py.hpp` and `moduleCfunctions_py.cpp` provide a Python interface and binding with Pybind11, creating a module called moduleC. Everything is unchanged except for the GaussLegendre method, which is implemented with NumPy to avoid the above mentioned memory leaks. As numpy.polynomial.legendre module makes only possible to integrate over the interval [-1,1], when defining its test in the main, the interval is internally fixed.<br>
+When possible thanks to SciPy integrate functions, a comparison between the integration with them and the methods implemented in C++ is made. For Midpoint it's not possible since it doesn't exist a function. Although it's the same for the two-point Gauss, it's worth a comparison with scipy.integrate.quad since it integrates between two points.
+As explained [here](https://docs.scipy.org/doc/scipy/tutorial/integrate.html), with SciPy's Simpson method, for an odd number of samples that are equally spaced, the method is exact if the function is a polynomial of order 3 or less; if the samples are not equally spaced, then the result is exact only if the function is a polynomial of order 2 or less. This means that the Simpson method implemented with C++ should be better, because it has no such limitations. 
+
 ### Analysis and observations
 * The MuParserx library has been employed to facilitate the input of functions as strings, enabling users to calculate integrals interactively.
 
@@ -32,6 +42,27 @@ This module is divided in `IntegrationMethods.cpp` and `moduleCfunctions.tpl.hpp
 * As in the analysis conducted on slide 11 of the [material](https://lucia-gastaldi.unibs.it/did2015/automazione/lezioni/quadratura.pdf), the approach involved assuming the error to conform to the Cn^p form. Subsequently, through the calculation of error across an increasing number of intervals, proportionate to 2^n, and the subsequent comparison with the preceding error on a logarithmic scale, the research determined the value of -p. This value represents the angular coefficient of the line connecting the points (2^n, E(2^n)) and (2^(n+1), E(2^(n+1))). Importantly, this coefficient is defined as the convergence order.
 
 * It was further verified that the Midpoint and Trapezoidal formulas are exact up to polynomials of degree 1, the Simpson formula up to polynomials of degree 3, and the Gauss formula with 2n+1 nodes up to polynomials of degree n.
+
+#### What's new
+Scrivi quali metodi sono piu veloci.
+Annotazione degli output dell'integrazione con scipy su jupyter notebook:
+Compare the integration of x^3 in [0,1]
+The integration with SciPy gives 0.25308641975308643
+test_Trapezoidal_py executed in 0.00015401840209960938 seconds.
+
+Compare the integration of x^2 in [1,4]
+The integration with SciPy gives 21.0
+test_Simpson_py executed in 0.0001773834228515625 seconds.
+
+Compare the integration of x^2 in [0,4]
+The integration with SciPy gives 21.333333333333332
+test_twopoint_py executed in 4.00543212890625e-05 seconds. NOTA CHE NON SONO 4 SECONDI MA 10^-5
+
+Compare the integration of x^4 in [-1,1]
+The integration with SciPy gives 0.4000000000000011
+test_GaussLegendre_py executed in 4.935264587402344e-05 seconds. IDEM SOPRA
+
+Se fai confronto anche fra i metodi, ricordati di guardare nBins perché ovviamente influisce, nel caso fai nBins uguali.
 
 ## CMake and libraries
 Three CMake are provided: one for each of the two modules and one to actually compile. The two modules have their own namespaces (called MODULEA and MODULEC) and can be compiled both together or independently, setting the option ON from terminal when compiling. The Statistics module also uses the namespace ba for boost::accumulators inside the StatOp.cpp.  

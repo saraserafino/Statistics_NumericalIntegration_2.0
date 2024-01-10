@@ -93,8 +93,6 @@ void computeConvergenceOrder(const std::string& function, const double exactInte
         // Compare with the exact integral
         double error = std::abs(numericalIntegral - exactIntegral);
 
-        // auto log_previous_h=log(h_previous);
-        // auto log_h=log(h);
         auto log_error = log(error);
         auto log_previous_error = log(previousError);
 
