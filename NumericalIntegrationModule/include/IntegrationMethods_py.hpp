@@ -85,39 +85,4 @@ class GaussLegendre(Quadrature):
     def get_b(self):
         return b
 
-
-/*
-// Wrap as Python module
-// forse questo non serve (il prof conferma) perché in moduleCfunctions importo IntegrationMethods_py.hpp
-// e il modulo lo creo solo in moduleCfunctions, come in ex 9 lect 13
-PYBIND11_MODULE(IntegrationMethods, m) {
-    py::class_<Quadrature, PyQuadrature>(m, "Quadrature")
-        .def(py::init<double, double, unsigned int>()
-            py::arg("a"), py::arg("b"), py::arg("nBins"));
-        .def("get_weights", &Quadrature::get_weights, "Get the weights of the function to integrate");
-        .def("get_nodes", &Quadrature::get_nodes, "Get the nodes of the function to integrate");
-
-    py::class_<Midpoint, Quadrature>(m, "Midpoint")
-        .def(py::init<double, double, unsigned int>(),
-            py::arg("a"), py::arg("b"), py::arg("nBins"));
-
-    py::class_<Trapezoidal, Quadrature>(m, "Trapezoidal")
-        .def(py::init<double, double, unsigned int>(),
-            py::arg("a"), py::arg("b"), py::arg("nBins"));
-
-    py::class_<Simpson, Quadrature>(m, "Simpson")
-        .def(py::init<double, double, unsigned int>(),
-            py::arg("a"), py::arg("b"), py::arg("nBins"));
-
-    py::class_<twopointGauss, Quadrature>(m, "twopointGauss")
-        .def(py::init<double, double, unsigned int>(),
-            py::arg("a"), py::arg("b"), py::arg("nBins"));
-
-    py::class_<GaussLegendre, Quadrature>(m, "GaussLegendre")
-        .def(py::init<double, double, unsigned int>(),
-            py::arg("a"), py::arg("b"), py::arg("nBins"));
-    // che in realtà ha più roba ma la voglio fare in python
-    // se lo fai nell'altr modulo toglilo da qui/sistema
-}*/
-
 #endif // INTEGRATION_METHODS_PY_HPP_
