@@ -14,7 +14,18 @@ namespace py = pybind11;
 
 // Wrap C++ function with NumPy
 py_readData() {
-    return py::genfromtxt('Advanced Programming/Homework3_Serafino/data/player_data_03_22.csv', delimiter = ',', dtype = std::string)
+    return py::genfromtxt('Advanced Programming/Homework3_Serafino/data/player_data_03_22.csv', delimiter = ',', dtype = str);
+}
+
+py_read_header() {
+    header = csvarrays[0,:]
+print(f"The name of the columns are {header[1:]}")
+# Without it prints '\ufeff0' as first value
+
+# Create a vector column for each name in the header to store data
+column = {}
+for i, columnName in enumerate(header):
+    column[columnName] = csvarrays[1:, i]
 }
 
 
