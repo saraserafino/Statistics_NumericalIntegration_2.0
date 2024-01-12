@@ -129,6 +129,19 @@ moduleC/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleC.dir/build.make CMakeFiles/moduleC.dir/build
 .PHONY : moduleC/fast
 
+#=============================================================================
+# Target rules for targets named moduleA
+
+# Build rule for target.
+moduleA: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 moduleA
+.PHONY : moduleA
+
+# fast build rule for target.
+moduleA/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/build
+.PHONY : moduleA/fast
+
 NumericalIntegrationModule/src/IntegrationMethods.o: NumericalIntegrationModule/src/IntegrationMethods.cpp.o
 .PHONY : NumericalIntegrationModule/src/IntegrationMethods.o
 
@@ -177,6 +190,78 @@ NumericalIntegrationModule/src/moduleCfunctions_py.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleC.dir/build.make CMakeFiles/moduleC.dir/NumericalIntegrationModule/src/moduleCfunctions_py.cpp.s
 .PHONY : NumericalIntegrationModule/src/moduleCfunctions_py.cpp.s
 
+StatisticsModule/src/DataHandler.o: StatisticsModule/src/DataHandler.cpp.o
+.PHONY : StatisticsModule/src/DataHandler.o
+
+# target to build an object file
+StatisticsModule/src/DataHandler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler.cpp.o
+.PHONY : StatisticsModule/src/DataHandler.cpp.o
+
+StatisticsModule/src/DataHandler.i: StatisticsModule/src/DataHandler.cpp.i
+.PHONY : StatisticsModule/src/DataHandler.i
+
+# target to preprocess a source file
+StatisticsModule/src/DataHandler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler.cpp.i
+.PHONY : StatisticsModule/src/DataHandler.cpp.i
+
+StatisticsModule/src/DataHandler.s: StatisticsModule/src/DataHandler.cpp.s
+.PHONY : StatisticsModule/src/DataHandler.s
+
+# target to generate assembly for a file
+StatisticsModule/src/DataHandler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler.cpp.s
+.PHONY : StatisticsModule/src/DataHandler.cpp.s
+
+StatisticsModule/src/DataHandler_py.o: StatisticsModule/src/DataHandler_py.cpp.o
+.PHONY : StatisticsModule/src/DataHandler_py.o
+
+# target to build an object file
+StatisticsModule/src/DataHandler_py.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler_py.cpp.o
+.PHONY : StatisticsModule/src/DataHandler_py.cpp.o
+
+StatisticsModule/src/DataHandler_py.i: StatisticsModule/src/DataHandler_py.cpp.i
+.PHONY : StatisticsModule/src/DataHandler_py.i
+
+# target to preprocess a source file
+StatisticsModule/src/DataHandler_py.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler_py.cpp.i
+.PHONY : StatisticsModule/src/DataHandler_py.cpp.i
+
+StatisticsModule/src/DataHandler_py.s: StatisticsModule/src/DataHandler_py.cpp.s
+.PHONY : StatisticsModule/src/DataHandler_py.s
+
+# target to generate assembly for a file
+StatisticsModule/src/DataHandler_py.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler_py.cpp.s
+.PHONY : StatisticsModule/src/DataHandler_py.cpp.s
+
+StatisticsModule/src/StatOp.o: StatisticsModule/src/StatOp.cpp.o
+.PHONY : StatisticsModule/src/StatOp.o
+
+# target to build an object file
+StatisticsModule/src/StatOp.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/StatisticsModule/src/StatOp.cpp.o
+.PHONY : StatisticsModule/src/StatOp.cpp.o
+
+StatisticsModule/src/StatOp.i: StatisticsModule/src/StatOp.cpp.i
+.PHONY : StatisticsModule/src/StatOp.i
+
+# target to preprocess a source file
+StatisticsModule/src/StatOp.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/StatisticsModule/src/StatOp.cpp.i
+.PHONY : StatisticsModule/src/StatOp.cpp.i
+
+StatisticsModule/src/StatOp.s: StatisticsModule/src/StatOp.cpp.s
+.PHONY : StatisticsModule/src/StatOp.s
+
+# target to generate assembly for a file
+StatisticsModule/src/StatOp.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/StatisticsModule/src/StatOp.cpp.s
+.PHONY : StatisticsModule/src/StatOp.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -185,6 +270,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... moduleA"
 	@echo "... moduleC"
 	@echo "... NumericalIntegrationModule/src/IntegrationMethods.o"
 	@echo "... NumericalIntegrationModule/src/IntegrationMethods.i"
@@ -192,6 +278,15 @@ help:
 	@echo "... NumericalIntegrationModule/src/moduleCfunctions_py.o"
 	@echo "... NumericalIntegrationModule/src/moduleCfunctions_py.i"
 	@echo "... NumericalIntegrationModule/src/moduleCfunctions_py.s"
+	@echo "... StatisticsModule/src/DataHandler.o"
+	@echo "... StatisticsModule/src/DataHandler.i"
+	@echo "... StatisticsModule/src/DataHandler.s"
+	@echo "... StatisticsModule/src/DataHandler_py.o"
+	@echo "... StatisticsModule/src/DataHandler_py.i"
+	@echo "... StatisticsModule/src/DataHandler_py.s"
+	@echo "... StatisticsModule/src/StatOp.o"
+	@echo "... StatisticsModule/src/StatOp.i"
+	@echo "... StatisticsModule/src/StatOp.s"
 .PHONY : help
 
 

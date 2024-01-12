@@ -64,6 +64,7 @@ CMAKE_BINARY_DIR = "/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/
 
 # The main recursive "all" target.
 all: CMakeFiles/moduleC.dir/all
+all: CMakeFiles/moduleA.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -72,6 +73,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/moduleC.dir/clean
+clean: CMakeFiles/moduleA.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -81,7 +83,7 @@ clean: CMakeFiles/moduleC.dir/clean
 CMakeFiles/moduleC.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleC.dir/build.make CMakeFiles/moduleC.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleC.dir/build.make CMakeFiles/moduleC.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/CMakeFiles" --progress-num=1,2,3 "Built target moduleC"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/CMakeFiles" --progress-num=5,6,7 "Built target moduleC"
 .PHONY : CMakeFiles/moduleC.dir/all
 
 # Build rule for subdir invocation for target.
@@ -99,6 +101,32 @@ moduleC: CMakeFiles/moduleC.dir/rule
 CMakeFiles/moduleC.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleC.dir/build.make CMakeFiles/moduleC.dir/clean
 .PHONY : CMakeFiles/moduleC.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/moduleA.dir
+
+# All Build rule for target.
+CMakeFiles/moduleA.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir="/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/CMakeFiles" --progress-num=1,2,3,4 "Built target moduleA"
+.PHONY : CMakeFiles/moduleA.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/moduleA.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/CMakeFiles" 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/moduleA.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/CMakeFiles" 0
+.PHONY : CMakeFiles/moduleA.dir/rule
+
+# Convenience name for target.
+moduleA: CMakeFiles/moduleA.dir/rule
+.PHONY : moduleA
+
+# clean rule for target.
+CMakeFiles/moduleA.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/moduleA.dir/build.make CMakeFiles/moduleA.dir/clean
+.PHONY : CMakeFiles/moduleA.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
