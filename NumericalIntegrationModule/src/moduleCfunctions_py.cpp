@@ -4,15 +4,18 @@
 
 #include <pybind11/pybind11.h>
 
+namespace py = pybind11;
+using namespace MODULEC;
+
 // Wrap as Python module
 
 PYBIND11_MODULE(moduleC, m) {
     m.doc() = "pybind11 moduleC plugin";
 
     py::class_<Quadrature, PyQuadrature>(m, "Quadrature")
-        .def(py::init<double, double, unsigned int>()
-            py::arg("a"), py::arg("b"), py::arg("nBins"));
-        .def("get_weights", &Quadrature::get_weights, "Get the weights of the function to integrate");
+        .def(py::init<double, double, unsigned int>(),
+            py::arg("a"), py::arg("b"), py::arg("nBins"))
+        .def("get_weights", &Quadrature::get_weights, "Get the weights of the function to integrate")
         .def("get_nodes", &Quadrature::get_nodes, "Get the nodes of the function to integrate");
 
     py::class_<Midpoint, Quadrature>(m, "Midpoint")
@@ -33,8 +36,8 @@ PYBIND11_MODULE(moduleC, m) {
         
     py::class_<GaussLegendre, Quadrature>(m, "GaussLegendre")
         .def(py::init<double, double, unsigned int>(),
-            py::arg("a"), py::arg("b"), py::arg("nBins"));
-        .def("get_b", &GaussLegendre::get_a, "Get the lower bound of the function to integrate");
+            py::arg("a"), py::arg("b"), py::arg("nBins"))
+        .def("get_a", &GaussLegendre::get_a, "Get the lower bound of the function to integrate")
         .def("get_b", &GaussLegendre::get_b, "Get the upper bound of the function to integrate");
 
     m.def("evaluate", &evaluate, py::arg("y"), py::arg("parser"));
@@ -58,7 +61,7 @@ PYBIND11_MODULE(moduleC, m) {
     m.def("computeConvergenceOrderSimpson", &computeConvergenceOrder<Simpson>,
         py::arg("function"), py::arg("exact integral"));
     m.def("computeConvergenceOrderGaussLegendre", &computeConvergenceOrder<GaussLegendre>,
-        py::arg("function"), py::arg("exact integral"))
+        py::arg("function"), py::arg("exact integral"));
 
     m.def("analysis", &analysis, py::arg("integration value"), py::arg("true value"));
 

@@ -6,6 +6,9 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <optional>
+#include <variant>
+#include <filesystem>
 
 typedef std::optional<std::variant<double,std::string>> csvType;
 

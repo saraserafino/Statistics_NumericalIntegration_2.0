@@ -33,6 +33,10 @@ class CMakeBuild(build_ext):
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}".format(extdir),
             "-DPYTHON_EXECUTABLE={}".format(sys.executable),
             "-DCMAKE_BUILD_TYPE={}".format(cfg),  # not used on MSVC, but no harm
+            # se includi altre librerie aggiungi
+            #"-Deigen3_DIR=/opt/eigen3/share/cmake/eigen3"
+            "-DBOOST_ROOT=/opt/boost",
+            "-Dmuparserx_DIR=/opt/muparserx/share/cmake/muparserx"
         ]
         build_args = []
 
@@ -93,7 +97,7 @@ setup(
     version="0.0.1",
     description="A test project using pybind11 and CMake",
     long_description="",
-    ext_modules=[CMakeExtension("homework3")],
+    ext_modules=[CMakeExtension("StatisticsModule"), CMakeExtension("NumericalIntegrationModule")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
 )

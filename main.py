@@ -146,8 +146,8 @@ def pieplotFrequency(columnName):
 # main of Statistics module
 
 # File path
-CSVfile = "/data/player_data_03_22.csv"
-analysis = moduleA.StatOp(CSVfile)
+csv_file = moduleA.CSVfile("/data/player_data_03_22.csv")
+analysis = moduleA.StatOp(csv_file)
 
 headerNames = moduleA.getHeader()
 

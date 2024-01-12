@@ -1,7 +1,7 @@
 #ifndef MODULE_C_FUNCTIONS_HPP_
 #define MODULE_C_FUNCTIONS_HPP_
 
-#include "muparserx/mpParser.h"
+#include "mpParser.h"
 #include "IntegrationMethods.hpp"
 #include <iostream>
 
