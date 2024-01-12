@@ -11,7 +11,7 @@
 #include <filesystem>
 
 typedef std::optional<std::variant<double,std::string>> csvType;
-
+//public std::enable_shared_from_this<CSVHandler> 
 class CSVHandler {
 public:
   // Declare StatOp as a friend class of CSVHandler in order to access its private members
@@ -19,6 +19,7 @@ public:
 
   // Constructor for opening the input file
   CSVHandler(const std::string &input_path);
+
 
   // Method for creating destination and file for the output result
   // Since it creates from scratch, it gets called only once (in the constructor)

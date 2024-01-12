@@ -146,10 +146,28 @@ def pieplotFrequency(columnName):
 # main of Statistics module
 
 # File path
-csv_file = moduleA.CSVfile("/data/player_data_03_22.csv")
-analysis = moduleA.StatOp(csv_file)
+csvFile = moduleA.CSVHandler("data/player_data_03_22.csv")
 
-headerNames = moduleA.getHeader()
+# Il file CSV devo darlo anche col metodo c++, altrimenti read_header (usato dalla classificazione) non funziona
+analysis = moduleA.StatOp(csvFile)
+
+# Read data from CSV file into NumPy arrays,
+# Specifica i tipi di dati per ogni colonna (dtype=None significa che NumPy dovrebbe indovinare il tipo)
+#types = [('column1', str), ('column2', int), ('column3', int)]
+#csvarrays = np.genfromtxt('Advanced Programming/Homework3_Serafino/data/player_data_03_22.csv', delimiter=',', dtype = types)
+csvarrays = np.genfromtxt('data/player_data_03_22.csv', delimiter=',')
+# pandas
+
+headerNames = csvarrays[0,:]
+
+# To store data, create a vector column for each name in the header
+column = {}
+for i, columnName in enumerate(headerNames):
+    column[columnName] = csvarrays[1:, i]
+
+# Now you can access each column by its name
+print(f"Prova che stampa la colonna Age: {column['Age']}")
+print(column['Team'])
 
 print(f"Let's see the frequency of teams in which the players play:\n")
 
@@ -158,12 +176,9 @@ Team = moduleA.getColumn('Team')
 pieplotFrequency(Team)
 barplotFrequency(Team)
 
-# Analysis of which programming language is faster. Chosen column: Age
+# Analysis of which programming language is faster. Chosen column: Age o magari generalizza
 
-Age = moduleA.getColumn('Age')
-print(f"Prova che stampa la colonna Age: {moduleA.getColumn('Age')}")
-print(f"Mean: {np.mean(Age)}")
-print(f"Median: {int(np.median(Age))}") # Age is int
+Age = column['Age']
 
 test_calculateFrequency_cpp(Age)
 test_calculateFrequency_py(Age)
@@ -176,7 +191,8 @@ print("""
       Note that for each computation it will be used either C++ or Python, depending on which was observed to be faster.
       """)
 
-print(f"The name of the columns are {headerNames}")
+print(f"The name of the columns are {headerNames[1:]}")
+# Without [1:], it prints '\ufeff0' as first value
 
 moduleA.create_output_path()
 
@@ -243,6 +259,7 @@ while continueChoice == 1:
     continueChoice = input("Do you want to perform another analysis? (1 for Yes, 0 for No): ")
 
 print(f"All analyses completed. Results written to results/player_data_03_22_analysis.txt")
+
 
 
 # Numerical Integration module
@@ -344,6 +361,7 @@ def computeConvergenceOrderTrapezoidal_Simpson_py(function, exactIntegral, metho
         errors.append(error)
         subintervals.append(nBins)
 
+        print(f"Convergence order for {method} method with Python:\n")
         # Output the error and convergence order
         print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
 
@@ -382,6 +400,7 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
         errors.append(error)
         subintervals.append(nBins)
 
+        print(f"Convergence order for Gauss-Legendre method with Python:\n")
         # Output the error and convergence order
         print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
 

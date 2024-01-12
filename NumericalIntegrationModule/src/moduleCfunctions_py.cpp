@@ -1,8 +1,19 @@
 #include "../include/IntegrationMethods.hpp"
-#include "../include/IntegrationMethods_py.hpp"
 #include "../include/moduleCfunctions.hpp"
 
 #include <pybind11/pybind11.h>
+
+// ----------------------------------
+// Python interface - fake trampoline
+// ----------------------------------
+
+class PyQuadrature : public MODULEC::Quadrature {
+public:
+    // Inherit the constructors
+    using MODULEC::Quadrature::Quadrature;
+
+    // Each virtual function needs a trampoline, but there isn't any
+};
 
 namespace py = pybind11;
 using namespace MODULEC;

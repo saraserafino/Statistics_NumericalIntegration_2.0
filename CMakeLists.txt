@@ -10,7 +10,6 @@ add_compile_options(-std=c++17)
 find_package(Boost 1.83 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
-# In python non si può fare quella cosa di module ON/OFF che io abbia visto ma se vuoi la lasci per cpp
 # Search for muparserx
 find_package(muparserx 4.0 REQUIRED)
 include_directories(${muparserx_INCLUDE_DIRS})
@@ -22,7 +21,6 @@ include_directories(SYSTEM ${pybind11_INCLUDE_DIRS})
 # Add the Python modules
 pybind11_add_module(moduleC
     NumericalIntegrationModule/src/IntegrationMethods.cpp
-    NumericalIntegrationModule/include/IntegrationMethods_py.hpp
     NumericalIntegrationModule/include/moduleCfunctions.tpl.hpp
     NumericalIntegrationModule/src/moduleCfunctions_py.cpp
     )
@@ -32,7 +30,6 @@ pybind11_add_module(moduleA
     StatisticsModule/src/DataHandler.cpp
     StatisticsModule/src/StatOp.cpp
     )
-
 
 target_link_libraries(moduleC PRIVATE ${MUPARSERX_LIBRARY})
 target_include_directories(moduleA PRIVATE StatisticsModule/include)

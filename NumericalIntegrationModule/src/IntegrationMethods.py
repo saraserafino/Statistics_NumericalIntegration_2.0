@@ -1,9 +1,9 @@
 from numpy.polynomial import legendre
 import numpy as np
+
 # ----------------
 # Python interface
 # ----------------
-
 
 class Quadrature:
     def __init__(self, a, b, nBins):
@@ -34,12 +34,7 @@ class twopointGauss(Quadrature):
         self.nBins = 2 # because it's "two point"
 
 # GaussLegendre is better implemented with NumPy
-# Import the numpy.polynomial.legendre module
-#module npLeg = py::module::import("numpy.polynomial.legendre");
-# Access the specific function for Gauss-Legendre
-#py::object npGaussLeg = npLeg.attr("leggauss");
 # Note: it can only compute nodes and weights in [-1,1]
-
 class GaussLegendre(Quadrature):
     def __init__(self, a, b, nBins):
         Quadrature.__init__(self)
