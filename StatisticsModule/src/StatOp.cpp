@@ -26,41 +26,6 @@ namespace MODULEA {
     // Constructor
     StatOp::StatOp(const std::shared_ptr<CSVHandler> CSVfile) : CSVfile(CSVfile), data(CSVfile->readData()) {};
 
-    std::vector<csvType> StatOp::readSpecificColumn(const std::shared_ptr<CSVHandler> CSVfile, const std::string &targetColumn) {
-        // Get the name of the input file
-        const std::string file_name = CSVfile->get_input_file_path();
-        // Open the CSV file in input mode
-        std::fstream file(file_name, std::ios::in);
-
-        std::vector<std::optional<std::variant<double, std::string>>> content;
-        std::string line, word;
-
-        int index = CSVfile->read_header(targetColumn);
-        if (index == -1) // Handle the case where the header row is not found
-            return content;
-
-        // Ignore the header line
-        getline(file, line);
-
-        while (getline(file, line)) {
-            std::stringstream str(line);
-            int j = 0;
-            while (getline(str, word, ',')) {
-                if (j == index) {
-                    // Try to convert the word to double,
-                    try { // add as double if successful
-                        content.push_back(std::stod(word));
-                    } catch (const std::invalid_argument &) {
-                        // otherwise add as string
-                        content.push_back(word);
-                    }
-                }
-                j++;
-            }
-        }
-        return content;
-    };
-
     double StatOp::calculateMean(const std::vector<std::optional<std::variant<double, std::string>>> &data) {
         ba::accumulator_set<double, ba::stats<ba::tag::mean>> acc;
 

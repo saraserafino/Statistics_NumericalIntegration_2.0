@@ -66,7 +66,7 @@ int CSVHandler::read_header(const std::string &targetColumn) const {
     getline(file, line);
 
     size_t found = line.find(targetColumn);
-    assertm(found !=std::string::npos, "Coloumn not found.");
+    assertm(found !=std::string::npos, "Column not found.");
     // To give the column index
     return std::count(line.begin(), line.begin() + found, ',');
   }

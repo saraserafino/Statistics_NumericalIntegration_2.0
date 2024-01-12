@@ -30,8 +30,7 @@ public:
     double calculateCorrelation(const std::vector<std::optional<std::variant<double, std::string>>> &data1, const std::vector<std::optional<std::variant<double, std::string>>> &data2);
     
     const std::vector<std::optional<std::variant<double, std::string>>>& getColumn(const std::string columnName) const;
-    std::vector<std::optional<std::variant<double, std::string>>> readSpecificColumn(const std::shared_ptr<CSVHandler> CSVfile, const std::string &targetColumn);
-
+    
     std::vector<std::vector<csvType>>::const_iterator begin();
     std::vector<std::vector<csvType>>::const_iterator end();
 

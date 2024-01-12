@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.12)
+
+project(homework3 VERSION 1.0
+    DESCRIPTION "Creating the pybind for the module C"
+    )
+
+pybind11_add_module(moduleC
+    NumericalIntegrationModule/src/IntegrationMethods.cpp
+    NumericalIntegrationModule/include/IntegrationMethods_py.hpp
+    NumericalIntegrationModule/include/moduleCfunctions.tpl.hpp
+    NumericalIntegrationModule/src/moduleCfunctions_py.cpp
+    )
+
+endif()
