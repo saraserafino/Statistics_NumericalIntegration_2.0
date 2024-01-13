@@ -110,6 +110,7 @@ def test_calculateCorrelation_py(data1, data2):
         raise ValueError("Data is empty or contains non-numeric values.")
     return np.corrcoef(data1, data2)[0, 1]
 
+
 # Plot the frequency with a bar plot
 def barplotFrequency(frequency, name):
     # Create a DataFrame for Seaborn
@@ -142,8 +143,22 @@ def pieplotFrequency(frequency, name):
     plt.pie(frequency, labels = frequency.index, autopct = '%1.1f%%', startangle=90)
     plt.show()
 
+# Plot a nested barplot by operation and language to compare execution times and absolute error
+def catplotCompare(resultsColumn, AbsError):
+    resultsColumn_df = pd.DataFrame(resultsColumn)
+    # Use catplot by seaborn. The pairs are made based on the operation (C++ or Python)
+    g = sns.catplot(data = resultsColumn_df, kind = 'bar', x = 'Operation', y = 'ExecutionTime', hue = 'Language', height = 6, aspect = 1.5)
+    g.set_axis_labels('', 'Time (s)')
+    g.legend.set_title('')
+    # Annotate each couple of bars with the absolute error between C++ and Python (if present)
+    for idx, err in enumerate(AbsError):
+        plt.text(idx, err, f'{err}', ha = 'center', va = 'bottom', fontsize = 'medium', weight = 'bold')
+    plt.show()
 
-# main of Statistics module
+
+# ----------------
+# main of module A
+# ----------------
 
 # Create an instance for CSVHandler and StatOp in order to use their methods
 csvFile = moduleA.CSVHandler("data/player_data_03_22.csv")
@@ -154,83 +169,90 @@ df = pd.read_csv('data/player_data_03_22.csv', delimiter=',')
 # Store the header i.e. the names of the columns
 header = df.columns
 
-print("Some statistics about the players:\n")
-
+print("Some statistics about the age of the players:\n")
 # Save the datas in order to compute df[] just once
 Age = df['Age']
 
+# Compute the statistics to compare between C++ and Python
 res_mean_cpp, time_mean_cpp = test_calculateMean_cpp(StatOpInstance, Age)
 res_mean_py, time_mean_py = test_calculateMean_py(Age)
-#print(f"Mean of Age:\nC++ result: {res_mean_cpp} \nPython result: {res_mean_py}\n")
-#print(f"C++ executed it in {time_mean_cpp} s, Python in {time_mean_py} s.\n")
 
 res_sd_cpp, time_sd_cpp = test_calculateStandardDeviation_cpp(StatOpInstance, Age)
 res_sd_py, time_sd_py = test_calculateStandardDeviation_py(Age)
-#print(f"StandardDeviation of Age:\nC++ result: {res_sd_cpp} \nPython result: {res_sd_py}\n")
-#print(f"C++ executed it in {time_sd_cpp} s, Python in {time_sd_py} s.\n")
 
 res_f_cpp, time_f_cpp = test_calculateFrequency_cpp(StatOpInstance, Age)
 res_f_py, time_f_py = test_calculateFrequency_py(Age)
-#print(f"Frequency of Age:\nC++ result: {res_f_cpp} \nPython result: {res_f_py}\n")
-#print(f"C++ executed it in {time_f_cpp} s, Python in {time_f_py} s.\n")
 
-# Create a DataFrame with the results
+# Create a list with the absolute errors between C++ and Python. For computing it, they must have the same type
+res_mean_cpp = float(res_mean_cpp)
+res_sd_cpp = float(res_sd_cpp)
+AbsErrorAge = [abs(res_mean_cpp - res_mean_py), abs(res_sd_cpp - res_sd_py)]
+# Create the base for a DataFrame with the results
 resultsAge = {
     'Language': ['C++', 'Python', 'C++', 'Python', 'C++', 'Python'],
     'Operation': ['Mean', 'Mean', 'StandardDeviation', 'StandardDeviation', 'Frequency', 'Frequency'],
     'Result': [res_mean_cpp, res_mean_py, res_sd_cpp, res_sd_py, res_f_cpp, res_f_py],
     'ExecutionTime': [time_mean_cpp, time_mean_py, time_sd_cpp, time_sd_py, time_f_cpp, time_f_py]
 }
-resultsAge_df = pd.DataFrame(resultsAge)
-
-# Plot a nested barplot by operation and language with catplot
-g = sns.catplot(data = resultsAge_df, kind = 'bar', x = 'Operation', y = 'ExecutionTime', hue = 'Language', height = 6, aspect = 1.5)
-g.set_axis_labels('', 'Time (s)')
-g.legend.set_title('')
-# Annotate each bar with its execution time and result
-#for idx, row in resultsAge_df.iterrows():
-#    plt.annotate(f'{row['Result']}', xy=(idx, row['ExecutionTime']), ha = 'center', va = 'bottom')
-for idx, (op, lang, result, t) in enumerate(zip(resultsAge_df['Operation'], resultsAge_df['Language'], resultsAge_df['Result'], resultsAge_df['ExecutionTime'])):
-    plt.annotate(f'{result}', xy=(idx, t), ha = 'center', va = 'bottom')
-plt.show()
-
-
-
 
 # In this way you don't get suddenly overwhelmed by datas and plots
-input("Press enter to visualize a bar plot of the frequency count for age")
+input("\nPress enter to visualize a catplot to compare execution times and absolute error for Age.")
+catplotCompare(resultsAge, AbsErrorAge)
+
+input("\nPress enter to visualize a bar plot of its frequency count.")
 barplotFrequency(res_f_py, 'Age')
-                
-input("Press enter to visualize a pie chart plot for its distribution")
+
+input("\nPress enter to visualize a pie chart plot for its distribution.")
 pieplotFrequency(res_f_py, 'Age')
 
+# Same as before but with Team
+print("\nSome statistics about the teams of the players:\n")
 Team = df['Team']
-#TeamFrequency = test_calculateFrequency_py(Team)
 
-print(f"Let's see the frequency of teams in which the players play:\n")
+res_median_cpp, time_median_cpp = test_calculateMedian_cpp(StatOpInstance, Team)
+res_median_py, time_median_py = test_calculateMedian_py(Team)
 
-# Plot the frequency of Team with a bar plot and pie chart plot
-#pieplotFrequency(TeamFrequency, 'Team')
-#barplotFrequency(TeamFrequency, 'Team')
+res_f_cpp, time_f_cpp = test_calculateFrequency_cpp(StatOpInstance, Team)
+res_f_py, time_f_py = test_calculateFrequency_py(Team)
+
+AbsErrorTeam = []
+resultsTeam = {
+    'Language': ['C++', 'Python', 'C++', 'Python'],
+    'Operation': ['Median', 'Median', 'Frequency', 'Frequency'],
+    'Result': [res_median_cpp, res_median_py, res_f_cpp, res_f_py],
+    'ExecutionTime': [time_median_cpp, time_median_py, time_f_cpp, time_f_py]
+}
+
+input("Press enter to visualize a catplot to compare execution times for Team.")
+catplotCompare(resultsTeam, AbsErrorTeam)
+print(f"Median with C++ is: {res_median_cpp} \nWith Python: {res_median_py}\n")
+
+input("\nPress enter to visualize a bar plot of the frequency count for each Team.")
+barplotFrequency(res_f_py, 'Team')
+
+input("\nPress enter to visualize a pie chart plot for its distribution.")
+pieplotFrequency(res_f_py, 'Team')
+
 
 print("\nNow you can analyze statistics operations in columns of your choice.")
 
+# Print the header so the user can see the options
 print(f"\nThe names of the columns are {header[1:]}")
 # Without [1:], it prints '0' as first value because the first column is the enumeration of rows
 
 # Create the output path outside the loop, otherwise it gets cleaned every time
 output_file_path = "results.txt"
 
-# Check if the file already exists, if so, write the title
+# Check if the file already exists, if so, overwrite it
 if os.path.exists(output_file_path):
     with open(output_file_path, 'w') as file:
-            file.write('Statistics operations with NBA players\n\n')
+        file.write('Statistics operations with NBA players\n\n')
 
 # Since in Python do-while doesn't exist, set this condition continueChoice
 # in order to run the while loop at least once
 continueChoice = 1
 while continueChoice == 1:
-    targetColumn = input("What is the name of the column you want to analyze? : ")
+    targetColumn = input("What is the name of the column you want to analyze? ")
     while targetColumn not in header:
         targetColumn = input("This column does not exist. Please insert a valid name: ")
     targetColumnData = df[targetColumn]
@@ -249,18 +271,18 @@ while continueChoice == 1:
     choice = int(input("Enter the corresponding number: "))
     # Exit loop if the user chooses 0
     if choice == 0:
+        print("Exiting...")
         break
 
-    # If there's even a string
+    # If there's even a string, some analysis can't be computed (it would not make sense)
     if any(isinstance(value, str) for value in targetColumnData):
-        # the chosen analysis needs numerical values
-        while choice not in [2,5,6]:
+        while choice not in [2, 5, 6]:
             print(f"{targetColumn} has no numerical values.")
             choice = int(input("Choose an analysis number between 2, 5 or 6: "))
 
     # Switch case for Python
     match choice:
-        # description, result and timeExecution are defined in every case in order to write them in the output file
+        # description, result and timeExecution are defined in every case for writing them in the output file
         case 1:
             try:
                 description = f"Mean of {targetColumn}:\n"
@@ -308,13 +330,11 @@ while continueChoice == 1:
             result = f"C++ result: {res_cpp} \nPython result: {res_py}\n"
             timeExecution = f"C++ executed it in {time_cpp} s, Python in {time_py} s.\n"
 
-            plotta = int(input("Do you want to see it with a bar plot? (1 for Yes): "))
-            if plotta == 1:
-                barplotFrequency(res_py, targetColumn)
+            input("Press enter to see it with a bar plot.")
+            barplotFrequency(res_py, targetColumn)
                 
-            plotta = int(input("Do you want to see it with a pie chart plot? (1 for Yes): "))
-            if plotta == 1:
-                pieplotFrequency(res_py, targetColumn)
+            input("Press enter to see its distribution with a pie chart plot.")
+            pieplotFrequency(res_py, targetColumn)
 
         case 6:
             condition = input("Enter the name of the feature you want to classify: ")

@@ -18,14 +18,8 @@ def execution_time(func):
         return result, executionTime
     return wrapper
 
-# Definitions of the integration methods both in C++ and in Python
+# Like in C++, define these functions to compute the analysis of the result and print it
 
-# Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
-def Midpoint_cpp(function, trueValue, a, b, nBins):
-    M = moduleC.Midpoint(a, b, nBins)
-    moduleC.print_resultsMidpoint(function, M, trueValue)
-
-# Like in C++, define functions to compute the analysis of the result and print it
 def analysis(integrationValue, trueValue):
     print("True value: {:.6e}".format(trueValue))
     error = abs(trueValue - integrationValue)
@@ -43,6 +37,13 @@ def print_results(integrationValue, trueValue):
     print("\nIntegration with SciPy.")
     print("Result: {:.6e}".format(integrationValue))
     analysis(integrationValue, trueValue)
+
+# Definitions of the integration methods both in C++ and in Python
+
+# Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
+def Midpoint_cpp(function, trueValue, a, b, nBins):
+    M = moduleC.Midpoint(a, b, nBins)
+    moduleC.print_resultsMidpoint(function, M, trueValue)
 
 @execution_time
 def test_Trapezoidal_cpp(function, trueValue, a, b, nBins):
@@ -75,8 +76,8 @@ def test_twopoint_py(function, trueValue, a, b):
     result, _ = integrate.quad(function, a, b)
     print_results(result, trueValue)
 
-# For Gauss-Legendre the interval is fixed to [-1,1] due to numpy.polynomial.legendre.leggaus's definition
-# which was overloaded in the C++ method
+# For Gauss-Legendre, the interval is fixed to [-1,1] due to numpy.polynomial.legendre.leggaus's
+# definition which was overloaded in the C++ method (see IntegrationMethods.py for the overload)
 @execution_time
 def test_GaussLegendre_cpp(function, trueValue, nBins):
     GL = moduleC.GaussLegendre(-1, 1, nBins)
@@ -181,14 +182,10 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
     print("\n")
     return subintervals, errors
 
-# note for errors from ex2 lab12
-#try:
-#    root = solver_complex.solve()
-#    print(f"Approximate root: {root}")
-#except RuntimeError as e:
-#    print("Error: ", str(e))
 
-# main of Numerical Integration module
+# ----------------
+# main of module C
+# ----------------
 
 # Since in Python do-while doesn't exist, set this condition continueChoice
 # in order to run the while loop at least once
@@ -201,18 +198,19 @@ while continueChoice == 1:
     3. Compute integrals
     0. Exit
     """)
-    choice = input("Enter the corresponding number: ")
-
+    choice = int(input("Enter the corresponding number: "))
+    
     match choice:
-        case "0": # Exit loop if the user chooses 0
+        case 0: # Exit loop if the user chooses 0
+            print("Exiting...")
             break
 
-        case "1":
+        case 1:
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
             computeConvergenceOrderMidpoint_cpp("cos(x)", 1.0)
 
-
             # Sarebbe più bello computare più volte e fare la media, ma dovrei cambiare le funzioni iniziali visto che dentro stampano
+
             # Define the function for the computation of the convergence order
             cos = np.vectorize(np.cos)
 
@@ -250,7 +248,7 @@ while continueChoice == 1:
             # Plot execution times for each compared method
             methods = ['Trapezoidal', 'PyTrapezoidal', 'Simpson', 'PySimpson', 'Gauss-Legendre', 'PyGauss-Legendre']
             executionTimes = [time_trap_cpp, time_trap_py, time_simp_cpp, time_simp_py, time_gl_cpp, time_gl_py]
-            plt.bar(methods, executionTimes, color=['aquamarine', 'orchid', 'orange', 'mediumseagreen', 'red', 'fuchsia'])
+            plt.bar(methods, executionTimes, color = ['aquamarine', 'orchid', 'orange', 'mediumseagreen', 'red', 'fuchsia'])
             plt.xlabel('Integration Method')
             plt.ylabel('Execution Time (s)')
             plt.title('Execution Time of Numerical Integration Methods in C++ and Python')
@@ -259,10 +257,9 @@ while continueChoice == 1:
             # Annotate each bar with its execution time
             for idx, times in enumerate(executionTimes):
                 plt.text(idx, times, f'{times:.4f}', ha = 'center', va = 'bottom')
-
             plt.show()
 
-        case "2":
+        case 2:
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
             print("\nIntegration of 3x+1 in [0,1]:")
             Midpoint_cpp("3*x+1", 2.5, 0, 1, 2)
@@ -271,13 +268,13 @@ while continueChoice == 1:
             # the array over which the function is sampled i.e. the nodes
             print("Compare the integration of x^3 in [0,1].\n")
             res_trap_cpp, time_trap_cpp = test_Trapezoidal_cpp("x^3", 0.25, 0, 1, 5) # trueValue = 0.25, nBins = 5
-            nodesT = np.linspace(0, 1, num = 5) # array in [0,1] of size 5 like nBins of cpp
+            nodesT = np.linspace(0, 1, num = 5) # array in [0,1] of size 5 like the above nBins
             res_trap_py, time_trap_py = test_Trapezoidal_py(nodesT**3, 0.25, nodesT)
             print(f"C++ executed it in {time_trap_cpp} s, Python in {time_trap_py} s.")
 
             print("\nCompare the integration of x^2 in [1,4].\n")
             res_simp_cpp, time_simp_cpp = test_Simpson_cpp("x^2", 21.0, 1, 4, 3) # trueValue = 21, nBins = 3
-            nodesS = np.array([1, 3, 4]) # array in [1,4] of size 3 like nBins of cpp
+            nodesS = np.array([1, 3, 4]) # array in [1,4] of size 3 like the above nBins
             res_simp_py, time_simp_py = test_Simpson_py(nodesS**2, 21.0, nodesS)
             print(f"C++ executed it in {time_simp_cpp} s, Python in {time_simp_py} s.")
 
@@ -293,7 +290,7 @@ while continueChoice == 1:
             res_gl_py, time_gl_py = test_GaussLegendre_py(x4, 2.0/5.0, 11)
             print(f"C++ executed it in {time_gl_cpp} s, Python in {time_gl_py} s.")
 
-        case "3":
+        case 3:
             #compute integrals
             break
 
@@ -301,4 +298,4 @@ while continueChoice == 1:
             print("Invalid choice. Please choose a number between 1 and 3.")
             continue
 
-    continueChoice = int(input("Do you want to perform another analysis? (1 for Yes, 0 for No): "))
+    continueChoice = int(input("Do you want to perform another analysis? (1 for Yes): "))
