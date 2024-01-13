@@ -249,15 +249,34 @@ def Midpoint_cpp(function, trueValue, a, b, nBins):
     M = moduleC.Midpoint(a, b, nBins)
     moduleC.print_resultsMidpoint(function, M, trueValue)
 
+# Like in C++, define functions to compute the analysis of the result and print it
+def analysis(integrationValue, trueValue):
+    print("True value: {:.6e}".format(trueValue))
+    error = abs(trueValue - integrationValue)
+    abserror = abs(error / trueValue) * 100
+    tolerance = 10**(-15)
+
+    if error < tolerance:
+        print("Error: 0.000000e+00")
+        print("Absolute relative error: 0.000000e+00 %\n")
+    else:
+        print("Error: {:.6e}".format(error))
+        print("Absolute relative error: {:.6e} %\n".format(abserror))
+
+def print_results(integrationValue, trueValue):
+    print("\nIntegration with SciPy.")
+    print("Result: {:.6e}".format(integrationValue))
+    analysis(integrationValue, trueValue)
+
 @execution_time
 def test_Trapezoidal_cpp(function, trueValue, a, b, nBins):
     T = moduleC.Trapezoidal(a, b, nBins)
     moduleC.print_resultsTrapezoidal(function, T, trueValue)
 
 @execution_time
-def test_Trapezoidal_py(function, nodes):
+def test_Trapezoidal_py(function, trueValue, nodes):
     result = integrate.trapezoid(function, nodes)
-    print(f"The integration with SciPy gives {result}")
+    print_results(result, trueValue)
 
 @execution_time
 def test_Simpson_cpp(function, trueValue, a, b, nBins):
@@ -265,9 +284,9 @@ def test_Simpson_cpp(function, trueValue, a, b, nBins):
     moduleC.print_resultsSimpson(function, S, trueValue)
 
 @execution_time
-def test_Simpson_py(function, nodes):
+def test_Simpson_py(function, trueValue, nodes):
     result = integrate.simpson(function, nodes)
-    print(f"The integration with SciPy gives {result}")
+    print_results(result, trueValue)
 
 # Even though it's not Gauss, scipy.integrate.quad integrates between two points, so it's worth a comparison
 @execution_time
@@ -276,9 +295,9 @@ def test_twopointGauss_cpp(function, trueValue, a, b):
     moduleC.print_resultstwopointGauss(function, S, trueValue)
 
 @execution_time
-def test_twopoint_py(function, a, b):
+def test_twopoint_py(function, trueValue, a, b):
     result, _ = integrate.quad(function, a, b)
-    print(f"The integration with SciPy gives {result}")
+    print_results(result, trueValue)
 
 # For Gauss-Legendre the interval is fixed to [-1,1] due to numpy.polynomial.legendre.leggaus's definition
 # which was overloaded in the C++ method
@@ -288,9 +307,9 @@ def test_GaussLegendre_cpp(function, trueValue, nBins):
     moduleC.print_resultsGaussLegendre(function, GL, trueValue)
 
 @execution_time
-def test_GaussLegendre_py(function, nBins):
+def test_GaussLegendre_py(function, trueValue, nBins):
     result, _ = integrate.fixed_quad(function, -1, 1, n = nBins)
-    print(f"The integration with SciPy gives {result}")
+    print_results(result, trueValue)
 
 
 # Methods for computing the convergence order in C++ and in Python, decorated with execution time.
@@ -446,34 +465,34 @@ while continueChoice == 1:
             # Show a grid and the actual plot
             plt.grid(True)
             plt.show()
-
             break
 
         case "2":
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
+            print("\nIntegration of 3x+1 in [0,1]:")
             Midpoint_cpp("3*x+1", 2.5, 0, 1, 2)
 
             # In both SciPy's Trapezoidal and Simpson methods, you can optionally provide
             # the array over which the function is sampled i.e. the nodes
-            print("Compare the integration of x^3 in [0,1]")
+            print("Compare the integration of x^3 in [0,1].")
             test_Trapezoidal_cpp("x^3", 0.25, 0, 1, 5) # trueValue = 0.25, nBins = 5
             nodesT = np.linspace(0, 1, num = 5) # array in [0,1] of size 5 like nBins of cpp
-            test_Trapezoidal_py(nodesT**3, nodesT)
+            test_Trapezoidal_py(nodesT**3, 0.25, nodesT)
 
-            print("Compare the integration of x^2 in [1,4]")
+            print("\nCompare the integration of x^2 in [1,4].")
             test_Simpson_cpp("x^2", 21.0, 1, 4, 3) # trueValue = 21, nBins = 3
             nodesS = np.array([1, 3, 4]) # array in [1,4] of size 3 like nBins of cpp
-            test_Simpson_py(nodesS**2, nodesS)
+            test_Simpson_py(nodesS**2, 21.0, nodesS)
 
-            print("Compare the integration of x^2 in [0,4]")
+            print("\nCompare the integration of x^2 in [0,4].")
             test_twopointGauss_cpp("x^2", 64.0/3.0, 0, 4) # trueValue = 64/3 = 21.333
             x2 = lambda x: x**2
-            test_twopoint_py(x2, 0, 4) # uses integrate.quad, see def above for more
+            test_twopoint_py(x2, 64.0/3.0, 0, 4) # uses integrate.quad, see def above for more
 
-            print("Compare the integration of x^4 in [-1,1]")
+            print("\nCompare the integration of x^4 in [-1,1].")
             test_GaussLegendre_cpp("x^4", 2.0/5.0, 11) # trueValue = 2/5 = 0.4, nBins = 11
             x4 = lambda x: x**4
-            test_GaussLegendre_py(x4, 11)
+            test_GaussLegendre_py(x4, 2.0/5.0, 11)
             break
 
         case "3":

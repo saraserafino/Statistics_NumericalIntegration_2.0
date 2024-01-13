@@ -140,7 +140,7 @@ template<typename T>
 void print_results (const std::string& function, const T& method, const double true_value) {
     try {
         const double integration_value = Integrate(function, method);
-        std::cout << "Integration of " << function << " with the "
+        std::cout << "Integration with the "
         << boost::typeindex::type_id<T>().pretty_name() << " method." << std::endl;
 
         std::cout << "Result: " << std::scientific << std::setprecision(6) << integration_value << std::endl;
