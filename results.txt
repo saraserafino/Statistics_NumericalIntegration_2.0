@@ -1,0 +1,10 @@
+Statistics operations with NBA players
+
+Mean of 2PA:
+C++ result: 4.981801242236016 
+Python result: 4.981801242236025
+C++ executed it in 0.024948835372924805 s, Python in 0.0034530162811279297 s.
+Standard deviation of Pts Won:
+C++ result: 67.83995545526868 
+Python result: 67.83995545526851
+C++ executed it in 0.02592301368713379 s, Python in 0.0022373199462890625 s.

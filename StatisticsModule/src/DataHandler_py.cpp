@@ -34,6 +34,7 @@ PYBIND11_MODULE(moduleA, m) {
         .def("calculateMedian", &StatOp::calculateMedian)
         .def("calculateStandardDeviation", &StatOp::calculateStandardDeviation)
         .def("calculateFrequency", &StatOp::calculateFrequency)
+        .def("calculateVariance", &StatOp::calculateVariance)
         .def("calculateClassification", &StatOp::calculateClassification)
         .def("calculateCorrelation", &StatOp::calculateCorrelation)
         // The implemented C++ method getColumn - which was used in main.cpp -

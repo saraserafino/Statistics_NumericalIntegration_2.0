@@ -1,5 +1,5 @@
-# Import the modules created with pybind11
-import moduleA
+# Numerical Integration module
+# Import the module created with pybind11
 import moduleC
 
 import numpy as np
@@ -10,237 +10,15 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import time # for the wrapper execution_time
-import sys
 
 # Decorator for computing the execution time
 def execution_time(func):
     def wrapper(*args, **kwargs):
         start = time.time()
         result = func(*args, **kwargs)
-        end = time.time()
-        print(f"{func.__name__} executed in {end - start} seconds.")
-        return result
+        executionTime = time.time() - start
+        return result, executionTime
     return wrapper
-
-# Statistics module
-
-# Definitions of the statistics methods both in C++ and in Python
-
-@execution_time
-def test_calculateMean_cpp(data):
-    return moduleA.calculateMean(data)
-
-@execution_time
-def test_calculateMean_py(data):
-    # If there's even a string
-    if any(isinstance(value, str) for value in data):
-        sys.exit("Cannot calculate mean for a string.")
-    # Otherwise compute it with NumPy
-    return np.mean(data)
-
-@execution_time
-def test_calculateMedian_cpp(data):
-    return moduleA.calculateMedian(data)
-
-@execution_time
-def test_calculateMedian_py(data):
-    if any(isinstance(value, str) for value in data):
-        sorted_values = data.sort_values()
-        median_index = len(sorted_values) // 2
-        median = sorted_values.iloc[median_index]
-    else: # If it's an int (like Age) return an int because it's cuter
-        median = np.median(data)
-    return median
-
-@execution_time
-def test_calculateStandardDeviation_cpp(data):
-    return moduleA.calculateStandardDeviation(data)
-
-@execution_time
-def test_calculateStandardDeviation_py(data):
-    # If there's even a string
-    if any(isinstance(value, str) for value in data):
-        sys.exit("Cannot calculate standard deviation for a string.")
-    # Otherwise compute it with NumPy
-    sd = np.std(data)
-    return sd
-
-@execution_time
-def test_calculateVariance_cpp(data):
-    return moduleA.calculateVariance(data)
-
-@execution_time
-def test_calculateVariance_py(data):
-    # If there's even a string
-    if any(isinstance(value, str) for value in data):
-        sys.exit("Cannot calculate variance for a string.")
-    # Otherwise compute it with NumPy
-    v = np.var(data)
-    return v
-
-@execution_time
-def test_calculateFrequency_cpp(data):
-    return moduleA.calculateFrequency(data)
-
-@execution_time
-def test_calculateFrequency_py(data):
-    return data.value_counts()
-
-@execution_time
-def test_calculateClassification_cpp(targetColumn, condition):
-    return moduleA.calculateClassification(targetColumn, condition)
-
-@execution_time
-def test_calculateCorrelation_cpp(data1, data2):
-    return moduleA.calculateCorrelation(data1, data2)
-
-# Plots
-
-# Plot the frequency with a bar plot
-def barplotFrequency(frequency, name):
-    # Create a DataFrame for Seaborn
-    dfsns = pd.DataFrame({'Values': frequency.index, 'Counts': frequency.values})
-    
-    # Sort the DataFrame by 'Values' in ascending order
-    dfsns = dfsns.sort_values(by = 'Values')
-    
-    # Use Seaborn to create a bar plot with rainbow colors
-    plt.figure(figsize=(10, 6))
-    sns.barplot(x = 'Values', y = 'Counts', hue = 'Values', data = dfsns, palette = 'rainbow', legend = False)
-    plt.xlabel(name)
-    plt.ylabel('Frequency')
-    plt.title(f'Frequency of {name}')
-    # Rotate x-axis labels for better readability in case some values are longer
-    plt.xticks(rotation = 45, ha = 'right')
-
-    # Annotate each bar with its count
-    for idx, count in enumerate(dfsns['Counts']):
-        plt.text(idx, count, f'{count}', ha = 'center', va = 'bottom')
-
-    plt.show()
-
-# Plot the frequency with a pie chart
-def pieplotFrequency(frequency, name):
-    # Use Seaborn to create a pie chart with pastel colors
-    plt.figure(figsize=(8, 8))  # make it bigger
-    sns.set_palette('pastel')
-    plt.title(f'Distribution of {name}')
-    plt.pie(frequency, labels = frequency.index, autopct = '%1.1f%%', startangle=90)
-    plt.show()
-
-# main of Statistics module
-
-# File path
-csvFile = moduleA.CSVHandler("data/player_data_03_22.csv")
-
-# Il file CSV devo darlo anche col metodo c++, altrimenti read_header (usato dalla classificazione) non funziona
-analysis = moduleA.StatOp(csvFile)
-
-# Read data from CSV file into NumPy arrays,
-df = pd.read_csv('data/player_data_03_22.csv', delimiter=',')
-
-headerNames = df.columns
-
-# Now you can access each column by its name
-Age = df['Age']
-Team = df['Team']
-#print(f"Prova che stampa la colonna Age: {Age}")
-#print(f"Mean: {test_calculateMean_py(Age)}")
-#print(f"Median: {test_calculateMedian_py(Age)}")
-AgeFrequency = test_calculateFrequency_py(Age)
-#print(f"Frequency: {AgeFrequency}")
-#print(f"Idem per Team: {Team}")
-#print(f"Median: {test_calculateMedian_py(Team)}")
-TeamFrequency = test_calculateFrequency_py(Team)
-#print(f"Frequency: {TeamFrequency}")
-
-#print(f"Let's see the frequency of teams in which the players play:\n")
-
-# Plot the frequency of Team with a bar plot and pie chart plot
-#pieplotFrequency(TeamFrequency, 'Team frequency')
-#barplotFrequency(TeamFrequency, 'Team')
-
-# Analysis of which programming language is faster. Chosen column: Age o magari generalizza
-
-# Plot the frequency of Age with a bar plot and pie chart plot
-#pieplotFrequency(AgeFrequency, 'Age frequency')
-#barplotFrequency(AgeFrequency, 'Age')
-
-#print("Now you can analyze statistics operations in columns of your choice.")
-#print("Note that for each computation it will be used either C++ or Python, depending on which was observed to be faster.")
-
-#print(f"The name of the columns are {headerNames[1:]}")
-# Without [1:], it prints '\ufeff0' as first value
-
-#moduleA.CSVHandler.create_output_path
-
-# Since in Python do-while doesn't exist, set this condition continueChoice
-# in order to run the while loop at least once
-continueChoice = 1
-while continueChoice == 1:
-    targetColumn = input("What is the name of the column you want to analyze? : ")
-
-    print("""
-    Select the analysis type:
-    1. Mean
-    2. Median
-    3. Standard Deviation
-    4. Variance
-    5. Frequency Count
-    6. Classification
-    7. Correlation
-    0. Exit
-    """)
-    choice = input("Enter the corresponding number: ")
-
-    # Switch case for Python
-    match choice:
-        case "0": # Exit loop if the user chooses 0
-            break
-
-        # Call result each result, so it can be written to an output file
-        
-        case "1":
-            #result = 
-            break
-
-        case "2":
-            
-            break
-
-        case "3":
-            
-            break
-
-        case "4":
-            
-            break
-
-        case "5":
-            
-            break
-
-        case "6":
-            
-            break
-
-        case "7":
-            
-            break
-
-        case _: # default case
-            print("Invalid choice. Please choose a number between 1 and 7.")
-            continue # Skip the rest of the loop and ask the user for a new choice
-
-    moduleA.writeResults(result)
-    print(f"Analysis completed: {result}")
-    continueChoice = input("Do you want to perform another analysis? (1 for Yes, 0 for No): ")
-
-print(f"All analyses completed. Results written to results/player_data_03_22_analysis.txt")
-
-
-
-# Numerical Integration module
 
 # Definitions of the integration methods both in C++ and in Python
 
@@ -340,7 +118,7 @@ def computeConvergenceOrderTrapezoidal_Simpson_py(function, exactIntegral, metho
     subintervals = []
     errors = []
     
-    print(f"Convergence order for {method} method with Python:\n")
+    print(f"\nConvergence order with Python:\n")
     # Initialize outside the loop
     previousError = 1.0
     upperbound = math.pi / 2.0
@@ -414,6 +192,8 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
 
 # main of Numerical Integration module
 
+# Since in Python do-while doesn't exist, set this condition continueChoice
+# in order to run the while loop at least once
 continueChoice = 1
 while continueChoice == 1:
     print("""
@@ -436,23 +216,24 @@ while continueChoice == 1:
             # Define the function for the computation of the convergence order
             cos = np.vectorize(np.cos)
 
-            subintervals_trap_cpp, errors_trap_cpp = computeConvergenceOrderTrapezoidal_cpp("cos(x)", 1.0)
-            subintervals_trap_py, errors_trap_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.trapezoid)
+            # The execution time given by the decorator will be used to plot the speeds, thus the actual result must be written between []
+            [subintervals_trap_cpp, errors_trap_cpp], time_trap_cpp = computeConvergenceOrderTrapezoidal_cpp("cos(x)", 1.0)
+            [subintervals_trap_py, errors_trap_py], time_trap_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.trapezoid)
             
-            subintervals_simp_cpp, errors_simp_cpp = computeConvergenceOrderSimpson_cpp("cos(x)", 1.0)
-            subintervals_simp_py, errors_simp_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.simpson)
+            [subintervals_simp_cpp, errors_simp_cpp], time_simp_cpp = computeConvergenceOrderSimpson_cpp("cos(x)", 1.0)
+            [subintervals_simp_py, errors_simp_py], time_simp_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.simpson)
             
             # The order of convergence of two point methods is not computed: being 2 points it would be mathematically inconsistent
             
-            subintervals_gl_cpp, errors_gl_cpp = computeConvergenceOrderGaussLegendre_cpp("cos(x)", 1.0)
-            subintervals_gl_py, errors_gl_py = computeConvergenceOrderGaussLegendre_py(cos, 1.0)
+            [subintervals_gl_cpp, errors_gl_cpp], time_gl_cpp = computeConvergenceOrderGaussLegendre_cpp("cos(x)", 1.0)
+            [subintervals_gl_py, errors_gl_py], time_gl_py = computeConvergenceOrderGaussLegendre_py(cos, 1.0)
 
             # Plot convergence for each compared method
             plt.plot(subintervals_trap_cpp, errors_trap_cpp, label = 'Trapezoidal Rule with C++', color = 'aquamarine')
             plt.plot(subintervals_trap_py, errors_trap_py, label = 'Trapezoidal Rule with Python', color = 'orchid')
             plt.plot(subintervals_simp_cpp, errors_simp_cpp, label = 'Simpson\'s Rule with C++', color = 'orange')
             plt.plot(subintervals_simp_py, errors_simp_py, label = 'Simpson\'s Rule with Python', color = 'mediumseagreen')
-            plt.plot(subintervals_gl_cpp, errors_gl_cpp, label = 'Gauss-Legendre Quadrature with both', color = 'red')
+            plt.plot(subintervals_gl_cpp, errors_gl_cpp, label = 'Gauss-Legendre Quadrature with a mixture', color = 'red')
             plt.plot(subintervals_gl_py, errors_gl_py, label = 'Gauss-Legendre Quadrature with Python', color = 'fuchsia')
             # Use logarithmic scale for a better visibility
             plt.xscale('log')
@@ -465,7 +246,21 @@ while continueChoice == 1:
             # Show a grid and the actual plot
             plt.grid(True)
             plt.show()
-            break
+
+            # Plot execution times for each compared method
+            methods = ['Trapezoidal', 'PyTrapezoidal', 'Simpson', 'PySimpson', 'Gauss-Legendre', 'PyGauss-Legendre']
+            executionTimes = [time_trap_cpp, time_trap_py, time_simp_cpp, time_simp_py, time_gl_cpp, time_gl_py]
+            plt.bar(methods, executionTimes, color=['aquamarine', 'orchid', 'orange', 'mediumseagreen', 'red', 'fuchsia'])
+            plt.xlabel('Integration Method')
+            plt.ylabel('Execution Time (s)')
+            plt.title('Execution Time of Numerical Integration Methods in C++ and Python')
+            # Rotate x-axis labels for better readability
+            plt.xticks(rotation = 45, ha = 'right')
+            # Annotate each bar with its execution time
+            for idx, times in enumerate(executionTimes):
+                plt.text(idx, times, f'{times:.4f}', ha = 'center', va = 'bottom')
+
+            plt.show()
 
         case "2":
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
@@ -475,25 +270,54 @@ while continueChoice == 1:
             # In both SciPy's Trapezoidal and Simpson methods, you can optionally provide
             # the array over which the function is sampled i.e. the nodes
             print("Compare the integration of x^3 in [0,1].")
-            test_Trapezoidal_cpp("x^3", 0.25, 0, 1, 5) # trueValue = 0.25, nBins = 5
+            res_trap_cpp, time_trap_cpp = test_Trapezoidal_cpp("x^3", 0.25, 0, 1, 5) # trueValue = 0.25, nBins = 5
             nodesT = np.linspace(0, 1, num = 5) # array in [0,1] of size 5 like nBins of cpp
-            test_Trapezoidal_py(nodesT**3, 0.25, nodesT)
+            res_trap_py, time_trap_py = test_Trapezoidal_py(nodesT**3, 0.25, nodesT)
 
             print("\nCompare the integration of x^2 in [1,4].")
-            test_Simpson_cpp("x^2", 21.0, 1, 4, 3) # trueValue = 21, nBins = 3
+            res_simp_cpp, time_simp_cpp = test_Simpson_cpp("x^2", 21.0, 1, 4, 3) # trueValue = 21, nBins = 3
             nodesS = np.array([1, 3, 4]) # array in [1,4] of size 3 like nBins of cpp
-            test_Simpson_py(nodesS**2, 21.0, nodesS)
+            res_simp_py, time_simp_py = test_Simpson_py(nodesS**2, 21.0, nodesS)
 
             print("\nCompare the integration of x^2 in [0,4].")
-            test_twopointGauss_cpp("x^2", 64.0/3.0, 0, 4) # trueValue = 64/3 = 21.333
+            res_tp_cpp, time_tp_cpp = test_twopointGauss_cpp("x^2", 64.0/3.0, 0, 4) # trueValue = 64/3 = 21.333
             x2 = lambda x: x**2
-            test_twopoint_py(x2, 64.0/3.0, 0, 4) # uses integrate.quad, see def above for more
+            res_tp_py, time_tp_py = test_twopoint_py(x2, 64.0/3.0, 0, 4) # uses integrate.quad, see def above for more
 
             print("\nCompare the integration of x^4 in [-1,1].")
-            test_GaussLegendre_cpp("x^4", 2.0/5.0, 11) # trueValue = 2/5 = 0.4, nBins = 11
+            res_gl_cpp, time_gl_cpp = test_GaussLegendre_cpp("x^4", 2.0/5.0, 11) # trueValue = 2/5 = 0.4, nBins = 11
             x4 = lambda x: x**4
-            test_GaussLegendre_py(x4, 2.0/5.0, 11)
-            break
+            res_gl_py, time_gl_py = test_GaussLegendre_py(x4, 2.0/5.0, 11)
+
+            # Assume che tu abbia una lista di tuple contenenti (nome, risultato, tempo) per ciascuna implementazione
+            method = [('Trapezoidal', res_trap_cpp, time_trap_cpp), ('PyTrapezoidal', res_trap_py, time_trap_py),
+                            ('Simpson', res_simp_cpp, time_simp_cpp), ('PySimpson', res_simp_py, time_simp_py),
+                            ('Two-point', res_tp_cpp, time_tp_cpp), ('PyTwo-point', res_tp_py, time_tp_py),
+                            ('Gauss-Legendre', res_gl_cpp, time_gl_cpp), ('PyGauss-Legendre', res_gl_py, time_gl_py),]
+
+            # Creare tutte le possibili coppie di implementazioni
+            pairs = [(method[i], method[j]) for i in range(len(method)) for j in range(i + 1, len(method))]
+
+            # Creare il grafico a barre per le coppie di implementazioni
+            fig, axes = plt.subplots(len(pairs), 1, figsize=(8, 4 * len(pairs)))
+
+            for i, (method_cpp, method_py) in enumerate(pairs):
+                names, results, execution_times = zip(method_cpp, method_py)
+                
+                # Bar chart
+                axes[i].bar(names, execution_times, color = ['skyblue', 'lightcoral'])
+                axes[i].set_ylabel('Execution Time (s)')
+                axes[i].set_title(f'Execution Time Comparison: {names[0]} vs {names[1]}')
+                
+                # Annotate each bar with its corresponding execution time
+                for j, times in enumerate(execution_times):
+                    axes[i].text(j, times + 0.1, f'{times:.2f}s', ha='center', va='bottom')
+
+                # Connect the bars with a line for visual comparison
+                axes[i].plot(names, execution_times, marker='o', linestyle='-', color='black', linewidth=2, markersize=8)
+
+            plt.tight_layout()
+            plt.show()
 
         case "3":
             #compute integrals
