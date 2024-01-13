@@ -23,12 +23,11 @@ PYBIND11_MODULE(moduleA, m) {
         .def("get_input_file_path", &CSVHandler::get_input_file_path)
         .def("get_input_file_name", &CSVHandler::get_input_file_name)
         .def("writeResults", &CSVHandler::writeResults)
-        // read_header è usato in getColumn e nella classificazione
-        // necessita di input_file_name e targetColumn
-        // Lo terrei solo per la classificazione ma per il resto farei con python
+        // The implemented C++ methods readData and getHeader will not be used because the data will
+        // be read with Python. read_header is needed though, because it's used in Classification.
+        // It needs input_file_name and targetColumn as inputs, so it's ok
         .def("read_header", &CSVHandler::read_header);
 
-    // This class is the same as in C++, except for the smart pointer which is removed
     py::class_<StatOp>(m, "StatOp")
         .def(py::init<const std::shared_ptr<CSVHandler>>(), py::arg("CSVfile"))
         .def("calculateMean", &StatOp::calculateMean)
@@ -37,10 +36,9 @@ PYBIND11_MODULE(moduleA, m) {
         .def("calculateFrequency", &StatOp::calculateFrequency)
         .def("calculateClassification", &StatOp::calculateClassification)
         .def("calculateCorrelation", &StatOp::calculateCorrelation)
-        // getColumn usa read_header, restituisce data
-        // viene usato in main.cpp per ottenere i valori di data ogni volta
-        // quindi potrei non usare getColumn e farlo con python
-        //.def("getColumn", &StatOp::getColumn)
+        // The implemented C++ method getColumn - which was used in main.cpp -
+        // will not be used because data will be processed with Python.
+        // check se hai bisogno di questi
         .def("begin", &StatOp::begin)
         .def("end", &StatOp::end);
 }

@@ -1,6 +1,7 @@
 # Import the modules created with pybind11
 import moduleA
 import moduleC
+
 import numpy as np
 import math
 import scipy.integrate as integrate
@@ -10,9 +11,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import time # for the wrapper execution_time
 import sys
-
-# Nota per me stessa: tutte le parti in Python (def funzioni e loro esecuzione)
-# le ho già controllate con jupyter notebook e sono corrette (eccetto moduleA in corso)
 
 # Decorator for computing the execution time
 def execution_time(func):
@@ -46,10 +44,12 @@ def test_calculateMedian_cpp(data):
 
 @execution_time
 def test_calculateMedian_py(data):
-    # If it's an int (like Age) return an int because it's cuter
-    median = np.median(data)
-    if isinstance(median, int):
-        median = int(median)
+    if any(isinstance(value, str) for value in data):
+        sorted_values = data.sort_values()
+        median_index = len(sorted_values) // 2
+        median = sorted_values.iloc[median_index]
+    else: # If it's an int (like Age) return an int because it's cuter
+        median = np.median(data)
     return median
 
 @execution_time
@@ -80,16 +80,11 @@ def test_calculateVariance_py(data):
 
 @execution_time
 def test_calculateFrequency_cpp(data):
-    print(f"Frequency count with C++:\n {moduleA.calculateFrequency(data)}")
+    return moduleA.calculateFrequency(data)
 
 @execution_time
 def test_calculateFrequency_py(data):
-    # Compute the frequency
-    uniqueValues, counts = np.unique(data, return_counts = True)
-
-    print(f"Frequency count with NumPy:\n")
-    for value, count in zip(uniqueValues, counts):
-        print(f"{data} {value}: {count} occurrences")
+    return data.value_counts()
 
 @execution_time
 def test_calculateClassification_cpp(targetColumn, condition):
@@ -101,46 +96,36 @@ def test_calculateCorrelation_cpp(data1, data2):
 
 # Plots
 
-# Plot the frequency of each {columnName} with a bar plot
-def barplotFrequency(columnName):
-    # Compute the frequency
-    uniqueValues, counts = np.unique(columnName, return_counts = True)
-
+# Plot the frequency with a bar plot
+def barplotFrequency(frequency, name):
     # Create a DataFrame for Seaborn
-    data = {'Values': uniqueValues, 'Counts': counts}
-    df = pd.DataFrame(data)
-
+    dfsns = pd.DataFrame({'Values': frequency.index, 'Counts': frequency.values})
+    
+    # Sort the DataFrame by 'Values' in ascending order
+    dfsns = dfsns.sort_values(by = 'Values')
+    
     # Use Seaborn to create a bar plot with rainbow colors
     plt.figure(figsize=(10, 6))
-    sns.barplot(x = 'Values', y = 'Counts', hue = 'Values', data = df, palette = 'rainbow', legend = False)
-    plt.xlabel(columnName)
+    sns.barplot(x = 'Values', y = 'Counts', hue = 'Values', data = dfsns, palette = 'rainbow', legend = False)
+    plt.xlabel(name)
     plt.ylabel('Frequency')
-    plt.title(f'Frequency of {columnName}')
+    plt.title(f'Frequency of {name}')
     # Rotate x-axis labels for better readability in case some values are longer
     plt.xticks(rotation = 45, ha = 'right')
 
     # Annotate each bar with its count
-    for idx, count in enumerate(counts):
+    for idx, count in enumerate(dfsns['Counts']):
         plt.text(idx, count, f'{count}', ha = 'center', va = 'bottom')
 
     plt.show()
 
-# Plot the frequency of each {columnName} with a pie chart
-def pieplotFrequency(columnName):
-    # Compute the frequency
-    # in solo python avevo scritto così
-    #uniqueValues, counts = np.unique(column[columnName][1:], return_counts=True)
-    uniqueValues, counts = np.unique(columnName, return_counts=True)
-
-    # Create a DataFrame for Seaborn
-    data = {'Counts': counts}
-    df = pd.DataFrame(data, index = uniqueValues)
-
+# Plot the frequency with a pie chart
+def pieplotFrequency(frequency, name):
     # Use Seaborn to create a pie chart with pastel colors
-    plt.figure(figsize=(8, 8)) # make it bigger
+    plt.figure(figsize=(8, 8))  # make it bigger
     sns.set_palette('pastel')
-    plt.title(f'Distribution of {columnName}')
-    plt.pie(df['Counts'], labels = df.index, autopct = '%1.1f%%', startangle = 90)
+    plt.title(f'Distribution of {name}')
+    plt.pie(frequency, labels = frequency.index, autopct = '%1.1f%%', startangle=90)
     plt.show()
 
 # main of Statistics module
@@ -152,49 +137,42 @@ csvFile = moduleA.CSVHandler("data/player_data_03_22.csv")
 analysis = moduleA.StatOp(csvFile)
 
 # Read data from CSV file into NumPy arrays,
-# Specifica i tipi di dati per ogni colonna (dtype=None significa che NumPy dovrebbe indovinare il tipo)
-#types = [('column1', str), ('column2', int), ('column3', int)]
-#csvarrays = np.genfromtxt('Advanced Programming/Homework3_Serafino/data/player_data_03_22.csv', delimiter=',', dtype = types)
-csvarrays = np.genfromtxt('data/player_data_03_22.csv', delimiter=',')
-# pandas
+df = pd.read_csv('data/player_data_03_22.csv', delimiter=',')
 
-headerNames = csvarrays[0,:]
-
-# To store data, create a vector column for each name in the header
-column = {}
-for i, columnName in enumerate(headerNames):
-    column[columnName] = csvarrays[1:, i]
+headerNames = df.columns
 
 # Now you can access each column by its name
-print(f"Prova che stampa la colonna Age: {column['Age']}")
-print(column['Team'])
+Age = df['Age']
+Team = df['Team']
+#print(f"Prova che stampa la colonna Age: {Age}")
+#print(f"Mean: {test_calculateMean_py(Age)}")
+#print(f"Median: {test_calculateMedian_py(Age)}")
+AgeFrequency = test_calculateFrequency_py(Age)
+#print(f"Frequency: {AgeFrequency}")
+#print(f"Idem per Team: {Team}")
+#print(f"Median: {test_calculateMedian_py(Team)}")
+TeamFrequency = test_calculateFrequency_py(Team)
+#print(f"Frequency: {TeamFrequency}")
 
-print(f"Let's see the frequency of teams in which the players play:\n")
+#print(f"Let's see the frequency of teams in which the players play:\n")
 
 # Plot the frequency of Team with a bar plot and pie chart plot
-Team = moduleA.getColumn('Team')
-pieplotFrequency(Team)
-barplotFrequency(Team)
+#pieplotFrequency(TeamFrequency, 'Team frequency')
+#barplotFrequency(TeamFrequency, 'Team')
 
 # Analysis of which programming language is faster. Chosen column: Age o magari generalizza
 
-Age = column['Age']
-
-test_calculateFrequency_cpp(Age)
-test_calculateFrequency_py(Age)
 # Plot the frequency of Age with a bar plot and pie chart plot
-pieplotFrequency(Age)
-barplotFrequency(Age)
+#pieplotFrequency(AgeFrequency, 'Age frequency')
+#barplotFrequency(AgeFrequency, 'Age')
 
-print("""
-      Now you can analyze statistics operations in columns of your choice.
-      Note that for each computation it will be used either C++ or Python, depending on which was observed to be faster.
-      """)
+#print("Now you can analyze statistics operations in columns of your choice.")
+#print("Note that for each computation it will be used either C++ or Python, depending on which was observed to be faster.")
 
-print(f"The name of the columns are {headerNames[1:]}")
+#print(f"The name of the columns are {headerNames[1:]}")
 # Without [1:], it prints '\ufeff0' as first value
 
-moduleA.create_output_path()
+#moduleA.CSVHandler.create_output_path
 
 # Since in Python do-while doesn't exist, set this condition continueChoice
 # in order to run the while loop at least once
@@ -318,19 +296,22 @@ def test_GaussLegendre_py(function, nBins):
 # Methods for computing the convergence order in C++ and in Python, decorated with execution time.
 # Notice that they return the subintervals and the errors, in this way a plot with Matplotlib can be made
 
+def computeConvergenceOrderMidpoint_cpp(function, exactIntegral):
+    subintervals, errors = moduleC.computeConvergenceOrderMidpoint(function, exactIntegral)
+
 @execution_time
 def computeConvergenceOrderTrapezoidal_cpp(function, exactIntegral):
-    subintervals, errors = moduleC.computeConvergenceOrderTrapezoidal("cos(x)", 1.0)
+    subintervals, errors = moduleC.computeConvergenceOrderTrapezoidal(function, exactIntegral)
     return subintervals, errors
 
 @execution_time
 def computeConvergenceOrderSimpson_cpp(function, exactIntegral):
-    subintervals, errors = moduleC.computeConvergenceOrderSimpson("cos(x)", 1.0)
+    subintervals, errors = moduleC.computeConvergenceOrderSimpson(function, exactIntegral)
     return subintervals, errors
 
 @execution_time
 def computeConvergenceOrderGaussLegendre_cpp(function, exactIntegral):
-    subintervals, errors = moduleC.computeConvergenceOrderGaussLegendre("cos(x)", 1.0)
+    subintervals, errors = moduleC.computeConvergenceOrderGaussLegendre(function, exactIntegral)
     return subintervals, errors
 
 # Since the Trapezoidal and the Simpson method have in common the arguments, write just one function
@@ -441,7 +422,7 @@ while continueChoice == 1:
 
         case "1":
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
-            moduleC.computeConvergenceOrderMidpoint("cos(x)", 1.0)
+            computeConvergenceOrderMidpoint_cpp("cos(x)", 1.0)
 
             # Define the function for the computation of the convergence order
             cos = np.vectorize(np.cos)
