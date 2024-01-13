@@ -144,10 +144,10 @@ def pieplotFrequency(frequency, name):
     plt.show()
 
 # Plot a nested barplot by operation and language to compare execution times and absolute error
-def catplotCompare(resultsColumn, AbsError):
-    resultsColumn_df = pd.DataFrame(resultsColumn)
-    # Use catplot by seaborn. The pairs are made based on the operation (C++ or Python)
-    g = sns.catplot(data = resultsColumn_df, kind = 'bar', x = 'Operation', y = 'ExecutionTime', hue = 'Language', height = 6, aspect = 1.5)
+def catplotCompare(results, AbsError):
+    results_df = pd.DataFrame(results)
+    # Use catplot by seaborn. The pairs are made based on the language (C++ or Python)
+    g = sns.catplot(data = results_df, kind = 'bar', x = 'Operation', y = 'ExecutionTime', hue = 'Language', height = 6, aspect = 1.5)
     g.set_axis_labels('', 'Time (s)')
     g.legend.set_title('')
     # Annotate each couple of bars with the absolute error between C++ and Python (if present)
@@ -241,7 +241,7 @@ print(f"\nThe names of the columns are {header[1:]}")
 # Without [1:], it prints '0' as first value because the first column is the enumeration of rows
 
 # Create the output path outside the loop, otherwise it gets cleaned every time
-output_file_path = "results.txt"
+output_file_path = "NBAresults.txt"
 
 # Check if the file already exists, if so, overwrite it
 if os.path.exists(output_file_path):

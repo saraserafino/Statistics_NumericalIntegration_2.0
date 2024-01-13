@@ -7,7 +7,10 @@ import math
 import scipy.integrate as integrate
 from scipy.integrate import trapezoid, simpson, quad, fixed_quad
 import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 import time # for the wrapper execution_time
+import os
 
 # Decorator for computing the execution time
 def execution_time(func):
@@ -182,10 +185,31 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
     print("\n")
     return subintervals, errors
 
+# TOGLILO SE ALLA FINE NON LO USI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Plot a nested barplot by method and language to compare execution times and absolute error
+def catplotCompare(results, AbsError):
+    results_df = pd.DataFrame(results)
+    # Use catplot by seaborn. The pairs are made based on the language (C++ or Python)
+    g = sns.catplot(data = results_df, kind = 'bar', x = 'Method', y = 'ExecutionTime', hue = 'Language', height = 6, aspect = 1.5)
+    g.set_axis_labels('', 'Time (s)')
+    g.legend.set_title('')
+    # Annotate each couple of bars with the absolute error between C++ and Python (if present)
+    for idx, err in enumerate(AbsError):
+        plt.text(idx, err, f'{err}', ha = 'center', fontsize = 'medium', weight = 'bold')
+    plt.show()
 
 # ----------------
 # main of module C
 # ----------------
+
+# Create the output path outside the loop, otherwise it gets cleaned every time
+output_file_path = "IntegrationResults.txt"
+
+# Check if the file already exists, if so, overwrite it
+if os.path.exists(output_file_path):
+    with open(output_file_path, 'w') as file:
+        file.write('Numerical Integration analysis\n\n')
+
 
 # Since in Python do-while doesn't exist, set this condition continueChoice
 # in order to run the while loop at least once
@@ -205,6 +229,7 @@ while continueChoice == 1:
             print("Exiting...")
             break
 
+        # description, result and timeExecution are defined in every case for writing them in the output file
         case 1:
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
             computeConvergenceOrderMidpoint_cpp("cos(x)", 1.0)
@@ -243,6 +268,7 @@ while continueChoice == 1:
             plt.legend()
             # Show a grid and the actual plot
             plt.grid(True)
+            input("\nPress enter to visualize a plot for the convergence of each compared method.")
             plt.show()
 
             # Plot execution times for each compared method
@@ -257,7 +283,24 @@ while continueChoice == 1:
             # Annotate each bar with its execution time
             for idx, times in enumerate(executionTimes):
                 plt.text(idx, times, f'{times:.4f}', ha = 'center', va = 'bottom')
+            input("\nPress enter to visualize a plot for the execution times of each compared method.")
             plt.show()
+
+            # Create a list with the absolute errors between C++ and Python. For computing it, they must have the same type
+            # And we're interested only in the last error (so [-1])
+            errors_trap_cpp[-1] = float(errors_trap_cpp[-1])
+            errors_simp_cpp[-1] = float(errors_simp_cpp[-1])
+            errors_gl_cpp[-1] = float(errors_gl_cpp[-1])
+            AbsErrorConvergence = [abs(errors_trap_cpp[-1] - errors_trap_py[-1]), abs(errors_simp_cpp[-1] - errors_simp_py[-1]), abs(errors_gl_cpp[-1] - errors_gl_py[-1])]
+            # Create the base for a DataFrame with the results
+            resultsConvergence = {
+                'Language': ['C++', 'Python', 'C++', 'Python', 'C++', 'Python'],
+                'Method': ['Trapezoidal', 'Trapezoidal', 'Simpson', 'Simpson', 'Gauss-Legendre', 'Gauss-Legendre'],
+                'Error': [errors_trap_cpp[-1], errors_trap_py[-1], errors_simp_cpp[-1], errors_simp_py[-1], errors_gl_cpp[-1], errors_gl_py[-1]],
+                'ExecutionTime': [time_trap_cpp, time_trap_py, time_simp_cpp, time_simp_py, time_gl_cpp, time_gl_py]
+            }
+            #input("\nPress enter to visualize a plot for the execution times of each compared method.")
+            #catplotCompare(resultsConvergence, AbsErrorConvergence)
 
         case 2:
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
@@ -298,4 +341,11 @@ while continueChoice == 1:
             print("Invalid choice. Please choose a number between 1 and 3.")
             continue
 
+    # Open the output file in append mode (so it doesn't overwrite)
+    #with open(output_file_path, 'a') as file:
+        #file.write(description + result + timeExecution + '\n')
+
+    #print(f"Analysis completed:\n{result}{timeExecution}")
     continueChoice = int(input("Do you want to perform another analysis? (1 for Yes): "))
+
+print(f"All analyses completed. Results written to {output_file_path}")
