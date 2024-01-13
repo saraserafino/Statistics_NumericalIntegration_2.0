@@ -6,8 +6,6 @@ import numpy as np
 import math
 import scipy.integrate as integrate
 from scipy.integrate import trapezoid, simpson, quad, fixed_quad
-import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
 import time # for the wrapper execution_time
 
@@ -213,6 +211,8 @@ while continueChoice == 1:
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
             computeConvergenceOrderMidpoint_cpp("cos(x)", 1.0)
 
+
+            # Sarebbe più bello computare più volte e fare la media, ma dovrei cambiare le funzioni iniziali visto che dentro stampano
             # Define the function for the computation of the convergence order
             cos = np.vectorize(np.cos)
 
@@ -269,55 +269,29 @@ while continueChoice == 1:
 
             # In both SciPy's Trapezoidal and Simpson methods, you can optionally provide
             # the array over which the function is sampled i.e. the nodes
-            print("Compare the integration of x^3 in [0,1].")
+            print("Compare the integration of x^3 in [0,1].\n")
             res_trap_cpp, time_trap_cpp = test_Trapezoidal_cpp("x^3", 0.25, 0, 1, 5) # trueValue = 0.25, nBins = 5
             nodesT = np.linspace(0, 1, num = 5) # array in [0,1] of size 5 like nBins of cpp
             res_trap_py, time_trap_py = test_Trapezoidal_py(nodesT**3, 0.25, nodesT)
+            print(f"C++ executed it in {time_trap_cpp} s, Python in {time_trap_py} s.")
 
-            print("\nCompare the integration of x^2 in [1,4].")
+            print("\nCompare the integration of x^2 in [1,4].\n")
             res_simp_cpp, time_simp_cpp = test_Simpson_cpp("x^2", 21.0, 1, 4, 3) # trueValue = 21, nBins = 3
             nodesS = np.array([1, 3, 4]) # array in [1,4] of size 3 like nBins of cpp
             res_simp_py, time_simp_py = test_Simpson_py(nodesS**2, 21.0, nodesS)
+            print(f"C++ executed it in {time_simp_cpp} s, Python in {time_simp_py} s.")
 
-            print("\nCompare the integration of x^2 in [0,4].")
+            print("\nCompare the integration of x^2 in [0,4].\n")
             res_tp_cpp, time_tp_cpp = test_twopointGauss_cpp("x^2", 64.0/3.0, 0, 4) # trueValue = 64/3 = 21.333
             x2 = lambda x: x**2
             res_tp_py, time_tp_py = test_twopoint_py(x2, 64.0/3.0, 0, 4) # uses integrate.quad, see def above for more
+            print(f"C++ executed it in {time_tp_cpp} s, Python in {time_tp_py} s.")
 
-            print("\nCompare the integration of x^4 in [-1,1].")
+            print("\nCompare the integration of x^4 in [-1,1].\n")
             res_gl_cpp, time_gl_cpp = test_GaussLegendre_cpp("x^4", 2.0/5.0, 11) # trueValue = 2/5 = 0.4, nBins = 11
             x4 = lambda x: x**4
             res_gl_py, time_gl_py = test_GaussLegendre_py(x4, 2.0/5.0, 11)
-
-            # Assume che tu abbia una lista di tuple contenenti (nome, risultato, tempo) per ciascuna implementazione
-            method = [('Trapezoidal', res_trap_cpp, time_trap_cpp), ('PyTrapezoidal', res_trap_py, time_trap_py),
-                            ('Simpson', res_simp_cpp, time_simp_cpp), ('PySimpson', res_simp_py, time_simp_py),
-                            ('Two-point', res_tp_cpp, time_tp_cpp), ('PyTwo-point', res_tp_py, time_tp_py),
-                            ('Gauss-Legendre', res_gl_cpp, time_gl_cpp), ('PyGauss-Legendre', res_gl_py, time_gl_py),]
-
-            # Creare tutte le possibili coppie di implementazioni
-            pairs = [(method[i], method[j]) for i in range(len(method)) for j in range(i + 1, len(method))]
-
-            # Creare il grafico a barre per le coppie di implementazioni
-            fig, axes = plt.subplots(len(pairs), 1, figsize=(8, 4 * len(pairs)))
-
-            for i, (method_cpp, method_py) in enumerate(pairs):
-                names, results, execution_times = zip(method_cpp, method_py)
-                
-                # Bar chart
-                axes[i].bar(names, execution_times, color = ['skyblue', 'lightcoral'])
-                axes[i].set_ylabel('Execution Time (s)')
-                axes[i].set_title(f'Execution Time Comparison: {names[0]} vs {names[1]}')
-                
-                # Annotate each bar with its corresponding execution time
-                for j, times in enumerate(execution_times):
-                    axes[i].text(j, times + 0.1, f'{times:.2f}s', ha='center', va='bottom')
-
-                # Connect the bars with a line for visual comparison
-                axes[i].plot(names, execution_times, marker='o', linestyle='-', color='black', linewidth=2, markersize=8)
-
-            plt.tight_layout()
-            plt.show()
+            print(f"C++ executed it in {time_gl_cpp} s, Python in {time_gl_py} s.")
 
         case "3":
             #compute integrals
@@ -327,4 +301,4 @@ while continueChoice == 1:
             print("Invalid choice. Please choose a number between 1 and 3.")
             continue
 
-    continueChoice = input("Do you want to perform another analysis? (1 for Yes, 0 for No): ")
+    continueChoice = int(input("Do you want to perform another analysis? (1 for Yes, 0 for No): "))

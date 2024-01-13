@@ -1,7 +1,0 @@
-README.md
-setup.py
-homework3.egg-info/PKG-INFO
-homework3.egg-info/SOURCES.txt
-homework3.egg-info/dependency_links.txt
-homework3.egg-info/not-zip-safe
-homework3.egg-info/top_level.txt

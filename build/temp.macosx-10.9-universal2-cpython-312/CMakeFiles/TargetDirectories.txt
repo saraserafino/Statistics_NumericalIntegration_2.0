@@ -1,4 +1,0 @@
-/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/temp.macosx-10.9-universal2-cpython-312/CMakeFiles/moduleC.dir
-/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/temp.macosx-10.9-universal2-cpython-312/CMakeFiles/moduleA.dir
-/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/temp.macosx-10.9-universal2-cpython-312/CMakeFiles/edit_cache.dir
-/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/temp.macosx-10.9-universal2-cpython-312/CMakeFiles/rebuild_cache.dir

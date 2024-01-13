@@ -19,10 +19,9 @@ PYBIND11_MODULE(moduleA, m) {
 
     py::class_<CSVHandler, std::shared_ptr<CSVHandler>>(m, "CSVHandler")
         .def(py::init<const std::string>(), py::arg("input_path"))
-        .def("create_output_path", &CSVHandler::create_output_path)
+        //.def("create_output_path", &CSVHandler::create_output_path)
         .def("get_input_file_path", &CSVHandler::get_input_file_path)
         .def("get_input_file_name", &CSVHandler::get_input_file_name)
-        .def("writeResults", &CSVHandler::writeResults)
         // The implemented C++ methods readData and getHeader will not be used because the data will
         // be read with Python. read_header is needed though, because it's used in Classification.
         // It needs input_file_name and targetColumn as inputs, so it's ok
@@ -39,7 +38,6 @@ PYBIND11_MODULE(moduleA, m) {
         .def("calculateCorrelation", &StatOp::calculateCorrelation)
         // The implemented C++ method getColumn - which was used in main.cpp -
         // will not be used because data will be processed with Python.
-        // check se hai bisogno di questi
         .def("begin", &StatOp::begin)
         .def("end", &StatOp::end);
 }

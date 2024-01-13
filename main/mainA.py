@@ -10,6 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import time # for the wrapper execution_time
 import os
+from typing import List, Optional, Union
 
 # Decorator for computing the execution time
 def execution_time(func):
@@ -80,11 +81,9 @@ def test_calculateFrequency_cpp(StatOpInstance, data):
 def test_calculateFrequency_py(data):
     return data.value_counts()
 
-@execution_time
 def test_calculateClassification_cpp(StatOpInstance, targetColumn, condition):
     return StatOpInstance.calculateClassification(targetColumn, condition)
 
-@execution_time
 def test_calculateCorrelation_cpp(StatOpInstance, data1, data2):
     return StatOpInstance.calculateCorrelation(data1, data2)
 
@@ -200,8 +199,7 @@ while continueChoice == 1:
         case "0": # Exit loop if the user chooses 0
             break
 
-        # Call result each result, so it can be written to an output file
-        
+        # description, result and timeExecution are defined in every case in order to write them in the output file
         case "1":
             try:
                 description = f"Mean of {targetColumn}:\n"
@@ -258,12 +256,23 @@ while continueChoice == 1:
                 pieplotFrequency(res_py, targetColumn)
 
         case "6":
-            
-            break
+            condition : str = (input("Enter the name of the feature you want to classify: "))
+            try:
+                description = f"Classification of {targetColumn}:\n"
+                result = test_calculateClassification_cpp(StatOpInstance, targetColumn, condition)
+                timeExecution = '' # The function didn't have a time decorator
+            except RuntimeError as e:
+                print("Error calculating classification.", str(e))
 
         case "7":
-            
-            break
+            targetColumn2 = input("Enter the name of the target column for correlation: ")
+            targetColumnData2 = df[targetColumn2]
+            try:
+                description = f"Correlation between {targetColumn} and {targetColumn2}:\n"
+                result = str(test_calculateCorrelation_cpp(StatOpInstance, targetColumnData, targetColumnData2))
+                timeExecution = '' # The function didn't have a time decorator
+            except RuntimeError as e:
+                print("Error calculating correlation.", str(e))
 
         case _: # default case
             print("Invalid choice. Please choose a number between 1 and 7.")
