@@ -110,7 +110,6 @@ std::tuple<std::vector<int>, std::vector<double>> computeConvergenceOrder(const 
                   << "  Error: " << std::scientific << std::setprecision(6) << error;
 
         if (nBins > 2) {
-            //double convergenceOrder = previousError/error;
             std::cout << "  Order: " << std::fixed << std::setprecision(2) << -p;
         }
         std::cout << "\n";

@@ -297,7 +297,7 @@ def test_GaussLegendre_py(function, nBins):
 # Notice that they return the subintervals and the errors, in this way a plot with Matplotlib can be made
 
 def computeConvergenceOrderMidpoint_cpp(function, exactIntegral):
-    subintervals, errors = moduleC.computeConvergenceOrderMidpoint(function, exactIntegral)
+    moduleC.computeConvergenceOrderMidpoint(function, exactIntegral)
 
 @execution_time
 def computeConvergenceOrderTrapezoidal_cpp(function, exactIntegral):
@@ -321,6 +321,7 @@ def computeConvergenceOrderTrapezoidal_Simpson_py(function, exactIntegral, metho
     subintervals = []
     errors = []
     
+    print(f"Convergence order for {method} method with Python:\n")
     # Initialize outside the loop
     previousError = 1.0
     upperbound = math.pi / 2.0
@@ -342,14 +343,8 @@ def computeConvergenceOrderTrapezoidal_Simpson_py(function, exactIntegral, metho
         errors.append(error)
         subintervals.append(nBins)
 
-        print(f"Convergence order for {method} method with Python:\n")
         # Output the error and convergence order
-        print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
-
-        if nBins > 2:
-            print(f"    Order: {-p:.2f}", end='')
-        
-        print("\n")
+        print(f"  Subintervals: {nBins:4d}  Error: {error:.6e}  Order: {-p:.2f}")
 
         previousError = error
         nBins *= 2
@@ -363,6 +358,7 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
     subintervals = []
     errors = []
     
+    print(f"Convergence order for Gauss-Legendre method with Python:\n")
     # Initialize outside the loop
     previousError = 1.0
     nBins = 2
@@ -381,14 +377,8 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
         errors.append(error)
         subintervals.append(nBins)
 
-        print(f"Convergence order for Gauss-Legendre method with Python:\n")
         # Output the error and convergence order
-        print(f"    Subintervals: {nBins:4d}    Error: {error:.6e}", end='')
-
-        if nBins > 2:
-            print(f"    Order: {-p:.2f}", end='')
-        
-        print("\n")
+        print(f"  Subintervals: {nBins:4d}  Error: {error:.6e}  Order: {-p:.2f}")
 
         previousError = error
         nBins *= 2
@@ -439,12 +429,12 @@ while continueChoice == 1:
             subintervals_gl_py, errors_gl_py = computeConvergenceOrderGaussLegendre_py(cos, 1.0)
 
             # Plot convergence for each compared method
-            plt.plot(subintervals_trap_cpp, errors_trap_cpp, label = 'Trapezoidal Rule')
-            plt.plot(subintervals_trap_py, errors_trap_py, label = 'PyTrapezoidal Rule')
-            plt.plot(subintervals_simp_cpp, errors_simp_cpp, label = 'Simpson\'s Rule')
-            plt.plot(subintervals_simp_py, errors_simp_py, label = 'PySimpson\'s Rule')
-            plt.plot(subintervals_gl_cpp, errors_gl_cpp, label = 'Gauss-Legendre Quadrature')
-            plt.plot(subintervals_gl_py, errors_gl_py, label = 'PyGauss-Legendre Quadrature')
+            plt.plot(subintervals_trap_cpp, errors_trap_cpp, label = 'Trapezoidal Rule with C++', color = 'aquamarine')
+            plt.plot(subintervals_trap_py, errors_trap_py, label = 'Trapezoidal Rule with Python', color = 'orchid')
+            plt.plot(subintervals_simp_cpp, errors_simp_cpp, label = 'Simpson\'s Rule with C++', color = 'orange')
+            plt.plot(subintervals_simp_py, errors_simp_py, label = 'Simpson\'s Rule with Python', color = 'mediumseagreen')
+            plt.plot(subintervals_gl_cpp, errors_gl_cpp, label = 'Gauss-Legendre Quadrature with both', color = 'red')
+            plt.plot(subintervals_gl_py, errors_gl_py, label = 'Gauss-Legendre Quadrature with Python', color = 'fuchsia')
             # Use logarithmic scale for a better visibility
             plt.xscale('log')
             plt.yscale('log')
