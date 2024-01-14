@@ -19,7 +19,7 @@ template<>
 double Integrate<GaussLegendre>(const std::string& function, const GaussLegendre& method);
 
 template <typename QuadratureMethod>
-std::tuple<std::vector<int>, std::vector<double>> computeConvergenceOrder(const std::string& function, const double exactIntegral);
+std::tuple<std::vector<double>, std::vector<double>> computeConvergenceOrder(const std::string& function, const double exactIntegral);
 
 // Analize the results
 void analysis (const double integration_value, const double true_value);

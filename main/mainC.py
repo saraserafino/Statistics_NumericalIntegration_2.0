@@ -117,10 +117,10 @@ def computeConvergenceOrderGaussLegendre_cpp(function, exactIntegral):
 @execution_time
 def computeConvergenceOrderTrapezoidal_Simpson_py(function, exactIntegral, method):
     # Lists for collecting convergence data
-    subintervals = []
     errors = []
+    orders = []
     
-    print(f"\nConvergence order with Python:\n")
+    #print(f"\nConvergence order with Python:\n")
     # Initialize outside the loop
     previousError = 1.0
     upperbound = math.pi / 2.0
@@ -136,28 +136,28 @@ def computeConvergenceOrderTrapezoidal_Simpson_py(function, exactIntegral, metho
         # Compute convergence order
         log_error = math.log(error)
         log_previousError = math.log(previousError)
-        p = (log_error - log_previousError) / math.log(2)
+        order = (log_error - log_previousError) / math.log(2)
 
         # Collect convergence data
         errors.append(error)
-        subintervals.append(nBins)
+        orders.append(-order)
 
         # Output the error and convergence order
-        print(f"  Subintervals: {nBins:4d}  Error: {error:.6e}  Order: {-p:.2f}")
+        #print(f"  Subintervals: {nBins:4d}  Error: {error:.6e}  Order: {-p:.2f}")
 
         previousError = error
         nBins *= 2
 
     print("\n")
-    return subintervals, errors
+    return errors, orders
 
 @execution_time
 def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
     # Lists for collecting convergence data
-    subintervals = []
     errors = []
+    orders = []
     
-    print(f"Convergence order for Gauss-Legendre method with Python:\n")
+    #print(f"Convergence order for Gauss-Legendre method with Python:\n")
     # Initialize outside the loop
     previousError = 1.0
     nBins = 2
@@ -170,20 +170,20 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
         # Compute convergence order
         log_error = math.log(error)
         log_previousError = math.log(previousError)
-        p = (log_error - log_previousError) / math.log(2)
+        order = (log_error - log_previousError) / math.log(2)
 
         # Collect convergence data
         errors.append(error)
-        subintervals.append(nBins)
+        orders.append(-order)
 
         # Output the error and convergence order
-        print(f"  Subintervals: {nBins:4d}  Error: {error:.6e}  Order: {-p:.2f}")
+        #print(f"  Subintervals: {nBins:4d}  Error: {error:.6e}  Order: {-order:.2f}")
 
         previousError = error
         nBins *= 2
 
     print("\n")
-    return subintervals, errors
+    return errors, orders
 
 # TOGLILO SE ALLA FINE NON LO USI!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Plot a nested barplot by method and language to compare execution times and absolute error
@@ -204,6 +204,7 @@ def catplotCompare(results, AbsError):
 
 # Create the output path outside the loop, otherwise it gets cleaned every time
 output_file_path = "IntegrationResults.txt"
+#DEVI SISTEMAREE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Check if the file already exists, if so, overwrite it
 if os.path.exists(output_file_path):
@@ -234,37 +235,73 @@ while continueChoice == 1:
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
             computeConvergenceOrderMidpoint_cpp("cos(x)", 1.0)
 
-            # Sarebbe più bello computare più volte e fare la media, ma dovrei cambiare le funzioni iniziali visto che dentro stampano
-
             # Define the function for the computation of the convergence order
             cos = np.vectorize(np.cos)
 
-            # The execution time given by the decorator will be used to plot the speeds, thus the actual result must be written between []
-            [subintervals_trap_cpp, errors_trap_cpp], time_trap_cpp = computeConvergenceOrderTrapezoidal_cpp("cos(x)", 1.0)
-            [subintervals_trap_py, errors_trap_py], time_trap_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.trapezoid)
-            
-            [subintervals_simp_cpp, errors_simp_cpp], time_simp_cpp = computeConvergenceOrderSimpson_cpp("cos(x)", 1.0)
-            [subintervals_simp_py, errors_simp_py], time_simp_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.simpson)
-            
-            # The order of convergence of two point methods is not computed: being 2 points it would be mathematically inconsistent
-            
-            [subintervals_gl_cpp, errors_gl_cpp], time_gl_cpp = computeConvergenceOrderGaussLegendre_cpp("cos(x)", 1.0)
-            [subintervals_gl_py, errors_gl_py], time_gl_py = computeConvergenceOrderGaussLegendre_py(cos, 1.0)
+            # Create a dictionary for each of the results computed in the for-cycle. Lastly we'll compute their average
+            methods = ['Trapezoidal', 'PyTrapezoidal', 'Simpson', 'PySimpson', 'Gauss-Legendre', 'PyGauss-Legendre']
+            results = {method: {'avg_errors': [], 'avg_orders': [], 'avg_time': []} for method in methods}
+
+            for i in range(11):
+                # The execution time given by the decorator will be used to plot the speeds, thus the actual result must be written between []
+                [errors_trap_cpp, orders_trap_cpp], time_trap_cpp = computeConvergenceOrderTrapezoidal_cpp("cos(x)", 1.0)
+                [errors_trap_py, orders_trap_py], time_trap_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.trapezoid)
+                
+                [errors_simp_cpp, orders_simp_cpp], time_simp_cpp = computeConvergenceOrderSimpson_cpp("cos(x)", 1.0)
+                [errors_simp_py, orders_simp_py], time_simp_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.simpson)
+                
+                # The order of convergence of two point methods is not computed: being 2 points it would be mathematically inconsistent
+                
+                [errors_gl_cpp, orders_gl_cpp], time_gl_cpp = computeConvergenceOrderGaussLegendre_cpp("cos(x)", 1.0)
+                [errors_gl_py, orders_gl_py], time_gl_py = computeConvergenceOrderGaussLegendre_py(cos, 1.0)
+                
+                # Append each result
+                results['Trapezoidal']['avg_errors'].append(errors_trap_cpp)
+                results['Trapezoidal']['avg_orders'].append(orders_trap_cpp)
+                results['Trapezoidal']['avg_time'].append(time_trap_cpp)
+                
+                results['PyTrapezoidal']['avg_errors'].append(errors_trap_py)
+                results['PyTrapezoidal']['avg_orders'].append(orders_trap_py)
+                results['PyTrapezoidal']['avg_time'].append(time_trap_py)
+                
+                results['Simpson']['avg_errors'].append(errors_simp_cpp)
+                results['Simpson']['avg_orders'].append(orders_simp_cpp)
+                results['Simpson']['avg_time'].append(time_simp_cpp)
+                
+                results['PySimpson']['avg_errors'].append(errors_simp_py)
+                results['PySimpson']['avg_orders'].append(orders_simp_py)
+                results['PySimpson']['avg_time'].append(time_simp_py)
+                
+                results['Gauss-Legendre']['avg_errors'].append(errors_gl_cpp)
+                results['Gauss-Legendre']['avg_orders'].append(orders_gl_cpp)
+                results['Gauss-Legendre']['avg_time'].append(time_gl_cpp)
+                
+                results['PyGauss-Legendre']['avg_errors'].append(errors_gl_py)
+                results['PyGauss-Legendre']['avg_orders'].append(orders_gl_py)
+                results['PyGauss-Legendre']['avg_time'].append(time_gl_py)
+
+            # Compute their averages
+            averages = {method: {'avg_errors': np.mean(results[method]['avg_errors'], axis = 0),
+                        'avg_orders': np.mean(results[method]['avg_orders']),
+                        'avg_time': np.mean(results[method]['avg_time'])} for method in methods}
+
+            # Recreate the subintervals of the above results (2, 4, 8, 16, 32, 64, ..., 1024)
+            subintervals = [int(math.pow(2, i)) for i in range(int(math.log2(2)), int(math.log2(1024)) + 1)]
 
             # Plot convergence for each compared method
-            plt.plot(subintervals_trap_cpp, errors_trap_cpp, label = 'Trapezoidal Rule with C++', color = 'aquamarine')
-            plt.plot(subintervals_trap_py, errors_trap_py, label = 'Trapezoidal Rule with Python', color = 'orchid')
-            plt.plot(subintervals_simp_cpp, errors_simp_cpp, label = 'Simpson\'s Rule with C++', color = 'orange')
-            plt.plot(subintervals_simp_py, errors_simp_py, label = 'Simpson\'s Rule with Python', color = 'mediumseagreen')
-            plt.plot(subintervals_gl_cpp, errors_gl_cpp, label = 'Gauss-Legendre Quadrature with a mixture', color = 'red')
-            plt.plot(subintervals_gl_py, errors_gl_py, label = 'Gauss-Legendre Quadrature with Python', color = 'fuchsia')
+            plt.plot(subintervals, averages['Trapezoidal']['avg_errors'], label = 'Trapezoidal Rule with C++', color = 'aquamarine')
+            plt.plot(subintervals, averages['PyTrapezoidal']['avg_errors'], label = 'Trapezoidal Rule with Python', color = 'orchid')
+            plt.plot(subintervals, averages['Simpson']['avg_errors'], label = 'Simpson\'s Rule with C++', color = 'orange')
+            plt.plot(subintervals, averages['PySimpson']['avg_errors'], label = 'Simpson\'s Rule with Python', color = 'mediumseagreen')
+            plt.plot(subintervals, averages['Gauss-Legendre']['avg_errors'], label = 'Gauss-Legendre Quadrature with a mixture', color = 'red')
+            plt.plot(subintervals, averages['PyGauss-Legendre']['avg_errors'], label = 'Gauss-Legendre Quadrature with Python', color = 'fuchsia')
             # Use logarithmic scale for a better visibility
             plt.xscale('log')
             plt.yscale('log')
             # Name the axis, give a title and show the legend
             plt.xlabel('Subintervals')
             plt.ylabel('Error')
-            plt.title('Convergence of Numerical Integration Methods in C++ and Python')
+            plt.title('Average Convergence of Numerical Integration Methods in C++ and Python')
             plt.legend()
             # Show a grid and the actual plot
             plt.grid(True)
@@ -272,12 +309,11 @@ while continueChoice == 1:
             plt.show()
 
             # Plot execution times for each compared method
-            methods = ['Trapezoidal', 'PyTrapezoidal', 'Simpson', 'PySimpson', 'Gauss-Legendre', 'PyGauss-Legendre']
-            executionTimes = [time_trap_cpp, time_trap_py, time_simp_cpp, time_simp_py, time_gl_cpp, time_gl_py]
+            executionTimes = {averages[method]['avg_time'] for method in methods}
             plt.bar(methods, executionTimes, color = ['aquamarine', 'orchid', 'orange', 'mediumseagreen', 'red', 'fuchsia'])
             plt.xlabel('Integration Method')
             plt.ylabel('Execution Time (s)')
-            plt.title('Execution Time of Numerical Integration Methods in C++ and Python')
+            plt.title('Average Execution Time of Numerical Integration Methods in C++ and Python')
             # Rotate x-axis labels for better readability
             plt.xticks(rotation = 45, ha = 'right')
             # Annotate each bar with its execution time
@@ -288,17 +324,17 @@ while continueChoice == 1:
 
             # Create a list with the absolute errors between C++ and Python. For computing it, they must have the same type
             # And we're interested only in the last error (so [-1])
-            errors_trap_cpp[-1] = float(errors_trap_cpp[-1])
-            errors_simp_cpp[-1] = float(errors_simp_cpp[-1])
-            errors_gl_cpp[-1] = float(errors_gl_cpp[-1])
-            AbsErrorConvergence = [abs(errors_trap_cpp[-1] - errors_trap_py[-1]), abs(errors_simp_cpp[-1] - errors_simp_py[-1]), abs(errors_gl_cpp[-1] - errors_gl_py[-1])]
+            #errors_trap_cpp[-1] = float(errors_trap_cpp[-1])
+            #errors_simp_cpp[-1] = float(errors_simp_cpp[-1])
+            #errors_gl_cpp[-1] = float(errors_gl_cpp[-1])
+            #AbsErrorConvergence = [abs(errors_trap_cpp[-1] - errors_trap_py[-1]), abs(errors_simp_cpp[-1] - errors_simp_py[-1]), abs(errors_gl_cpp[-1] - errors_gl_py[-1])]
             # Create the base for a DataFrame with the results
-            resultsConvergence = {
-                'Language': ['C++', 'Python', 'C++', 'Python', 'C++', 'Python'],
-                'Method': ['Trapezoidal', 'Trapezoidal', 'Simpson', 'Simpson', 'Gauss-Legendre', 'Gauss-Legendre'],
-                'Error': [errors_trap_cpp[-1], errors_trap_py[-1], errors_simp_cpp[-1], errors_simp_py[-1], errors_gl_cpp[-1], errors_gl_py[-1]],
-                'ExecutionTime': [time_trap_cpp, time_trap_py, time_simp_cpp, time_simp_py, time_gl_cpp, time_gl_py]
-            }
+            #resultsConvergence = {
+             #   'Language': ['C++', 'Python', 'C++', 'Python', 'C++', 'Python'],
+              #  'Method': ['Trapezoidal', 'Trapezoidal', 'Simpson', 'Simpson', 'Gauss-Legendre', 'Gauss-Legendre'],
+               # 'Error': [errors_trap_cpp[-1], errors_trap_py[-1], errors_simp_cpp[-1], errors_simp_py[-1], errors_gl_cpp[-1], errors_gl_py[-1]],
+                #'ExecutionTime': [time_trap_cpp, time_trap_py, time_simp_cpp, time_simp_py, time_gl_cpp, time_gl_py]
+            #}
             #input("\nPress enter to visualize a plot for the execution times of each compared method.")
             #catplotCompare(resultsConvergence, AbsErrorConvergence)
 
@@ -348,4 +384,4 @@ while continueChoice == 1:
     #print(f"Analysis completed:\n{result}{timeExecution}")
     continueChoice = int(input("Do you want to perform another analysis? (1 for Yes): "))
 
-print(f"All analyses completed. Results written to {output_file_path}")
+#print(f"All analyses completed. Results written to {output_file_path}")

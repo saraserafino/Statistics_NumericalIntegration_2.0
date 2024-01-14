@@ -71,11 +71,11 @@ double Integrate<GaussLegendre>(const std::string& function, const GaussLegendre
 }
     
 template <typename QuadratureMethod>
-std::tuple<std::vector<int>, std::vector<double>> computeConvergenceOrder(const std::string& function, const double exactIntegral) {
+std::tuple<std::vector<double>, std::vector<double>> computeConvergenceOrder(const std::string& function, const double exactIntegral) {
     static_assert(std::is_base_of<Quadrature, QuadratureMethod>::value, "QuadratureMethod must be derived from Quadrature.");
     // Vectors for collecting convergence data
-    std::vector<int> subintervals;
     std::vector<double> errors;
+    std::vector<double> orders;
 
     // Create the parser instance
     mup::ParserX parser;
@@ -84,8 +84,8 @@ std::tuple<std::vector<int>, std::vector<double>> computeConvergenceOrder(const 
     const double a = 0.0;  // Lower limit of integration
     const double b = M_PI / 2.0;  // Upper limit of integration
 
-    std::cout << "Convergence order for " << boost::typeindex::type_id<QuadratureMethod>().pretty_name()
-                << " method:\n";
+    //std::cout << "Convergence order for " << boost::typeindex::type_id<QuadratureMethod>().pretty_name()
+    //            << " method:\n";
     // Initialize outside the loop
     double previousError = 1.0;
 
@@ -99,25 +99,25 @@ std::tuple<std::vector<int>, std::vector<double>> computeConvergenceOrder(const 
         // Compute convergence order
         auto log_error = log(error);
         auto log_previous_error = log(previousError);
-        auto p = (log_error - log_previous_error) / (log(2));
+        auto order = (log_error - log_previous_error) / (log(2));
 
         // Collect convergence data
         errors.push_back(error);
-        subintervals.push_back(nBins);
+        orders.push_back(-order);
 
         // Output the error and convergence order
-        std::cout << "  Subintervals: " << std::setw(4) << nBins
-                  << "  Error: " << std::scientific << std::setprecision(6) << error;
+        //std::cout << "  Subintervals: " << std::setw(4) << nBins
+        //          << "  Error: " << std::scientific << std::setprecision(6) << error;
 
-        if (nBins > 2) {
-            std::cout << "  Order: " << std::fixed << std::setprecision(2) << -p;
-        }
-        std::cout << "\n";
+        //if (nBins > 2) {
+        //    std::cout << "  Order: " << std::fixed << std::setprecision(2) << -order;
+        //}
+        //std::cout << "\n";
 
         previousError = error;
     }
     std::cout << "\n";
-    return std::make_tuple(subintervals, errors);
+    return std::make_tuple(errors, orders);
 };
 
 // Analize the results

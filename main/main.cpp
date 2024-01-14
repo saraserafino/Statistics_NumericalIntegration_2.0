@@ -183,8 +183,20 @@ int main() {
                 computeConvergenceOrder<Midpoint>("cos(x)", 1.0);
                 computeConvergenceOrder<Trapezoidal>("cos(x)", 1.0);
                 computeConvergenceOrder<Simpson>("cos(x)", 1.0);
+
+                // for printing decomment this and fix it accordingly
+                // for (unsigned int nBins = 2; nBins <= 1024; nBins *= 2) {
+                    //std::cout << "  Subintervals: " << std::setw(4) << nBins
+                    //          << "  Error: " << std::scientific << std::setprecision(6) << error;
+
+                    //if (nBins > 2) {
+                    //    std::cout << "  Order: " << std::fixed << std::setprecision(2) << -order;
+                    //}
+                    //std::cout << "\n";
+                //}
+
                 //computeConvergenceOrder<GaussLegendre>("cos(x)", 1.0);
-                // questo dà memory leaks
+                // this gave memory leaks
                 break;
             case 2: {
                 Midpoint midpointRule(0, 1, 2);
