@@ -199,8 +199,8 @@ if os.path.exists(output_file_path):
 
 # Since in Python do-while doesn't exist, set this condition continueChoice
 # in order to run the while loop at least once
-continueChoice = 1
-while continueChoice == 1:
+continueChoice = "1"
+while continueChoice == "1":
     print("""
     Select the analysis type:
     1. Convergence order tests
@@ -210,7 +210,7 @@ while continueChoice == 1:
     choice = input("Enter the corresponding number: ")
     
     match choice:
-        case 0: # Exit loop if the user chooses 0
+        case "0": # Exit loop if the user chooses 0
             print("Exiting...")
             break
 
