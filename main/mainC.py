@@ -11,6 +11,7 @@ import pandas as pd
 import seaborn as sns
 import time # for the wrapper execution_time
 import os
+from tabulate import tabulate # for a cute table of results
 
 # Decorator for computing the execution time
 def execution_time(func):
@@ -336,11 +337,16 @@ while continueChoice == 1:
             nodesT = np.linspace(0, 1, num = 5) # array in [0,1] of size 5 like the above nBins
             [res_trap_py, err_trap_py], time_trap_py = test_Trapezoidal_py(nodesT**3, TrueValue, nodesT)
             abserr_trap_py = abs(err_trap_py / TrueValue) * 100
-            result += "                             C++                     Python\n"
-            result += f"Result:                     {res_trap_cpp:.6e}      {res_trap_py:.6e}\n"
-            result += f"Error:                      {err_trap_cpp:.6e}      {err_trap_py:.6e}\n"
-            result += f"Absolute relative error:    {abserr_trap_cpp:.6e}      {abserr_trap_py:.6e}\n"
-            result += f"Execution time (s):         {time_trap_cpp:.4f}       {time_trap_py:.4f}"
+            
+            # Prepare the results to be printed in a more uniform way with tabulate
+            header = ["", "C++", "Python"]
+            data_trap = [
+                    ["Result", res_trap_cpp, res_trap_py],
+                    ["Error", err_trap_cpp, err_trap_py],
+                    ["Absolute relative error (%)", abserr_trap_cpp, abserr_trap_py],
+                    ["Execution time (s)", time_trap_cpp, time_trap_py]
+                ]
+            result += tabulate(data_trap, header, tablefmt = "fancy_grid")
 
             TrueValue = 21.0
             result += f"\n\nCompare the integration of x^2 in [1,4] with Simpson's Rule.\nTrue value: {TrueValue:.6e}\n\n"
@@ -349,11 +355,14 @@ while continueChoice == 1:
             nodesS = np.array([1, 3, 4]) # array in [1,4] of size 3 like the above nBins
             [res_simp_py, err_simp_py], time_simp_py = test_Simpson_py(nodesS**2, TrueValue, nodesS)
             abserr_simp_py = abs(err_simp_py / TrueValue) * 100
-            result += "                             C++                     Python\n"
-            result += f"Result:                     {res_simp_cpp:.6e}      {res_simp_py:.6e}\n"
-            result += f"Error:                      {err_simp_cpp:.6e}      {err_simp_py:.6e}\n"
-            result += f"Absolute relative error:    {abserr_simp_cpp:.6e}      {abserr_simp_py:.6e}\n"
-            result += f"Execution time (s):         {time_simp_cpp:.4f}       {time_simp_py:.4f}"
+
+            data_simp = [
+                        ["Result", res_simp_cpp, res_simp_py],
+                        ["Error", err_simp_cpp, err_simp_py],
+                        ["Absolute relative error (%)", abserr_simp_cpp, abserr_simp_py],
+                        ["Execution time (s)", time_simp_cpp, time_simp_py]
+                    ]
+            result += tabulate(data_simp, header, tablefmt = "fancy_grid")
 
             TrueValue = 64.0/3.0 # = 21.333 with 3 periodic
             result += f"\n\nCompare the integration of x^2 in [0,4] with two-point Gauss.\nTrue value: {TrueValue:.6e}\n\n"
@@ -362,11 +371,14 @@ while continueChoice == 1:
             x2 = lambda x: x**2
             [res_tp_py, err_tp_py], time_tp_py = test_twopoint_py(x2, TrueValue, 0, 4) # uses integrate.quad, see def above for more
             abserr_tp_py = abs(err_tp_py / TrueValue) * 100
-            result += "                             C++                     Python\n"
-            result += f"Result:                     {res_tp_cpp:.6e}        {res_tp_py:.6e}\n"
-            result += f"Error:                      {err_tp_cpp:.6e}        {err_tp_py:.6e}\n"
-            result += f"Absolute relative error:    {abserr_tp_cpp:.6e}        {abserr_tp_py:.6e}\n"
-            result += f"Execution time (s):         {time_tp_cpp:.4f}              {time_tp_py:.4f}"
+
+            data_tp = [
+                        ["Result", res_tp_cpp, res_tp_py],
+                        ["Error", err_tp_cpp, err_tp_py],
+                        ["Absolute relative error (%)", abserr_tp_cpp, abserr_tp_py],
+                        ["Execution time (s)", time_tp_cpp, time_tp_py]
+                    ]
+            result += tabulate(data_tp, header, tablefmt = "fancy_grid")
 
             TrueValue = 2.0/5.0 # = 0.4
             result += f"\n\nCompare the integration of x^4 in [-1,1] with Gauss-Legendre.\nTrue value: {TrueValue:.6e}\n\n"
@@ -375,11 +387,14 @@ while continueChoice == 1:
             x4 = lambda x: x**4
             [res_gl_py, err_gl_py], time_gl_py = test_GaussLegendre_py(x4, 2.0/5.0, 11)
             abserr_gl_py = abs(err_gl_py / TrueValue) * 100
-            result += "                             C++                     Python\n"
-            result += f"Result:                     {res_gl_cpp:.6e}        {res_gl_py:.6e}\n"
-            result += f"Error:                      {err_gl_cpp:.6e}        {err_gl_py:.6e}\n"
-            result += f"Absolute relative error:    {abserr_gl_cpp:.6e}        {abserr_gl_py:.6e}\n"
-            result += f"Execution time (s):         {time_gl_cpp:.4f}              {time_gl_py:.4f}"
+
+            data_gl = [
+                        ["Result", res_gl_cpp, res_gl_py],
+                        ["Error", err_gl_cpp, err_gl_py],
+                        ["Absolute relative error (%)", abserr_gl_cpp, abserr_gl_py],
+                        ["Execution time (s)", time_gl_cpp, time_gl_py]
+                    ]
+            result += tabulate(data_gl, header, tablefmt = "fancy_grid")
 
         case _: # default case
             print("Invalid choice. Please choose a number between 0 and 2.")

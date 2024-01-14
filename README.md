@@ -86,13 +86,6 @@ Palesemente sono più veloci i metodi in py e sono anche piu accurati.
 Se intendi python usando i moduli tipo numpy ecc sappi che in realtà per essere veloci chiama c o c++
 Python in generale non è un linguaggio per le performance
 
-Solo GL è leggermente più lento, ma dà il risultato piu accurato:
-Integration of x^4 with the MODULEC::GaussLegendre method.
-Result: 4.509767e-01
-test_GaussLegendre_cpp executed in 0.0015377998352050781 seconds.
-The integration with SciPy gives 0.4000000000000011
-test_GaussLegendre_py executed in 0.0032677650451660156 seconds.
-
 
 Nei grafici di che si possono vedere i diversi ordini dei metodi Più è alto l’ordine più è ripida la discesa dell’errore
 Quando avrai anche gli altri dati, scrivi quali metodi sono piu veloci (guarda la convergenza perche ha i nBins uguali)
