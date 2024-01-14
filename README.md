@@ -106,6 +106,7 @@ Update immagine quando avrai plottato anche quelli di c++
   <img src="images/AverageExecutionTime.png" /><br>
  Average Execution Time of Numerical Integration Methods
 </p>
+Magari fai un plot con i metodi confrontati di integrali specifici mostrando errore e tempo?
 
 ## CMake and libraries
 Three CMake are provided: one for each of the two modules and one to actually compile. The two modules have their own namespaces (called MODULEA and MODULEC) and can be compiled both together or independently, setting the option ON from terminal when compiling. The Statistics module also uses the namespace ba for boost::accumulators inside the StatOp.cpp.  

@@ -115,7 +115,6 @@ def test_calculateCorrelation_py(data1, data2):
 def barplotFrequency(frequency, name):
     # Create a DataFrame for Seaborn
     df_sns = pd.DataFrame({'Values': frequency.index, 'Counts': frequency.values})
-    
     # Sort the DataFrame by 'Values' in ascending order
     df_sns = df_sns.sort_values(by = 'Values')
     
@@ -134,17 +133,18 @@ def barplotFrequency(frequency, name):
 
     plt.show()
 
-# Plot the frequency with a pie chart
+# Plot the distribution of the frequency with a pie chart
 def pieplotFrequency(frequency, name):
     # Use Seaborn to create a pie chart with pastel colors
-    plt.figure(figsize=(8, 8))  # make it bigger
+    plt.figure(figsize = (8, 8))  # make it bigger
     sns.set_palette('pastel')
     plt.title(f'Distribution of {name} frequency')
-    plt.pie(frequency, labels = frequency.index, autopct = '%1.1f%%', startangle=90)
+    plt.pie(frequency, labels = frequency.index, autopct = '%1.1f%%', startangle = 90)
     plt.show()
 
 # Plot a nested barplot by operation and language to compare execution times and absolute error
 def catplotCompare(results, AbsError):
+    # Create a dataframe for seaborn
     results_df = pd.DataFrame(results)
     # Use catplot by seaborn. The pairs are made based on the language (C++ or Python)
     g = sns.catplot(data = results_df, kind = 'bar', x = 'Operation', y = 'ExecutionTime', hue = 'Language', height = 6, aspect = 1.5)
@@ -170,7 +170,7 @@ df = pd.read_csv('data/player_data_03_22.csv', delimiter=',')
 header = df.columns
 
 print("Some statistics about the age of the players:\n")
-# Save the datas in order to compute df[] just once
+# Save the datas in order to compute df['name of the column'] just once
 Age = df['Age']
 
 # Compute the statistics to compare between C++ and Python
@@ -186,17 +186,18 @@ res_f_py, time_f_py = test_calculateFrequency_py(Age)
 # Create a list with the absolute errors between C++ and Python. For computing it, they must have the same type
 res_mean_cpp = float(res_mean_cpp)
 res_sd_cpp = float(res_sd_cpp)
+# For the frequency it's not computed because it would make no sense
 AbsErrorAge = [abs(res_mean_cpp - res_mean_py), abs(res_sd_cpp - res_sd_py)]
 # Create the base for a DataFrame with the results
 resultsAge = {
-    'Language': ['C++', 'Python', 'C++', 'Python', 'C++', 'Python'],
-    'Operation': ['Mean', 'Mean', 'StandardDeviation', 'StandardDeviation', 'Frequency', 'Frequency'],
-    'Result': [res_mean_cpp, res_mean_py, res_sd_cpp, res_sd_py, res_f_cpp, res_f_py],
-    'ExecutionTime': [time_mean_cpp, time_mean_py, time_sd_cpp, time_sd_py, time_f_cpp, time_f_py]
-}
+                'Language': ['C++', 'Python', 'C++', 'Python', 'C++', 'Python'],
+                'Operation': ['Mean', 'Mean', 'StandardDeviation', 'StandardDeviation', 'Frequency', 'Frequency'],
+                'Result': [res_mean_cpp, res_mean_py, res_sd_cpp, res_sd_py, res_f_cpp, res_f_py],
+                'ExecutionTime': [time_mean_cpp, time_mean_py, time_sd_cpp, time_sd_py, time_f_cpp, time_f_py]
+            }
 
-# In this way you don't get suddenly overwhelmed by datas and plots
 input("\nPress enter to visualize a catplot to compare execution times and absolute error for Age.")
+# With this input you don't get suddenly overwhelmed by datas and plots
 catplotCompare(resultsAge, AbsErrorAge)
 
 input("\nPress enter to visualize a bar plot of its frequency count.")
@@ -205,7 +206,7 @@ barplotFrequency(res_f_py, 'Age')
 input("\nPress enter to visualize a pie chart plot for its distribution.")
 pieplotFrequency(res_f_py, 'Age')
 
-# Same as before but with Team
+# Same as before but with Team (which has non numerical values)
 print("\nSome statistics about the teams of the players:\n")
 Team = df['Team']
 
@@ -215,16 +216,15 @@ res_median_py, time_median_py = test_calculateMedian_py(Team)
 res_f_cpp, time_f_cpp = test_calculateFrequency_cpp(StatOpInstance, Team)
 res_f_py, time_f_py = test_calculateFrequency_py(Team)
 
-AbsErrorTeam = []
 resultsTeam = {
-    'Language': ['C++', 'Python', 'C++', 'Python'],
-    'Operation': ['Median', 'Median', 'Frequency', 'Frequency'],
-    'Result': [res_median_cpp, res_median_py, res_f_cpp, res_f_py],
-    'ExecutionTime': [time_median_cpp, time_median_py, time_f_cpp, time_f_py]
-}
+                'Language': ['C++', 'Python', 'C++', 'Python'],
+                'Operation': ['Median', 'Median', 'Frequency', 'Frequency'],
+                'Result': [res_median_cpp, res_median_py, res_f_cpp, res_f_py],
+                'ExecutionTime': [time_median_cpp, time_median_py, time_f_cpp, time_f_py]
+            }
 
 input("Press enter to visualize a catplot to compare execution times for Team.")
-catplotCompare(resultsTeam, AbsErrorTeam)
+catplotCompare(resultsTeam, []) # Absolute error is empty
 print(f"Median with C++ is: {res_median_cpp} \nWith Python: {res_median_py}\n")
 
 input("\nPress enter to visualize a bar plot of the frequency count for each Team.")
@@ -238,11 +238,10 @@ print("\nNow you can analyze statistics operations in columns of your choice.")
 
 # Print the header so the user can see the options
 print(f"\nThe names of the columns are {header[1:]}")
-# Without [1:], it prints '0' as first value because the first column is the enumeration of rows
+# Without [1:], it prints '0' as first value because the column 0 is the enumeration of rows
 
 # Create the output path outside the loop, otherwise it gets cleaned every time
-output_file_path = "NBAresults.txt"
-
+output_file_path = "player_data_03_22_analysis.txt"
 # Check if the file already exists, if so, overwrite it
 if os.path.exists(output_file_path):
     with open(output_file_path, 'w') as file:
@@ -255,6 +254,7 @@ while continueChoice == 1:
     targetColumn = input("What is the name of the column you want to analyze? ")
     while targetColumn not in header:
         targetColumn = input("This column does not exist. Please insert a valid name: ")
+    # Save its datas
     targetColumnData = df[targetColumn]
 
     print("""

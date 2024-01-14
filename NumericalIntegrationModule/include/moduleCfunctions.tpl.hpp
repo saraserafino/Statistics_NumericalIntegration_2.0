@@ -84,8 +84,7 @@ std::tuple<std::vector<double>, std::vector<double>> computeConvergenceOrder(con
     const double a = 0.0;  // Lower limit of integration
     const double b = M_PI / 2.0;  // Upper limit of integration
 
-    //std::cout << "Convergence order for " << boost::typeindex::type_id<QuadratureMethod>().pretty_name()
-    //            << " method:\n";
+    //std::cout << "Convergence order:\n";
     // Initialize outside the loop
     double previousError = 1.0;
 
@@ -116,7 +115,7 @@ std::tuple<std::vector<double>, std::vector<double>> computeConvergenceOrder(con
 
         previousError = error;
     }
-    std::cout << "\n";
+    //std::cout << "\n";
     return std::make_tuple(errors, orders);
 };
 

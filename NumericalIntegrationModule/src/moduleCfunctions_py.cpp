@@ -75,16 +75,7 @@ PYBIND11_MODULE(moduleC, m) {
     m.def("computeConvergenceOrderGaussLegendre", &computeConvergenceOrder<GaussLegendre>,
         py::arg("function"), py::arg("exact integral"));
 
-    m.def("analysis", &analysis, py::arg("integration value"), py::arg("true value"));
-
-    m.def("print_resultsMidpoint", &print_results<Midpoint>,
-        py::arg("function"), py::arg("method"), py::arg("true value"));
-    m.def("print_resultsTrapezoidal", &print_results<Trapezoidal>,
-        py::arg("function"), py::arg("method"), py::arg("true value"));
-    m.def("print_resultsSimpson", &print_results<Simpson>,
-        py::arg("function"), py::arg("method"), py::arg("true value"));
-    m.def("print_resultstwopointGauss", &print_results<twopointGauss>,
-        py::arg("function"), py::arg("method"), py::arg("true value"));
-    m.def("print_resultsGaussLegendre", &print_results<GaussLegendre>,
-        py::arg("function"), py::arg("method"), py::arg("true value"));
+    // The methods analysis and print_results are not used because they immediately print
+    // the output. Instead, for having a cuter representation of the comparison between
+    // the two programming languages, it's preferred to output them altogether
 }
