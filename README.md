@@ -1,9 +1,9 @@
 # Homework3_Serafino
 
-This project builds on the previous Homework2, implementing it with Python bindings. For each section, the new implementations will be explicitly highlighted with a further section called "What's new".   
+This project builds on the previous Homework2, implementing it with Python bindings. For each section, the new implementations will be explicitly highlighted with a further section called "What's new".
 
-## Code organization
-For each module there is a folder which separates source files from header files; the main files (the old main.cpp and the two new mains for each module) are in their folder called main; a cmake and a setup.py are provided and will be explained later on.
+## (new!) Code organization
+For each module there is a folder which separates source files from header files; the main files (the old main.cpp and the two new mains for each module) are in their folder called main; a cmake and a setup.py are provided and will be explained later on. When executing the mains, a text file with the results and a folder `images` containing the plots is created, they can be found in the `StatisticsModule` and `NumericalIntegrationModule` folders.
 
 ## Main
 The `main.cpp` was written using switch cases to allow the user to decide what to compute.
@@ -12,13 +12,19 @@ The `main.cpp` was written using switch cases to allow the user to decide what t
 Being compilable as standalone libraries, a `#if USE_MODULEX` and `#endif` delimit their includes and code in main.cpp.
 
 #### What's new
-The switch case in Python is done with the [keyword match](https://www.freecodecamp.org/news/python-switch-statement-switch-case-example/). Both modules export their results into a text file. Now there are two separate mains.
+The switch case in Python is done with the [keyword match](https://www.freecodecamp.org/news/python-switch-statement-switch-case-example/).<br>
+Now there are two separate mains for better readability. The computation of an integral from input was not replicated.
 
 ## Statistics module
-This module computes mean, median, standard deviation, variance, frequency count, classification, and correlation analyses on the data taken from a CSV file on [NBA Players from 2003 to 2022](https://www.kaggle.com/datasets/dhruvsuryavanshi/nba-player-data-from-2003-to-2022/) and outputs them on a file named `player_data_03_22_analysis.txt` in a folder named results.
+This module computes mean, median, standard deviation, variance, frequency count, classification, and correlation analysis on the data taken from a CSV file on [NBA Players from 2003 to 2022](https://www.kaggle.com/datasets/dhruvsuryavanshi/nba-player-data-from-2003-to-2022/) and outputs them on a file named `player_data_03_22_analysis.txt`.
 
 #### What's new
-For reading the CSV file, pandas was used, allowing to read it, store the names of the columns and each of their datas in just a few lines of code, contrary to the previous C++ version.
+`DataHandler_py.cpp` provides a Python interface and binding with Pybind11, creating a module called moduleA. Some methods are not wrapped because not useful anymore, those are: readData, read_header, getHeader, getColumn, create_output_path, writeResults.<br>
+In fact pandas was used for reading the CSV file, store the names of the columns and each of their datas in just a few lines of code, contrary to the previous C++ version.<br>
+Every statistical operation is computed both with the previous functions and with other functions implemented in Python (using NumPy). Except for Classification that is only with Python because the previous function, for some reasons, did not output the results; but since in Python there were less lines of code, it was decided to just stick with it.<br>
+Each function is decorated in order to obtain its execution time and comparing it between programming languages.<br>
+Since some columns contain non-numerical values, if the user chooses a statistic operation which can't be computed due to the type of values in the column, instead of exiting, they are warned about it and can choose a suitable operation.<br>
+When frequency is choosen, a plot of it and its distribution is showed. Before showing every plot, the user is asked to press enter, in this way they don't get suddenly overwhelmed by datas and plots.
 
 ### Analysis and observations
 * Various statistical calculations are provided, including mean, median, variance, standard deviation, frequency, and correlation.
@@ -28,38 +34,33 @@ Exceptions are thrown for cases such as invalid arguments, missing columns, or i
 * The Boost library is used for accumulators.
 
 #### What's new
-Every statistical operation is computed both with the previous functions and with other functions implemented in Python (using NumPy). Except for Classifications that is only with Python because the previous function, for some reasons, didn't output the results; but since in Python there were less lines of code, it was decided to just stick with it.<br>
-Each function is decorated for comparing its execution time.<br>
 Some analysis about the age and the teams of the players are made.<br>
-* For the age: mean, median and frequency are executed and a catplot is plotted to better visualize the comparison between each execution time and their absolute errors in the results.
+For the age: mean, median and frequency are executed and a catplot is plotted to better visualize the execution time of each programming language.
   <p align="center">
   <img src="StatisticsModule/images/CatplotAge.png" /><br>
 </p>
-Instead of writing the results in the terminal, they are written over the plot, except for frequency that would be awful (due to too many datas). For this reason, two plots for it and its distribution are made:
+The numbers over the bars are the deltas of the results between the two languages, thus when it's 0 it means that the results are equal. The frequency results are not written because they would be too many (but later it can be asked for them). For this reason, two plots for it and its distribution are made:
 <p align="center">
   <img src="StatisticsModule/images/FrequencyAge.png" /><br>
- Frequency of Age
+ Frequency counts of Age
 </p>
 <p align="center">
   <img src="StatisticsModule/images/FrequencyDistributionAge.png" /><br>
- Distribution of the frequency of Age
+ Distribution of the frequency counts of Age
 </p>
 
-* For the team: having it non-numerical values only median and frequency are executed and plotted as before.
+For the team, having it non-numerical values, only median and frequency are executed and plotted as before.
 <p align="center">
   <img src="StatisticsModule/images/CatplotTeam.png" /><br>
 </p>
-Where the median with both is: Miami Heat.
 <p align="center">
   <img src="StatisticsModule/images/FrequencyTeam.png" /><br>
- Frequency of Team
+ Frequency counts of Team
 </p>
 <p align="center">
   <img src="StatisticsModule/images/FrequencyDistributionTeam.png" /><br>
- Distribution of the frequency of Team
+ Distribution of the frequency counts of Team
 </p>
-After these analysis, the user can analyse what they want. Since some columns contain non-numerical values, if the user chooses a statistic operation which can't be computed due to the type of values in the column, instead of exiting, they are warned about it and can choose a suitable operation.<br>
-When frequency is choosen, a plot of it and its distribution is showed. Before showing every plot, the user is asked to press enter, in this way they don't get suddenly overwhelmed by datas and plots.
 
 ## Numerical integration module
 This module approximates integrals with the methods midpoint, trapezoidal, Simpson's, two-point Gauss and Gauss-Legendre.  
@@ -68,7 +69,7 @@ This module is divided in `IntegrationMethods.cpp` and `moduleCfunctions.tpl.hpp
 
 #### What's new
 `moduleCfunctions_py.cpp` provides a Python interface and binding with Pybind11, creating a module called moduleC. Everything is unchanged except for the GaussLegendre method, which is implemented with NumPy (in `IntegrationMethods.py`) to avoid the above mentioned memory leaks. As numpy.polynomial.legendre module makes only possible to integrate over the interval [-1,1], when defining its test in the main, the interval is internally fixed.<br>
-When possible thanks to SciPy integrate functions, a comparison between the integration with them and the previous methods is made in terms of convergence order, result, error, absolute error and time execution (thanks to a time decorator). For Midpoint a comparison is not possible since it doesn't exist a function in Python. Although it's the same for the two-point Gauss, it's worth a comparison with scipy.integrate.quad, since it integrates between two points. Due to this last fact, it would be mathematically inconsistent to compute the convergence order of a method with two nodes, thus it won't be done.
+When possible thanks to SciPy integrate functions, a comparison between the integration with them and the previous methods is made in terms of convergence order, result, error, absolute error and time execution (thanks to a time decorator). For Midpoint a comparison is not possible since it doesn't exist a function in Python. Although it's the same for the two-point Gauss, it's worth a comparison with scipy.integrate.quad, since it integrates between two points. Due to this last fact, it would be mathematically inconsistent to compute the convergence order of a method with two nodes, thus it will not be done.
 As explained [here](https://docs.scipy.org/doc/scipy/tutorial/integrate.html), with SciPy's Simpson method, for an odd number of samples that are equally spaced, the method is exact if the function is a polynomial of order 3 or less; if the samples are not equally spaced, then the result is exact only if the function is a polynomial of order 2 or less. This means that the Simpson method implemented with C++ should be better, because it has no such limitations.
 
 ### Analysis and observations
@@ -81,15 +82,6 @@ As explained [here](https://docs.scipy.org/doc/scipy/tutorial/integrate.html), w
 * It was further verified that the Midpoint and Trapezoidal formulas are exact up to polynomials of degree 1, the Simpson formula up to polynomials of degree 3, and the Gauss formula with 2n+1 nodes up to polynomials of degree n.
 
 #### What's new
-Scrivi quali metodi sono piu veloci.
-Palesemente sono più veloci i metodi in py e sono anche piu accurati.
-Se intendi python usando i moduli tipo numpy ecc sappi che in realtà per essere veloci chiama c o c++
-Python in generale non è un linguaggio per le performance
-
-
-Nei grafici di che si possono vedere i diversi ordini dei metodi Più è alto l’ordine più è ripida la discesa dell’errore
-Quando avrai anche gli altri dati, scrivi quali metodi sono piu veloci (guarda la convergenza perche ha i nBins uguali)
-
 Not only the convergence order of the methods are computed, but also their averages are computed (10 runs per average); in this way the result is more optimal. Unfortunately sometimes Gauss-Legendre in C++ gives some problems, ruining the plots. Clearly, even though it was integrated with NumPy, there must be something wrong.<br>
 <p align="center">
   <img src="NumericalIntegrationModule/images/AverageConvergenceOrder.png" /><br>
@@ -100,9 +92,11 @@ The more rapidly they descend in the error (y-axis), the higher is the convergen
   <img src="NumericalIntegrationModule/images/AverageExecutionTime.png" /><br>
  Average Execution Time of Numerical Integration Methods
 </p>
-
-
-Magari fai un plot con i metodi confrontati di integrali specifici mostrando errore e tempo?
+For what concerns the polynomial tests, a catplot is plotted showing the execution time of each method. Though it should be considered that the results are about different integrals with different subintervals, so they must be compared only between the same method and not altogether.
+<p align="center">
+  <img src="NumericalIntegrationModule/images/CatplotIntegrationMethods.png" /><br>
+ Execution Time along different integrals and subintervals
+</p>
 
 ## CMake and libraries
 Three CMake are provided: one for each of the two modules and one to actually compile. The two modules have their own namespaces (called MODULEA and MODULEC) and can be compiled both together or independently, setting the option ON from terminal when compiling. The Statistics module also uses the namespace ba for boost::accumulators inside the StatOp.cpp.  
@@ -113,7 +107,8 @@ The hardest part was understanding how the three CMake must be written and actua
 
 #### What's new
 Only one CMake is provided, which creates both modules. Also a setup.py is provided, creating a Python package easily installable via pip.
-Some Python packages were used: numpy, matplotlib, seaborn, pandas. They're easily installable with `pip install [names] --user`, where the --user flag makes pip install packages in the work directory.
+Some Python packages were used: numpy, matplotlib, seaborn, pandas, tabulate. They can be installed with `pip install [names] --user`.<br>
+Numpy is used for mathematical operations, especially in the Statistics module; pandas for creating dataframes and reading a CSV file; matplotlib and seaborn for plotting; tabulate to create a table of some results (in the Numerical Integration module).
 
 ## How to compile (old version!)
 A `CMake` is provided in the main directory.
@@ -133,11 +128,11 @@ make
 After a successful building you'll be prompt to write `./homework`.
 
 ## How to compile (new version with pip!)
-A setup.py installable via pip is provided and it implicitly calls CMake, thus everything is ready writing:
+A setup.py is provided and it implicitly calls CMake, thus everything is ready writing:
 ```bash
 python setup.py install --user
 ```
-Or even better just
+Or even better just using pip
 ```bash
 pip install --user .
 ```

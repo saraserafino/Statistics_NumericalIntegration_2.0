@@ -305,7 +305,7 @@ while continueChoice == 1:
     7. Correlation
     0. Exit
     """)
-    choice = int(input("Enter the corresponding number: "))
+    choice = input("Enter the corresponding number: ")
     # Exit loop if the user chooses 0
     if choice == 0:
         print("Exiting...")
@@ -315,12 +315,12 @@ while continueChoice == 1:
     if any(isinstance(value, str) for value in targetColumnData):
         while choice not in [2, 5, 6]:
             print(f"{targetColumn} has no numerical values.")
-            choice = int(input("Choose an analysis number between 2, 5 or 6: "))
+            choice = input("Choose an analysis number between 2, 5 or 6: ")
 
     # Switch case for Python
     match choice:
         # description, result and timeExecution are defined in every case for writing them in the output file
-        case 1:
+        case "1":
             try:
                 description = f"Mean of {targetColumn}:\n"
                 res_cpp, time_cpp = test_calculateMean_cpp(StatOpInstance, targetColumnData)
@@ -333,7 +333,7 @@ while continueChoice == 1:
             except RuntimeError as e:
                 print("Error calculating mean.", str(e))
 
-        case 2:
+        case "2":
             try:
                 description = f"Median of {targetColumn}:\n"
                 res_cpp, time_cpp = test_calculateMedian_cpp(StatOpInstance, targetColumnData)
@@ -343,7 +343,7 @@ while continueChoice == 1:
             except RuntimeError as e:
                 print("Error calculating median.", str(e))
 
-        case 3:
+        case "3":
             try:
                 description = f"Standard deviation of {targetColumn}:\n"
                 res_cpp, time_cpp = test_calculateStandardDeviation_cpp(StatOpInstance, targetColumnData)
@@ -356,7 +356,7 @@ while continueChoice == 1:
             except RuntimeError as e:
                 print("Error calculating standard deviation.", str(e))
 
-        case 4:
+        case "4":
             try:
                 description = f"Variance of {targetColumn}:\n"
                 res_cpp, time_cpp = test_calculateVariance_cpp(StatOpInstance, targetColumnData)
@@ -369,7 +369,7 @@ while continueChoice == 1:
             except RuntimeError as e:
                 print("Error calculating variance.", str(e))
 
-        case 5:
+        case "5":
             description = f"Frequency count of {targetColumn}:\n"
             res_cpp, time_cpp = test_calculateFrequency_cpp(StatOpInstance, targetColumnData)
             res_py, time_py = test_calculateFrequency_py(targetColumnData)
@@ -382,13 +382,13 @@ while continueChoice == 1:
             input("Press enter to see its distribution with a pie chart plot.")
             pieplotFrequency(res_py, targetColumn)
 
-        case 6:
+        case "6":
             condition = input("Enter the name of the feature you want to classify: ")
             description = f"Players with {targetColumn} equal to {condition}:\n"
             result = (f"Python result: {calculateClassification_py(df, targetColumnData, condition)}")
             timeExecution = '' # The function doesn't have a time decorator
 
-        case 7:
+        case "7":
             targetColumn2 = input("Enter the name of the other target column for correlation: ")
             while targetColumn2 not in header:
                 targetColumn2 = input("This column does not exist. Please insert a valid name: ")
@@ -406,7 +406,7 @@ while continueChoice == 1:
                 print("Error calculating correlation.", str(e))
 
         case _: # default case
-            choice = int(input("Invalid choice. Please choose a number between 0 and 7."))
+            choice = input("Invalid choice. Please choose a number between 0 and 7.")
             continue # Skip the rest of the loop and ask the user for a new choice
 
     # Open the output file in append mode (so it doesn't overwrite)
@@ -414,6 +414,6 @@ while continueChoice == 1:
         file.write(description + result + timeExecution + '\n')
 
     print(f"Analysis completed:\n{result}{timeExecution}")
-    continueChoice = int(input("\nDo you want to perform another analysis? (1 for Yes): "))
+    continueChoice = input("\nDo you want to perform another analysis? (1 for Yes): ")
 
 print(f"All analyses completed. Results written to {output_file_path}")

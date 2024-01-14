@@ -169,6 +169,17 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
         nBins *= 2
     return errors, orders
 
+# Plot a nested barplot by method and language to compare execution times
+def catplotCompare(results):
+    # Create a dataframe for seaborn
+    results_df = pd.DataFrame(results)
+    # Use catplot by seaborn. The pairs are made based on the language (C++ or Python)
+    g = sns.catplot(data = results_df, kind = 'bar', x = 'Method', y = 'ExecutionTime', hue = 'Language', height = 6, aspect = 1.5)
+    g.set_axis_labels('', 'Execution Time (s)')
+    g.legend.set_title('')
+    # Save the plot
+    plt.savefig('NumericalIntegrationModule/images/CatplotIntegrationMethods.png')
+    plt.show()
 
 # ----------------
 # main of module C
@@ -196,7 +207,7 @@ while continueChoice == 1:
     2. Polynomial tests
     0. Exit
     """)
-    choice = int(input("Enter the corresponding number: "))
+    choice = input("Enter the corresponding number: ")
     
     match choice:
         case 0: # Exit loop if the user chooses 0
@@ -204,7 +215,7 @@ while continueChoice == 1:
             break
 
         # description, result and timeExecution are defined in every case for writing them in the output file
-        case 1:
+        case "1":
             description = "Compute the average of convergence order and time of execution for each method (except for the two-point that would be mathematically inconsistent to compute).\n\n"
             # Define the function for the computation of the convergence order
             cos = np.vectorize(np.cos)
@@ -316,7 +327,7 @@ while continueChoice == 1:
                     result += f"  Subintervals: {subint:4d}  Error: {averageErrors[method][i]:.6e}  Order: {averageOrders[method][i]:.2f}\n"
                 result += f"\nExecuted in {averageTimes[method]:.4f} s.\n\n\n"
             
-        case 2:
+        case "2":
             description = "Compute some integrals for each method.\n"
             result = ''
             # Neither in SciPy nor in NumPy there's a midpoint integration method, so just compute it as in C++
@@ -396,6 +407,14 @@ while continueChoice == 1:
                     ]
             result += tabulate(data_gl, header, tablefmt = "fancy_grid")
 
+            input("\nPress enter to visualize a catplot to compare execution times between the C++ and Python methods.")
+            results = {
+                        'Language': ['C++', 'Python', 'C++', 'Python', 'C++', 'Python', 'C++', 'Python'],
+                        'Method': ['Trapezoidal', 'PyTrapezoidal', 'Simpson', 'PySimpson', 'Two-points', 'PyTwo-points', 'Gauss-Legendre', 'PyGauss-Legendre'],
+                        'ExecutionTime': [time_trap_cpp, time_trap_py, time_simp_cpp, time_simp_py, time_tp_cpp, time_tp_py, time_gl_cpp, time_gl_py]
+                    }
+            catplotCompare(results)
+
         case _: # default case
             print("Invalid choice. Please choose a number between 0 and 2.")
             continue
@@ -405,6 +424,6 @@ while continueChoice == 1:
         file.write(description + result + '\n\n')
 
     print(f"{description}Analysis completed:\n{result}")
-    continueChoice = int(input("Do you want to perform another analysis? (1 for Yes): "))
+    continueChoice = input("Do you want to perform another analysis? (1 for Yes): ")
 
 print(f"All analyses completed. Results written to {output_file_path}")
