@@ -33,29 +33,29 @@ Each function is decorated for comparing its execution time.<br>
 Some analysis about the age and the teams of the players are made.<br>
 * For the age: mean, median and frequency are executed and a catplot is plotted to better visualize the comparison between each execution time and their absolute errors in the results.
   <p align="center">
-  <img src="images/moduleA/CatplotAge.png" /><br>
+  <img src="StatisticsModule/images/CatplotAge.png" /><br>
 </p>
 Instead of writing the results in the terminal, they are written over the plot, except for frequency that would be awful (due to too many datas). For this reason, two plots for it and its distribution are made:
 <p align="center">
-  <img src="images/moduleA/FrequencyAge.png" /><br>
+  <img src="StatisticsModule/images/FrequencyAge.png" /><br>
  Frequency of Age
 </p>
 <p align="center">
-  <img src="images/moduleA/FrequencyDistributionAge.png" /><br>
+  <img src="StatisticsModule/images/FrequencyDistributionAge.png" /><br>
  Distribution of the frequency of Age
 </p>
 
 * For the team: having it non-numerical values only median and frequency are executed and plotted as before.
 <p align="center">
-  <img src="images/moduleA/CatplotTeam.png" /><br>
+  <img src="StatisticsModule/images/CatplotTeam.png" /><br>
 </p>
 Where the median with both is: Miami Heat.
 <p align="center">
-  <img src="images/moduleA/FrequencyTeam.png" /><br>
+  <img src="StatisticsModule/images/FrequencyTeam.png" /><br>
  Frequency of Team
 </p>
 <p align="center">
-  <img src="images/moduleA/FrequencyDistributionTeam.png" /><br>
+  <img src="StatisticsModule/images/FrequencyDistributionTeam.png" /><br>
  Distribution of the frequency of Team
 </p>
 After these analysis, the user can analyse what they want. Since some columns contain non-numerical values, if the user chooses a statistic operation which can't be computed due to the type of values in the column, instead of exiting, they are warned about it and can choose a suitable operation.<br>
@@ -68,7 +68,7 @@ This module is divided in `IntegrationMethods.cpp` and `moduleCfunctions.tpl.hpp
 
 #### What's new
 `moduleCfunctions_py.cpp` provides a Python interface and binding with Pybind11, creating a module called moduleC. Everything is unchanged except for the GaussLegendre method, which is implemented with NumPy (in `IntegrationMethods.py`) to avoid the above mentioned memory leaks. As numpy.polynomial.legendre module makes only possible to integrate over the interval [-1,1], when defining its test in the main, the interval is internally fixed.<br>
-When possible thanks to SciPy integrate functions, a comparison between the integration with them and the previous methods is made, both in terms of results and time execution (thanks to a time decorator). For Midpoint a comparison is not possible since it doesn't exist a function in Python. Although it's the same for the two-point Gauss, it's worth a comparison with scipy.integrate.quad, since it integrates between two points. Due to this last fact, it would be mathematically inconsistent to compute the convergence order of a method with two nodes, thus it won't be done.
+When possible thanks to SciPy integrate functions, a comparison between the integration with them and the previous methods is made in terms of convergence order, result, error, absolute error and time execution (thanks to a time decorator). For Midpoint a comparison is not possible since it doesn't exist a function in Python. Although it's the same for the two-point Gauss, it's worth a comparison with scipy.integrate.quad, since it integrates between two points. Due to this last fact, it would be mathematically inconsistent to compute the convergence order of a method with two nodes, thus it won't be done.
 As explained [here](https://docs.scipy.org/doc/scipy/tutorial/integrate.html), with SciPy's Simpson method, for an odd number of samples that are equally spaced, the method is exact if the function is a polynomial of order 3 or less; if the samples are not equally spaced, then the result is exact only if the function is a polynomial of order 2 or less. This means that the Simpson method implemented with C++ should be better, because it has no such limitations.
 
 ### Analysis and observations
@@ -97,15 +97,18 @@ test_GaussLegendre_py executed in 0.0032677650451660156 seconds.
 Nei grafici di che si possono vedere i diversi ordini dei metodi Più è alto l’ordine più è ripida la discesa dell’errore
 Quando avrai anche gli altri dati, scrivi quali metodi sono piu veloci (guarda la convergenza perche ha i nBins uguali)
 
-Update immagine quando avrai plottato anche quelli di c++
+Not only the convergence order of the methods are computed, but also their averages are computed (10 runs per average); in this way the result is more optimal. Unfortunately sometimes Gauss-Legendre in C++ gives some problems, ruining the plots. Clearly, even though it was integrated with NumPy, there must be something wrong.<br>
 <p align="center">
-  <img src="images/moduleC/AverageConvergenceOrder.png" /><br>
+  <img src="NumericalIntegrationModule/images/AverageConvergenceOrder.png" /><br>
  Average Convergence of Numerical Integration Methods
 </p>
+The more rapidly they descend in the error (y-axis), the higher is the convergence order. Midpoint and Trapezoidal have order 2, Simpson's 4, PyGauss-Legendre 0, while the other Gauss-Legendre fluctuates: until 64 subintervals it is quite good (its error decays reaching peaks of order 4) but then it explodes.
 <p align="center">
-  <img src="images/moduleC/AverageExecutionTime.png" /><br>
+  <img src="NumericalIntegrationModule/images/AverageExecutionTime.png" /><br>
  Average Execution Time of Numerical Integration Methods
 </p>
+
+
 Magari fai un plot con i metodi confrontati di integrali specifici mostrando errore e tempo?
 
 ## CMake and libraries
