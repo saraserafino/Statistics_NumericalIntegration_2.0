@@ -98,6 +98,10 @@ For what concerns the polynomial tests, a catplot is plotted showing the executi
  Execution Time along different integrals and subintervals
 </p>
 
+## Final considerations
+As it can be observed from the plots, the methods implemented with Python are faster than the ones with C++, but it must be considered that libraries as NumPy and SciPy are written in C and Fortran with Python interfaces (it provides higher performances with an easier interface). The performances are comparable, especially since they differ very minimally and the user experience is not affected by such discrepancies.<br>
+Certainly using libraries already implemented by professionals is easier, faster and less prone to errors; thus if they already exist it's better not to reinvent the wheel.
+
 ## CMake and libraries
 Three CMake are provided: one for each of the two modules and one to actually compile. The two modules have their own namespaces (called MODULEA and MODULEC) and can be compiled both together or independently, setting the option ON from terminal when compiling. The Statistics module also uses the namespace ba for boost::accumulators inside the StatOp.cpp.  
 Since the library Boost is shared, it's linked in the CMake to compile; while the library muparserx is only used in the second module and therefore only linked if that module is compiled.  
@@ -107,8 +111,8 @@ The hardest part was understanding how the three CMake must be written and actua
 
 #### What's new
 Only one CMake is provided, which creates both modules. Also a setup.py is provided, creating a Python package easily installable via pip.
-Some Python packages were used: numpy, matplotlib, seaborn, pandas, tabulate. They can be installed with `pip install [names] --user`.<br>
-Numpy is used for mathematical operations, especially in the Statistics module; pandas for creating dataframes and reading a CSV file; matplotlib and seaborn for plotting; tabulate to create a table of some results (in the Numerical Integration module).
+Some Python packages were used: NumPy, SciPy MatPlotLib, seaborn, pandas, tabulate. They can be installed with `pip install [names] --user`.<br>
+NumPy and SciPy are used for mathematical operations, especially in the Statistics module; pandas for creating dataframes and reading a CSV file; matplotlib and seaborn for plotting; tabulate to create a table of some results (in the Numerical Integration module).
 
 ## How to compile (old version!)
 A `CMake` is provided in the main directory.
