@@ -122,15 +122,17 @@ def barplotFrequency(frequency, name):
     plt.figure(figsize=(10, 6))
     sns.barplot(x = 'Values', y = 'Counts', hue = 'Values', data = df_sns, palette = 'rainbow', legend = False)
     plt.xlabel(name)
-    plt.ylabel('Frequency')
-    plt.title(f'Frequency of {name}')
+    plt.ylabel('Frequency counts')
+    plt.title(f'Frequency counts of {name}')
     # Rotate x-axis labels for better readability in case some values are longer
     plt.xticks(rotation = 45, ha = 'right')
 
     # Annotate each bar with its count
     for idx, count in enumerate(df_sns['Counts']):
         plt.text(idx, count, f'{count}', ha = 'center', va = 'bottom')
-
+    # Save the plot
+    filename = 'StatisticsModule/images/Frequency' + name
+    plt.savefig(filename)
     plt.show()
 
 # Plot the distribution of the frequency with a pie chart
@@ -138,21 +140,27 @@ def pieplotFrequency(frequency, name):
     # Use Seaborn to create a pie chart with pastel colors
     plt.figure(figsize = (8, 8))  # make it bigger
     sns.set_palette('pastel')
-    plt.title(f'Distribution of {name} frequency')
+    plt.title(f'Distribution of {name} frequency counts')
     plt.pie(frequency, labels = frequency.index, autopct = '%1.1f%%', startangle = 90)
+    # Save the plot
+    filename = 'StatisticsModule/images/FrequencyDistribution' + name
+    plt.savefig(filename)
     plt.show()
 
-# Plot a nested barplot by operation and language to compare execution times and absolute error
-def catplotCompare(results, AbsError):
+# Plot a nested barplot by operation and language to compare execution times and deltas between the statistics of C++ and Python
+def catplotCompare(results, deltas, name):
     # Create a dataframe for seaborn
     results_df = pd.DataFrame(results)
     # Use catplot by seaborn. The pairs are made based on the language (C++ or Python)
     g = sns.catplot(data = results_df, kind = 'bar', x = 'Operation', y = 'ExecutionTime', hue = 'Language', height = 6, aspect = 1.5)
-    g.set_axis_labels('', 'Time (s)')
+    g.set_axis_labels('', 'Execution Time (s)')
     g.legend.set_title('')
     # Annotate each couple of bars with the absolute error between C++ and Python (if present)
-    for idx, err in enumerate(AbsError):
+    for idx, err in enumerate(deltas):
         plt.text(idx, err, f'{err}', ha = 'center', va = 'bottom', fontsize = 'medium', weight = 'bold')
+    # Save the plot
+    filename = 'StatisticsModule/images/Catplot' + name
+    plt.savefig(filename)
     plt.show()
 
 
@@ -169,25 +177,46 @@ df = pd.read_csv('data/player_data_03_22.csv', delimiter=',')
 # Store the header i.e. the names of the columns
 header = df.columns
 
+# Create a folder in which to store plot images
+if not os.path.exists("StatisticsModule/images"):
+    os.mkdir("StatisticsModule/images")
+
 print("Some statistics about the age of the players:\n")
 # Save the datas in order to compute df['name of the column'] just once
 Age = df['Age']
 
 # Compute the statistics to compare between C++ and Python
+print("Mean of Age:")
 res_mean_cpp, time_mean_cpp = test_calculateMean_cpp(StatOpInstance, Age)
+res_mean_cpp = float(res_mean_cpp) # same type needed for computing the absolute value
 res_mean_py, time_mean_py = test_calculateMean_py(Age)
+delta_mean_age = abs(res_mean_cpp - res_mean_py)
+if delta_mean_age < math.pow(10,-4):
+    print(f"Both C++ and Python have result: {res_mean_py:.4f}")
+else:
+    print(f"C++ result: {res_mean_cpp:.4f} \nPython result: {res_mean_py:.4f}\n")   
+print(f"C++ execution time: {time_mean_cpp:.4f} s, Python: {time_mean_py:.4f} s.\n")
 
+print("Standard deviation of Age:")
 res_sd_cpp, time_sd_cpp = test_calculateStandardDeviation_cpp(StatOpInstance, Age)
+res_sd_cpp = float(res_sd_cpp) # same type needed for computing the absolute value
 res_sd_py, time_sd_py = test_calculateStandardDeviation_py(Age)
+delta_sd_age = abs(res_sd_cpp - res_sd_py)
+if delta_sd_age < math.pow(10,-4):
+    print(f"Both C++ and Python have result: {res_sd_py:.4f}")
+else:
+    print(f"C++ result: {res_sd_cpp:.4f} \nPython result: {res_sd_py:.4f}\n")
+print(f"C++ execution time: {time_sd_cpp:.4f} s, Python: {time_sd_py:.4f} s.\n")
 
+print("Frequency count of Age:")
 res_f_cpp, time_f_cpp = test_calculateFrequency_cpp(StatOpInstance, Age)
 res_f_py, time_f_py = test_calculateFrequency_py(Age)
+print(f"The result is not printed because it's large, but you can ask for it later.")
+print(f"C++ execution time: {time_f_cpp:.4f} s, Python: {time_f_py:.4f} s.\n")
 
-# Create a list with the absolute errors between C++ and Python. For computing it, they must have the same type
-res_mean_cpp = float(res_mean_cpp)
-res_sd_cpp = float(res_sd_cpp)
+# Create a list with the deltas between the statistics of C++ and Python
 # For the frequency it's not computed because it would make no sense
-AbsErrorAge = [abs(res_mean_cpp - res_mean_py), abs(res_sd_cpp - res_sd_py)]
+deltas_age = [delta_mean_age, delta_sd_age]
 # Create the base for a DataFrame with the results
 resultsAge = {
                 'Language': ['C++', 'Python', 'C++', 'Python', 'C++', 'Python'],
@@ -196,9 +225,9 @@ resultsAge = {
                 'ExecutionTime': [time_mean_cpp, time_mean_py, time_sd_cpp, time_sd_py, time_f_cpp, time_f_py]
             }
 
-input("\nPress enter to visualize a catplot to compare execution times and absolute error for Age.")
+input("\nPress enter to visualize a catplot to compare execution times and deltas between the statistics of C++ and Python (deltas are written over the bars) for Age.")
 # With this input you don't get suddenly overwhelmed by datas and plots
-catplotCompare(resultsAge, AbsErrorAge)
+catplotCompare(resultsAge, deltas_age, 'Age')
 
 input("\nPress enter to visualize a bar plot of its frequency count.")
 barplotFrequency(res_f_py, 'Age')
@@ -210,11 +239,20 @@ pieplotFrequency(res_f_py, 'Age')
 print("\nSome statistics about the teams of the players:\n")
 Team = df['Team']
 
+print("Median of Team:")
 res_median_cpp, time_median_cpp = test_calculateMedian_cpp(StatOpInstance, Team)
 res_median_py, time_median_py = test_calculateMedian_py(Team)
+if res_median_cpp == res_median_py:
+    print(f"Both C++ and Python have result: {res_median_py}")
+else:
+    print(f"C++ result: {res_median_cpp} \nPython result: {res_median_py}\n")
+print(f"C++ execution time: {time_median_cpp:.4f} s, Python: {time_median_py:.4f} s.\n")
 
+print("Frequency count of Team:")
 res_f_cpp, time_f_cpp = test_calculateFrequency_cpp(StatOpInstance, Team)
 res_f_py, time_f_py = test_calculateFrequency_py(Team)
+print(f"The result is not printed because it's large, but you can ask for it later.")
+print(f"C++ execution time: {time_f_cpp:.4f} s, Python: {time_f_py:.4f} s.\n")
 
 resultsTeam = {
                 'Language': ['C++', 'Python', 'C++', 'Python'],
@@ -224,8 +262,7 @@ resultsTeam = {
             }
 
 input("Press enter to visualize a catplot to compare execution times for Team.")
-catplotCompare(resultsTeam, []) # Absolute error is empty
-print(f"Median with C++ is: {res_median_cpp} \nWith Python: {res_median_py}\n")
+catplotCompare(resultsTeam, [], 'Team') # Absolute error is empty
 
 input("\nPress enter to visualize a bar plot of the frequency count for each Team.")
 barplotFrequency(res_f_py, 'Team')
@@ -241,7 +278,7 @@ print(f"\nThe names of the columns are {header[1:]}")
 # Without [1:], it prints '0' as first value because the column 0 is the enumeration of rows
 
 # Create the output path outside the loop, otherwise it gets cleaned every time
-output_file_path = "player_data_03_22_analysis.txt"
+output_file_path = "StatisticsModule/player_data_03_22_analysis.txt"
 # Check if the file already exists, if so, overwrite it
 if os.path.exists(output_file_path):
     with open(output_file_path, 'w') as file:
@@ -288,8 +325,11 @@ while continueChoice == 1:
                 description = f"Mean of {targetColumn}:\n"
                 res_cpp, time_cpp = test_calculateMean_cpp(StatOpInstance, targetColumnData)
                 res_py, time_py = test_calculateMean_py(targetColumnData)
-                result = f"C++ result: {res_cpp} \nPython result: {res_py}\n"
-                timeExecution = f"C++ executed it in {time_cpp} s, Python in {time_py} s.\n"
+                if abs(float(res_cpp) - res_py) < math.pow(10,-4):
+                    result = f"Both C++ and Python have result: {res_py:.4f}\n"
+                else:
+                    result = f"C++ result: {res_cpp:.4f} \nPython result: {res_py:.4f}\n"
+                timeExecution = f"C++ execution time: {time_cpp:.4f} s, Python: {time_py:.4f} s.\n"
             except RuntimeError as e:
                 print("Error calculating mean.", str(e))
 
@@ -299,7 +339,7 @@ while continueChoice == 1:
                 res_cpp, time_cpp = test_calculateMedian_cpp(StatOpInstance, targetColumnData)
                 res_py, time_py = test_calculateMedian_py(targetColumnData)
                 result = f"C++ result: {res_cpp} \nPython result: {res_py}\n"
-                timeExecution = f"C++ executed it in {time_cpp} s, Python in {time_py} s.\n"
+                timeExecution = f"C++ execution time: {time_cpp:.4f} s, Python: {time_py:.4f} s.\n"
             except RuntimeError as e:
                 print("Error calculating median.", str(e))
 
@@ -308,8 +348,11 @@ while continueChoice == 1:
                 description = f"Standard deviation of {targetColumn}:\n"
                 res_cpp, time_cpp = test_calculateStandardDeviation_cpp(StatOpInstance, targetColumnData)
                 res_py, time_py = test_calculateStandardDeviation_py(targetColumnData)
-                result = f"C++ result: {res_cpp} \nPython result: {res_py}\n"
-                timeExecution = f"C++ executed it in {time_cpp} s, Python in {time_py} s.\n"
+                if abs(float(res_cpp) - res_py) < math.pow(10,-4):
+                    result = f"Both C++ and Python have result: {res_py:.4f}\n"
+                else:
+                    result = f"C++ result: {res_cpp:.4f} \nPython result: {res_py:.4f}\n"
+                timeExecution = f"C++ execution time: {time_cpp:.4f} s, Python: {time_py:.4f} s.\n"
             except RuntimeError as e:
                 print("Error calculating standard deviation.", str(e))
 
@@ -318,8 +361,11 @@ while continueChoice == 1:
                 description = f"Variance of {targetColumn}:\n"
                 res_cpp, time_cpp = test_calculateVariance_cpp(StatOpInstance, targetColumnData)
                 res_py, time_py = test_calculateVariance_py(targetColumnData)
-                result = f"C++ result: {res_cpp} \nPython result: {res_py}\n"
-                timeExecution = f"C++ executed it in {time_cpp} s, Python in {time_py} s.\n"
+                if abs(float(res_cpp) - res_py) < math.pow(10,-4):
+                    result = f"Both C++ and Python have result: {res_py:.4f}\n"
+                else:
+                    result = f"C++ result: {res_cpp:.4f} \nPython result: {res_py:.4f}\n"
+                timeExecution = f"C++ execution time: {time_cpp:.4f} s, Python: {time_py:.4f} s.\n"
             except RuntimeError as e:
                 print("Error calculating variance.", str(e))
 
@@ -328,7 +374,7 @@ while continueChoice == 1:
             res_cpp, time_cpp = test_calculateFrequency_cpp(StatOpInstance, targetColumnData)
             res_py, time_py = test_calculateFrequency_py(targetColumnData)
             result = f"C++ result: {res_cpp} \nPython result: {res_py}\n"
-            timeExecution = f"C++ executed it in {time_cpp} s, Python in {time_py} s.\n"
+            timeExecution = f"C++ execution time: {time_cpp:.4f} s, Python: {time_py:.4f} s.\n"
 
             input("Press enter to see it with a bar plot.")
             barplotFrequency(res_py, targetColumn)
@@ -351,13 +397,16 @@ while continueChoice == 1:
                 description = f"Correlation between {targetColumn} and {targetColumn2}:\n"
                 res_cpp, time_cpp = test_calculateCorrelation_cpp(StatOpInstance, targetColumnData, targetColumnData2)
                 res_py, time_py = test_calculateCorrelation_py(targetColumnData, targetColumnData2)
-                result = f"C++ result: {res_cpp} \nPython result: {res_py}\n"
-                timeExecution = f"C++ executed it in {time_cpp} s, Python in {time_py} s.\n"
+                if abs(float(res_cpp) - res_py) < math.pow(10,-4):
+                    result = f"Both C++ and Python have result: {res_py:.4f}\n"
+                else:
+                    result = f"C++ result: {res_cpp:.4f} \nPython result: {res_py:.4f}\n"
+                timeExecution = f"C++ execution time: {time_cpp:.4f} s, Python: {time_py:.4f} s.\n"
             except RuntimeError as e:
                 print("Error calculating correlation.", str(e))
 
         case _: # default case
-            choice = int(input("Invalid choice. Please choose a number between 1 and 7."))
+            choice = int(input("Invalid choice. Please choose a number between 0 and 7."))
             continue # Skip the rest of the loop and ask the user for a new choice
 
     # Open the output file in append mode (so it doesn't overwrite)

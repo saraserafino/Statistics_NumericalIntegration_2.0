@@ -173,8 +173,11 @@ def computeConvergenceOrderGaussLegendre_py(function, exactIntegral):
 # main of module C
 # ----------------
 
-# Create the output path outside the loop, otherwise it gets cleaned every time
-output_file_path = "IntegrationResults.txt"
+# Create a folder in which to store plot images
+if not os.path.exists("NumericalIntegrationModule/images"):
+    os.mkdir("NumericalIntegrationModule/images")
+# Create the output path for the results outside the loop, otherwise it gets cleaned every time
+output_file_path = "NumericalIntegrationModule/IntegrationResults.txt"
 
 # Check if the file already exists, if so, overwrite it
 if os.path.exists(output_file_path):
@@ -188,9 +191,8 @@ continueChoice = 1
 while continueChoice == 1:
     print("""
     Select the analysis type:
-    1. Convergence tests
+    1. Convergence order tests
     2. Polynomial tests
-    3. Compute integrals
     0. Exit
     """)
     choice = int(input("Enter the corresponding number: "))
@@ -202,7 +204,7 @@ while continueChoice == 1:
 
         # description, result and timeExecution are defined in every case for writing them in the output file
         case 1:
-            description = "Compute the convergence order and time of execution of each method (except for the two-point that would be mathematically inconsistent to compute).\n\n"
+            description = "Compute the average of convergence order and time of execution for each method (except for the two-point that would be mathematically inconsistent to compute).\n\n"
             # Define the function for the computation of the convergence order
             cos = np.vectorize(np.cos)
 
@@ -276,11 +278,13 @@ while continueChoice == 1:
             # Name the axis, give a title and show the legend
             plt.xlabel('Subintervals')
             plt.ylabel('Error')
-            plt.title('Average Convergence of Numerical Integration Methods')
+            plt.title('Average Convergence Order of Numerical Integration Methods')
             plt.legend()
             # Show a grid and the actual plot
             plt.grid(True)
-            input("\nPress enter to visualize a plot for the convergence of each compared method.")
+            input("\nPress enter to visualize a plot of the convergence order for each compared method.")
+            # Save the plot
+            plt.savefig('NumericalIntegrationModule/images/AverageConvergenceOrder.png')
             plt.show()
 
             # Plot execution times for each compared method
@@ -294,7 +298,9 @@ while continueChoice == 1:
             # Annotate each bar with its execution time
             for idx, times in enumerate(ExecutionTimes):
                 plt.text(idx, times, f'{times:.4f}', ha = 'center', va = 'bottom')
-            input("\nPress enter to visualize a plot for the execution times of each compared method.")
+            input("\nPress enter to visualize a plot of the execution times for each compared method.")
+            # Save the plot
+            plt.savefig('NumericalIntegrationModule/images/AverageExecutionTime.png')
             plt.show()
 
             # Prepare the results to be printed
@@ -307,7 +313,7 @@ while continueChoice == 1:
                 result += f"Average Convergence for {method}:\n"
                 for i, subint in enumerate(subintervals):
                     result += f"  Subintervals: {subint:4d}  Error: {averageErrors[method][i]:.6e}  Order: {averageOrders[method][i]:.2f}\n"
-                result += f"\nExecuted in {averageTimes[method]} s.\n\n\n"
+                result += f"\nExecuted in {averageTimes[method]:.4f} s.\n\n\n"
             
         case 2:
             description = "Compute some integrals for each method.\n"
@@ -318,13 +324,13 @@ while continueChoice == 1:
             [res_mid_cpp, err_mid_cpp], time_mid_cpp = Midpoint_cpp("3*x+1", TrueValue, 0, 1, 2)
             result += f"Result with C++: {res_mid_cpp:.6e} \nError: {err_mid_cpp:.6e}\n"
             abserr_mid_cpp = abs(err_mid_cpp / TrueValue) * 100
-            result += f"Absolute relative error: {abserr_mid_cpp:.6e}\nExecuted in {time_mid_cpp} s."
+            result += f"Absolute relative error: {abserr_mid_cpp:.6e}\nExecuted in {time_mid_cpp:.4f} s."
 
             # In both SciPy's Trapezoidal and Simpson methods, you can optionally provide
             # the array over which the function is sampled i.e. the nodes
 
             TrueValue = 0.25
-            result += f"\n\nCompare the integration of x^3 in [0,1] with Trapezoidal Rule.\nTrue value: {TrueValue:.6e}\n"
+            result += f"\n\nCompare the integration of x^3 in [0,1] with Trapezoidal Rule.\nTrue value: {TrueValue:.6e}\n\n"
             [res_trap_cpp, err_trap_cpp], time_trap_cpp = test_Trapezoidal_cpp("x^3", TrueValue, 0, 1, 5) # nBins = 5
             abserr_trap_cpp = abs(err_trap_cpp / TrueValue) * 100
             nodesT = np.linspace(0, 1, num = 5) # array in [0,1] of size 5 like the above nBins
@@ -334,10 +340,10 @@ while continueChoice == 1:
             result += f"Result:                     {res_trap_cpp:.6e}      {res_trap_py:.6e}\n"
             result += f"Error:                      {err_trap_cpp:.6e}      {err_trap_py:.6e}\n"
             result += f"Absolute relative error:    {abserr_trap_cpp:.6e}      {abserr_trap_py:.6e}\n"
-            result += f"C++ executed it in {time_trap_cpp} s, Python in {time_trap_py} s."
+            result += f"Execution time (s):         {time_trap_cpp:.4f}       {time_trap_py:.4f}"
 
             TrueValue = 21.0
-            result += f"\n\nCompare the integration of x^2 in [1,4] with Simpson's Rule.\nTrue value: {TrueValue:.6e}\n"
+            result += f"\n\nCompare the integration of x^2 in [1,4] with Simpson's Rule.\nTrue value: {TrueValue:.6e}\n\n"
             [res_simp_cpp, err_simp_cpp], time_simp_cpp = test_Simpson_cpp("x^2", TrueValue, 1, 4, 3) # nBins = 3
             abserr_simp_cpp = abs(err_simp_cpp / TrueValue) * 100
             nodesS = np.array([1, 3, 4]) # array in [1,4] of size 3 like the above nBins
@@ -347,40 +353,36 @@ while continueChoice == 1:
             result += f"Result:                     {res_simp_cpp:.6e}      {res_simp_py:.6e}\n"
             result += f"Error:                      {err_simp_cpp:.6e}      {err_simp_py:.6e}\n"
             result += f"Absolute relative error:    {abserr_simp_cpp:.6e}      {abserr_simp_py:.6e}\n"
-            result += f"C++ executed it in {time_simp_cpp} s, Python in {time_simp_py} s."
+            result += f"Execution time (s):         {time_simp_cpp:.4f}       {time_simp_py:.4f}"
 
             TrueValue = 64.0/3.0 # = 21.333 with 3 periodic
-            result += f"\n\nCompare the integration of x^2 in [0,4] with two-point Gauss.\nTrue value: {TrueValue:.6e}\n"
+            result += f"\n\nCompare the integration of x^2 in [0,4] with two-point Gauss.\nTrue value: {TrueValue:.6e}\n\n"
             [res_tp_cpp, err_tp_cpp], time_tp_cpp = test_twopointGauss_cpp("x^2", TrueValue, 0, 4)
             abserr_tp_cpp = abs(err_tp_cpp / TrueValue) * 100
             x2 = lambda x: x**2
             [res_tp_py, err_tp_py], time_tp_py = test_twopoint_py(x2, TrueValue, 0, 4) # uses integrate.quad, see def above for more
             abserr_tp_py = abs(err_tp_py / TrueValue) * 100
             result += "                             C++                     Python\n"
-            result += f"Result:                     {res_tp_cpp:.6e}      {res_tp_py:.6e}\n"
-            result += f"Error:                      {err_tp_cpp:.6e}      {err_tp_py:.6e}\n"
-            result += f"Absolute relative error:    {abserr_tp_cpp:.6e}      {abserr_tp_py:.6e}\n"
-            result += f"C++ executed it in {time_tp_cpp} s, Python in {time_tp_py} s."
+            result += f"Result:                     {res_tp_cpp:.6e}        {res_tp_py:.6e}\n"
+            result += f"Error:                      {err_tp_cpp:.6e}        {err_tp_py:.6e}\n"
+            result += f"Absolute relative error:    {abserr_tp_cpp:.6e}        {abserr_tp_py:.6e}\n"
+            result += f"Execution time (s):         {time_tp_cpp:.4f}              {time_tp_py:.4f}"
 
             TrueValue = 2.0/5.0 # = 0.4
-            result += f"\n\nCompare the integration of x^4 in [-1,1 with Gauss-Legendre.\nTrue value: {TrueValue:.6e}\n"
+            result += f"\n\nCompare the integration of x^4 in [-1,1] with Gauss-Legendre.\nTrue value: {TrueValue:.6e}\n\n"
             [res_gl_cpp, err_gl_cpp], time_gl_cpp = test_GaussLegendre_cpp("x^4", 2.0/5.0, 11) # nBins = 11
             abserr_gl_cpp = abs(err_gl_cpp / TrueValue) * 100
             x4 = lambda x: x**4
             [res_gl_py, err_gl_py], time_gl_py = test_GaussLegendre_py(x4, 2.0/5.0, 11)
             abserr_gl_py = abs(err_gl_py / TrueValue) * 100
             result += "                             C++                     Python\n"
-            result += f"Result:                     {res_tp_cpp:.6e}      {res_tp_py:.6e}\n"
-            result += f"Error:                      {err_tp_cpp:.6e}      {err_tp_py:.6e}\n"
-            result += f"Absolute relative error:    {abserr_tp_cpp:.6e}      {abserr_tp_py:.6e}\n"
-            result += f"C++ executed it in {time_gl_cpp} s, Python in {time_gl_py} s."
-
-        case 3:
-            #compute integrals
-            break
+            result += f"Result:                     {res_gl_cpp:.6e}        {res_gl_py:.6e}\n"
+            result += f"Error:                      {err_gl_cpp:.6e}        {err_gl_py:.6e}\n"
+            result += f"Absolute relative error:    {abserr_gl_cpp:.6e}        {abserr_gl_py:.6e}\n"
+            result += f"Execution time (s):         {time_gl_cpp:.4f}              {time_gl_py:.4f}"
 
         case _: # default case
-            print("Invalid choice. Please choose a number between 1 and 3.")
+            print("Invalid choice. Please choose a number between 0 and 2.")
             continue
 
     # Open the output file in append mode (so it doesn't overwrite)

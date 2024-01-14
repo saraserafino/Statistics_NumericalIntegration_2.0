@@ -33,29 +33,29 @@ Each function is decorated for comparing its execution time.<br>
 Some analysis about the age and the teams of the players are made.<br>
 * For the age: mean, median and frequency are executed and a catplot is plotted to better visualize the comparison between each execution time and their absolute errors in the results.
   <p align="center">
-  <img src="images/AgeCatplot.png" /><br>
+  <img src="images/moduleA/CatplotAge.png" /><br>
 </p>
 Instead of writing the results in the terminal, they are written over the plot, except for frequency that would be awful (due to too many datas). For this reason, two plots for it and its distribution are made:
 <p align="center">
-  <img src="images/AgeFrequency.png" /><br>
+  <img src="images/moduleA/FrequencyAge.png" /><br>
  Frequency of Age
 </p>
 <p align="center">
-  <img src="images/AgeFrequencyDistribution.png" /><br>
+  <img src="images/moduleA/FrequencyDistributionAge.png" /><br>
  Distribution of the frequency of Age
 </p>
 
 * For the team: having it non-numerical values only median and frequency are executed and plotted as before.
 <p align="center">
-  <img src="images/TeamCatplot.png" /><br>
+  <img src="images/moduleA/CatplotTeam.png" /><br>
 </p>
 Where the median with both is: Miami Heat.
 <p align="center">
-  <img src="images/TeamFrequency.png" /><br>
+  <img src="images/moduleA/FrequencyTeam.png" /><br>
  Frequency of Team
 </p>
 <p align="center">
-  <img src="images/TeamFrequencyDistribution.png" /><br>
+  <img src="images/moduleA/FrequencyDistributionTeam.png" /><br>
  Distribution of the frequency of Team
 </p>
 After these analysis, the user can analyse what they want. Since some columns contain non-numerical values, if the user chooses a statistic operation which can't be computed due to the type of values in the column, instead of exiting, they are warned about it and can choose a suitable operation.<br>
@@ -99,11 +99,11 @@ Quando avrai anche gli altri dati, scrivi quali metodi sono piu veloci (guarda l
 
 Update immagine quando avrai plottato anche quelli di c++
 <p align="center">
-  <img src="images/AverageConvergence.png" /><br>
+  <img src="images/moduleC/AverageConvergenceOrder.png" /><br>
  Average Convergence of Numerical Integration Methods
 </p>
 <p align="center">
-  <img src="images/AverageExecutionTime.png" /><br>
+  <img src="images/moduleC/AverageExecutionTime.png" /><br>
  Average Execution Time of Numerical Integration Methods
 </p>
 Magari fai un plot con i metodi confrontati di integrali specifici mostrando errore e tempo?

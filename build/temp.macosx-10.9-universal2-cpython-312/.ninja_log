@@ -1,0 +1,15 @@
+# ninja log v5
+1	699	1705242201589970623	CMakeFiles/moduleC.dir/NumericalIntegrationModule/src/IntegrationMethods.cpp.o	48e5f01d49ecb036
+1	954	1705242201851800741	CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler.cpp.o	326b69a092ad5b7e
+1	3256	1705242204151634481	CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler_py.cpp.o	fd7d71992ba1c11c
+1	2898	1705242203791397772	CMakeFiles/moduleA.dir/StatisticsModule/src/StatOp.cpp.o	c33e74ffc01968ea
+3256	4501	1705242205404817896	/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/lib.macosx-10.9-universal2-cpython-312/moduleA.cpython-312-darwin.so	6ec55347f4d13cf5
+1	3391	1705242204287617864	CMakeFiles/moduleC.dir/NumericalIntegrationModule/src/moduleCfunctions_py.cpp.o	28f34dea7912b0d8
+3391	4561	1705242205465178707	/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/lib.macosx-10.9-universal2-cpython-312/moduleC.cpython-312-darwin.so	ed2c9851e88e9a87
+12	610	1705242206210089809	CMakeFiles/moduleC.dir/NumericalIntegrationModule/src/IntegrationMethods.cpp.o	52ace47ac7dcbfb6
+13	867	1705242206466349492	CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler.cpp.o	9f4a7b5c94212f11
+13	2715	1705242208306362380	CMakeFiles/moduleA.dir/StatisticsModule/src/StatOp.cpp.o	3d07a85f5265b7f
+13	3669	1705242209265592156	CMakeFiles/moduleA.dir/StatisticsModule/src/DataHandler_py.cpp.o	ae7972ba3e15ae09
+3669	3723	1705242209328075994	/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/lib.macosx-10.9-universal2-cpython-312/moduleA.cpython-312-darwin.so	eaeff1120036e13f
+13	3969	1705242209564692241	CMakeFiles/moduleC.dir/NumericalIntegrationModule/src/moduleCfunctions_py.cpp.o	82f03aeb178f492d
+3969	4022	1705242209627381407	/Users/sara/Desktop/Advanced Programming/Homework3_Serafino/build/lib.macosx-10.9-universal2-cpython-312/moduleC.cpython-312-darwin.so	39f533781b8c0f9f
