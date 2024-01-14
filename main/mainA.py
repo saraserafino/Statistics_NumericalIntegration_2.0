@@ -286,8 +286,8 @@ if os.path.exists(output_file_path):
 
 # Since in Python do-while doesn't exist, set this condition continueChoice
 # in order to run the while loop at least once
-continueChoice = 1
-while continueChoice == 1:
+continueChoice = "1"
+while continueChoice == "1":
     targetColumn = input("What is the name of the column you want to analyze? ")
     while targetColumn not in header:
         targetColumn = input("This column does not exist. Please insert a valid name: ")
@@ -307,13 +307,13 @@ while continueChoice == 1:
     """)
     choice = input("Enter the corresponding number: ")
     # Exit loop if the user chooses 0
-    if choice == 0:
+    if choice == "0":
         print("Exiting...")
         break
 
     # If there's even a string, some analysis can't be computed (it would not make sense)
     if any(isinstance(value, str) for value in targetColumnData):
-        while choice not in [2, 5, 6]:
+        while choice not in ["2", "5", "6"]:
             print(f"{targetColumn} has no numerical values.")
             choice = input("Choose an analysis number between 2, 5 or 6: ")
 
