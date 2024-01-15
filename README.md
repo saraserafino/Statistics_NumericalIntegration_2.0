@@ -2,7 +2,7 @@
 
 This project builds on a previous course project, implementing it with Python bindings. For each section, the new implementations will be explicitly highlighted with a further section called "What's new". The full request of this project can be found [here](https://github.com/pcafrica/advanced_programming_2023-2024/blob/main/homeworks/homework_03.md)
 
-## (new!) Code organization
+## Code organization
 For each module there is a folder which separates source files from header files; the main files (the old main.cpp and the two new mains for each module) are in their folder called main; a cmake and a setup.py are provided and will be explained later on. When executing the mains, a text file with the results and a folder `images` containing the plots is created, they can be found in the `StatisticsModule` and `NumericalIntegrationModule` folders.
 
 ## Main
