@@ -1,4 +1,4 @@
-# Statistics and Numerical Integration
+# Statistics and Numerical Integration 2.0
 
 This project builds on a previous course project, implementing it with Python bindings. For each section, the new implementations will be explicitly highlighted with a further section called "What's new". The full request of this project can be found [here](https://github.com/pcafrica/advanced_programming_2023-2024/blob/main/homeworks/homework_03.md)
 
