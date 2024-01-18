@@ -119,6 +119,42 @@ std::tuple<std::vector<double>, std::vector<double>> computeConvergenceOrder(con
     return std::make_tuple(errors, orders);
 };
 
+// When using np.polynomial.leggauss, the integration interval is [-1,1] so this is different:
+template <>
+std::tuple<std::vector<double>, std::vector<double>> computeConvergenceOrder<GaussLegendre>(const std::string& function, const double exactIntegral) {
+    // Vectors for collecting convergence data
+    std::vector<double> errors;
+    std::vector<double> orders;
+
+    // Create the parser instance
+    mup::ParserX parser;
+    // Set the expression
+    parser.SetExpr(function);
+
+    double previousError = 1.0;
+
+    for (unsigned int nBins = 2; nBins <= 1024; nBins *= 2) {
+        GaussLegendre method(-1, 1, nBins);
+        double numericalIntegral = Integrate(function, method);
+
+        // Compare with the exact integral
+        double error = std::abs(numericalIntegral - exactIntegral);
+
+        // Compute convergence order
+        auto log_error = log(error);
+        auto log_previous_error = log(previousError);
+        auto order = (log_error - log_previous_error) / (log(2));
+
+        // Collect convergence data
+        errors.push_back(error);
+        orders.push_back(-order);
+
+        previousError = error;
+    }
+    //std::cout << "\n";
+    return std::make_tuple(errors, orders);
+};
+
 // Analize the results
 void analysis (const double integration_value, const double true_value) {
     std::cout << "True value: " << true_value << std::endl;

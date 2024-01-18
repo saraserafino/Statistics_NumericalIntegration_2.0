@@ -87,7 +87,7 @@ Not only the convergence order of the methods are computed, but also their avera
   <img src="NumericalIntegrationModule/images/AverageConvergenceOrder.png" /><br>
  Average Convergence of Numerical Integration Methods
 </p>
-The more rapidly they descend in the error (y-axis), the higher is the convergence order. Midpoint and Trapezoidal have order 2, Simpson's 4, PyGauss-Legendre 0, while the other Gauss-Legendre fluctuates: until 64 subintervals it is quite good (its error decays reaching peaks of order 4) but then it explodes.
+The more rapidly they descend in the error (y-axis), the higher is the convergence order. Midpoint and Trapezoidal have order 2, Simpson's 4,. For the convergence order of Gauss-Legendre, it must be taken into account that, having used np.polynomial.leggauss for adjusting the C++ version, both the convergences must be computed over the interval [-1,1] (and not over [0, π/2] as for the others); therefore the order will not be correctly printed, but the descending in the above plot shows how PyGauss-Legendre has order 4, while the other Gauss-Legendre fluctuates: until 64 subintervals it is quite good (its error decays reaching peaks of order 4) but then it explodes.
 <p align="center">
   <img src="NumericalIntegrationModule/images/AverageExecutionTime.png" /><br>
  Average Execution Time of Numerical Integration Methods

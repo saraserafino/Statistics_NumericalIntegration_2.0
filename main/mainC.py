@@ -236,8 +236,10 @@ while continueChoice == "1":
                 [errors_simp_cpp, orders_simp_cpp], time_simp_cpp = computeConvergenceOrderSimpson_cpp("cos(x)", 1.0)
                 [errors_simp_py, orders_simp_py], time_simp_py = computeConvergenceOrderTrapezoidal_Simpson_py(cos, 1.0, integrate.simpson)
                 
-                [errors_gl_cpp, orders_gl_cpp], time_gl_cpp = computeConvergenceOrderGaussLegendre_cpp("cos(x)", 1.0)
-                [errors_gl_py, orders_gl_py], time_gl_py = computeConvergenceOrderGaussLegendre_py(cos, 1.0)
+                # Due to np.polynomial.leggauss, the integration interval must be [-1,1], in which cos x = 2sin(1)
+                resultGL = 2 * math.sin(1)
+                [errors_gl_cpp, orders_gl_cpp], time_gl_cpp = computeConvergenceOrderGaussLegendre_cpp("cos(x)", resultGL)
+                [errors_gl_py, orders_gl_py], time_gl_py = computeConvergenceOrderGaussLegendre_py(cos, resultGL)
                 
                 # Append each result
                 results['Midpoint']['avg_errors'].append(errors_mid_cpp)

@@ -1,0 +1,85 @@
+Median of Team:
+C++ result: Miami Heat 
+Python result: Miami Heat
+C++ execution time: 0.0236 s, Python: 0.0044 s.
+
+Frequency count of Team:
+C++ result: Atlanta Hawks:       325 times
+Boston Celtics:       319 times
+Brooklyn Nets:       182 times
+Charlotte Bobcats:       157 times
+Charlotte Hornets:       130 times
+Chicago Bulls:       316 times
+Cleveland Cavaliers:       337 times
+Dallas Mavericks:       326 times
+Denver Nuggets:       313 times
+Detroit Pistons:       311 times
+Golden State Warriors:       313 times
+Houston Rockets:       327 times
+Indiana Pacers:       323 times
+Los Angeles Clippers:       331 times
+Los Angeles Lakers:       327 times
+Memphis Grizzlies:       336 times
+Miami Heat:       331 times
+Milwaukee Bucks:       323 times
+Minnesota Timberwolves:       307 times
+New Jersey Nets:       159 times
+New Orleans Hornets:       143 times
+New Orleans Pelicans:       163 times
+New Orleans/Oklahoma City Hornets:        32 times
+New York Knicks:       323 times
+Oklahoma City Thunder:       240 times
+Orlando Magic:       316 times
+Philadelphia 76ers:       324 times
+Phoenix Suns:       309 times
+Portland Trail Blazers:       311 times
+Sacramento Kings:       314 times
+San Antonio Spurs:       321 times
+Seattle SuperSonics:        90 times
+Toronto Raptors:       327 times
+Utah Jazz:       320 times
+Washington Wizards:       334 times
+ 
+Python result: Team
+Cleveland Cavaliers                  337
+Memphis Grizzlies                    336
+Washington Wizards                   334
+Miami Heat                           331
+Los Angeles Clippers                 331
+Houston Rockets                      327
+Los Angeles Lakers                   327
+Toronto Raptors                      327
+Dallas Mavericks                     326
+Atlanta Hawks                        325
+Philadelphia 76ers                   324
+New York Knicks                      323
+Milwaukee Bucks                      323
+Indiana Pacers                       323
+San Antonio Spurs                    321
+Utah Jazz                            320
+Boston Celtics                       319
+Orlando Magic                        316
+Chicago Bulls                        316
+Sacramento Kings                     314
+Golden State Warriors                313
+Denver Nuggets                       313
+Portland Trail Blazers               311
+Detroit Pistons                      311
+Phoenix Suns                         309
+Minnesota Timberwolves               307
+Oklahoma City Thunder                240
+Brooklyn Nets                        182
+New Orleans Pelicans                 163
+New Jersey Nets                      159
+Charlotte Bobcats                    157
+New Orleans Hornets                  143
+Charlotte Hornets                    130
+Seattle SuperSonics                   90
+New Orleans/Oklahoma City Hornets     32
+Name: count, dtype: int64
+C++ execution time: 0.0171 s, Python: 0.0007 s.
+
+Correlation between W and L:
+Both C++ and Python have result: -0.9273
+C++ execution time: 0.0444 s, Python: 0.0007 s.
+

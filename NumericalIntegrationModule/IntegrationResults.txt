@@ -1,0 +1,180 @@
+Numerical Integration analysis
+
+Compute the average of convergence order and time of execution for each method (except for the two-point that would be mathematically inconsistent to compute).
+
+Average Convergence for Midpoint:
+  Subintervals:    2  Error: 2.617215e-02  Order: 5.26
+  Subintervals:    4  Error: 6.454543e-03  Order: 2.02
+  Subintervals:    8  Error: 1.608189e-03  Order: 2.00
+  Subintervals:   16  Error: 4.017082e-04  Order: 2.00
+  Subintervals:   32  Error: 1.004059e-04  Order: 2.00
+  Subintervals:   64  Error: 2.510014e-05  Order: 2.00
+  Subintervals:  128  Error: 6.274953e-06  Order: 2.00
+  Subintervals:  256  Error: 1.568733e-06  Order: 2.00
+  Subintervals:  512  Error: 3.921829e-07  Order: 2.00
+  Subintervals: 1024  Error: 9.804571e-08  Order: 2.00
+
+Executed in 0.0464 s.
+
+
+Average Convergence for Trapezoidal:
+  Subintervals:    2  Error: 5.194055e-02  Order: 4.27
+  Subintervals:    4  Error: 1.288420e-02  Order: 2.01
+  Subintervals:    8  Error: 3.214828e-03  Order: 2.00
+  Subintervals:   16  Error: 8.033195e-04  Order: 2.00
+  Subintervals:   32  Error: 2.008057e-04  Order: 2.00
+  Subintervals:   64  Error: 5.019991e-05  Order: 2.00
+  Subintervals:  128  Error: 1.254988e-05  Order: 2.00
+  Subintervals:  256  Error: 3.137465e-06  Order: 2.00
+  Subintervals:  512  Error: 7.843658e-07  Order: 2.00
+  Subintervals: 1024  Error: 1.960914e-07  Order: 2.00
+
+Executed in 0.0450 s.
+
+
+Average Convergence for PyTrapezoidal:
+  Subintervals:    2  Error: 2.146018e-01  Order: 2.22
+  Subintervals:    4  Error: 2.295138e-02  Order: 3.23
+  Subintervals:    8  Error: 4.199786e-03  Order: 2.45
+  Subintervals:   16  Error: 9.140193e-04  Order: 2.20
+  Subintervals:   32  Error: 2.139704e-04  Order: 2.09
+  Subintervals:   64  Error: 5.180622e-05  Order: 2.05
+  Subintervals:  128  Error: 1.274830e-05  Order: 2.02
+  Subintervals:  256  Error: 3.162121e-06  Order: 2.01
+  Subintervals:  512  Error: 7.874387e-07  Order: 2.01
+  Subintervals: 1024  Error: 1.964750e-07  Order: 2.00
+
+Executed in 0.0016 s.
+
+
+Average Convergence for Simpson:
+  Subintervals:    2  Error: 2.279877e-03  Order: 8.78
+  Subintervals:    4  Error: 1.345850e-04  Order: 4.08
+  Subintervals:    8  Error: 8.295524e-06  Order: 4.02
+  Subintervals:   16  Error: 5.166847e-07  Order: 4.00
+  Subintervals:   32  Error: 3.226500e-08  Order: 4.00
+  Subintervals:   64  Error: 2.016129e-09  Order: 4.00
+  Subintervals:  128  Error: 1.260019e-10  Order: 4.00
+  Subintervals:  256  Error: 7.874590e-12  Order: 4.00
+  Subintervals:  512  Error: 4.936052e-13  Order: 4.00
+  Subintervals: 1024  Error: 3.042011e-14  Order: 4.02
+
+Executed in 0.0451 s.
+
+
+Average Convergence for PySimpson:
+  Subintervals:    2  Error: 2.146018e-01  Order: 2.22
+  Subintervals:    4  Error: 3.144614e-03  Order: 6.09
+  Subintervals:    8  Error: 1.171756e-04  Order: 4.75
+  Subintervals:   16  Error: 5.652283e-06  Order: 4.37
+  Subintervals:   32  Error: 3.109587e-07  Order: 4.18
+  Subintervals:   64  Error: 1.824519e-08  Order: 4.09
+  Subintervals:  128  Error: 1.105052e-09  Order: 4.05
+  Subintervals:  256  Error: 6.799206e-11  Order: 4.02
+  Subintervals:  512  Error: 4.216405e-12  Order: 4.01
+  Subintervals: 1024  Error: 2.624567e-13  Order: 4.01
+
+Executed in 0.0021 s.
+
+
+Average Convergence for Gauss-Legendre:
+  Subintervals:    2  Error: 8.307935e-01  Order: 0.27
+  Subintervals:    4  Error: 2.266536e-01  Order: 1.87
+  Subintervals:    8  Error: 5.803255e-02  Order: 1.97
+  Subintervals:   16  Error: 1.491188e-02  Order: 1.96
+  Subintervals:   32  Error: 3.808316e-03  Order: 1.97
+  Subintervals:   64  Error: 9.645533e-04  Order: 1.98
+  Subintervals:  128  Error: 4.914270e-01  Order: -8.12
+  Subintervals:  256  Error: 3.836362e+00  Order: -2.94
+  Subintervals:  512  Error: 1.334870e-01  Order: 4.33
+  Subintervals: 1024  Error: 1.355845e-04  Order: 13.31
+
+Executed in 0.0886 s.
+
+
+Average Convergence for PyGauss-Legendre:
+  Subintervals:    2  Error: 7.118314e-03  Order: 7.13
+  Subintervals:    4  Error: 2.809198e-07  Order: 14.63
+  Subintervals:    8  Error: 4.440892e-16  Order: 29.24
+  Subintervals:   16  Error: 4.440892e-16  Order: 0.00
+  Subintervals:   32  Error: 1.998401e-15  Order: -2.17
+  Subintervals:   64  Error: 3.108624e-15  Order: -0.64
+  Subintervals:  128  Error: 1.776357e-15  Order: 0.81
+  Subintervals:  256  Error: 1.820766e-14  Order: -3.36
+  Subintervals:  512  Error: 9.992007e-15  Order: 0.87
+  Subintervals: 1024  Error: 9.769963e-15  Order: 0.03
+
+Executed in 0.0065 s.
+
+
+
+
+Compute some integrals for each method.
+
+Integration of 3x+1 in [0,1] with Midpoint Rule.
+True value: 2.500000e+00
+Result with C++: 2.500000e+00 
+Error: 0.000000e+00
+Absolute relative error: 0.000000e+00
+Executed in 0.0011 s.
+
+Compare the integration of x^3 in [0,1] with Trapezoidal Rule.
+True value: 2.500000e-01
+
+╒═════════════════════════════╤════════════╤═════════════╕
+│                             │        C++ │      Python │
+╞═════════════════════════════╪════════════╪═════════════╡
+│ Result                      │ 0.26       │ 0.265625    │
+├─────────────────────────────┼────────────┼─────────────┤
+│ Error                       │ 0.01       │ 0.015625    │
+├─────────────────────────────┼────────────┼─────────────┤
+│ Absolute relative error (%) │ 4          │ 6.25        │
+├─────────────────────────────┼────────────┼─────────────┤
+│ Execution time (s)          │ 0.00107598 │ 0.000123024 │
+╘═════════════════════════════╧════════════╧═════════════╛
+
+Compare the integration of x^2 in [1,4] with Simpson's Rule.
+True value: 2.100000e+01
+
+╒═════════════════════════════╤══════════════╤══════════════╕
+│                             │          C++ │       Python │
+╞═════════════════════════════╪══════════════╪══════════════╡
+│ Result                      │ 17           │ 21           │
+├─────────────────────────────┼──────────────┼──────────────┤
+│ Error                       │  4           │  0           │
+├─────────────────────────────┼──────────────┼──────────────┤
+│ Absolute relative error (%) │ 19.0476      │  0           │
+├─────────────────────────────┼──────────────┼──────────────┤
+│ Execution time (s)          │  0.000565052 │  0.000169039 │
+╘═════════════════════════════╧══════════════╧══════════════╛
+
+Compare the integration of x^2 in [0,4] with two-point Gauss.
+True value: 2.133333e+01
+
+╒═════════════════════════════╤══════════════╤═════════════╕
+│                             │          C++ │      Python │
+╞═════════════════════════════╪══════════════╪═════════════╡
+│ Result                      │ 21.3333      │ 21.3333     │
+├─────────────────────────────┼──────────────┼─────────────┤
+│ Error                       │  0           │  0          │
+├─────────────────────────────┼──────────────┼─────────────┤
+│ Absolute relative error (%) │  0           │  0          │
+├─────────────────────────────┼──────────────┼─────────────┤
+│ Execution time (s)          │  0.000458956 │  0.00121188 │
+╘═════════════════════════════╧══════════════╧═════════════╛
+
+Compare the integration of x^4 in [-1,1] with Gauss-Legendre.
+True value: 4.000000e-01
+
+╒═════════════════════════════╤════════════╤═════════════╕
+│                             │        C++ │      Python │
+╞═════════════════════════════╪════════════╪═════════════╡
+│ Result                      │  0.450977  │ 0.4         │
+├─────────────────────────────┼────────────┼─────────────┤
+│ Error                       │  0.0509767 │ 1.05471e-15 │
+├─────────────────────────────┼────────────┼─────────────┤
+│ Absolute relative error (%) │ 12.7442    │ 2.63678e-13 │
+├─────────────────────────────┼────────────┼─────────────┤
+│ Execution time (s)          │  0.0011611 │ 0.00135183  │
+╘═════════════════════════════╧════════════╧═════════════╛
+
