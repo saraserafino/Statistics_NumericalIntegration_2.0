@@ -34,4 +34,3 @@ pybind11_add_module(moduleA
 target_link_libraries(moduleC PRIVATE ${MUPARSERX_LIBRARY})
 target_include_directories(moduleA PRIVATE StatisticsModule/include)
 target_include_directories(moduleC PRIVATE NumericalIntegration/include)
-#endif()
