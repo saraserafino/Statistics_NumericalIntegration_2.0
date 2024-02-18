@@ -7,7 +7,7 @@
 
 using namespace MODULEC;
 
-// Function to evaluate in point a
+// Function to evaluate in point y
 mup::Value evaluate(double y, mup::ParserX& parser);
 
 // Function to integrate for whichever method
